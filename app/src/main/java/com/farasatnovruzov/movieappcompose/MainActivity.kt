@@ -3,10 +3,12 @@ package com.farasatnovruzov.movieappcompose
 import android.annotation.SuppressLint
 import android.graphics.Movie
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,6 +46,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.farasatnovruzov.movieappcompose.navigation.MovieNavigation
 import com.farasatnovruzov.movieappcompose.ui.theme.MovieAppComposeTheme
 
 class MainActivity : ComponentActivity() {
@@ -51,8 +54,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MyApp { paddingValues ->
-                MainContent(paddingValues = paddingValues)
+            MyApp {  ->
+                MovieNavigation()
             }
         }
     }
@@ -61,94 +64,46 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MyApp(content: @Composable (paddingValues: androidx.compose.foundation.layout.PaddingValues) -> Unit) {
+fun MyApp(content: @Composable () -> Unit) {
     MovieAppComposeTheme {
-        Scaffold(
-            topBar = {
-                TopAppBar(colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                ), title = {
-                    Text(
-                        "Movies",
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                })
-            }) { innerPadding ->
-            content(innerPadding)
-        }
+        content()
     }
 }
 
-@Composable
-fun MainContent(
-    paddingValues: PaddingValues,
-    movieList: List<String> = listOf(
-        "Movie1",
-        "Movie2",
-        "Movie3",
-        "Movie4",
-        "Movie5",
-        "Movie6",
-        "Movie7",
-        "Movie8",
-        "Movie9",
-        "Movie10",
-        "Movie11",
-        "Movie12",
-        "Movie13",
-        "Movie14",
-        "Movie15",
-        "Movie16",
-        "Movie17",
-        "Movie18"
-    )
-) {
-    Column {
-        LazyColumn(
-            modifier = Modifier
-                .padding(paddingValues)
-        ){
-            items(movieList) {
-                MovieRow(it)
-            }
-        }
 
-    }
-
-}
 
 @Composable
-fun MovieRow(movie: String) {
+fun MovieRow(movie: String, onItemClick: (String) -> Unit = {}) {
     Card(
         modifier = Modifier
             .padding(4.dp)
             .fillMaxWidth()
-            .height(130.dp),
+            .height(130.dp)
+            .clickable {
+                onItemClick(movie)
+            },
         colors = CardDefaults.cardColors(
-            containerColor = Color.LightGray),
+            containerColor = Color.LightGray
+        ),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         shape = RoundedCornerShape(corner = CornerSize(16.dp))
     ) {
-        Row (
+        Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
-        ){
-            Surface(modifier = Modifier
-                .padding(12.dp)
-                .size(100.dp),
+        ) {
+            Surface(
+                modifier = Modifier
+                    .padding(12.dp)
+                    .size(100.dp),
                 shape = CircleShape,
                 shadowElevation = 4.dp,
                 tonalElevation = 4.dp,
-                ) {
-                Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "Movie Icon",)
+            ) {
+                Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "Movie Icon")
             }
             Text(
-                text = movie,
-                modifier = Modifier
+                text = movie, modifier = Modifier
                     .padding(16.dp)
                     .fillMaxWidth()
             )
@@ -160,7 +115,7 @@ fun MovieRow(movie: String) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultAppPreview() {
-    MyApp {paddingValues ->
-        MainContent(paddingValues)
+    MyApp {  ->
+        MovieNavigation()
     }
 }
