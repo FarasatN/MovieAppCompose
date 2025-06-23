@@ -70,9 +70,9 @@ fun MainContent(
             modifier = Modifier.padding(paddingValues)
         ) {
             items(movieList) {
-                MovieRow(it){movie->
+                MovieRow(movie = it){movie->
                     Log.d("TAG", "MainContent: $movie")
-                    navController.navigate(route = MovieScreens.DetailScreen.name)
+                    navController.navigate(route = MovieScreens.DetailScreen.name+"/$movie")
                 }
             }
         }
