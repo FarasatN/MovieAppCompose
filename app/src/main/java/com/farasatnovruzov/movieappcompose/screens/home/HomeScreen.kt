@@ -16,8 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavController
-import com.farasatnovruzov.movieappcompose.MovieRow
+import com.farasatnovruzov.movieappcompose.model.Movie
+import com.farasatnovruzov.movieappcompose.model.getMovies
 import com.farasatnovruzov.movieappcompose.navigation.MovieScreens
+import com.farasatnovruzov.movieappcompose.widgets.MovieRow
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,26 +46,7 @@ fun HomeScreen(navController: NavController) {
 @Composable
 fun MainContent(
     navController: NavController,
-    paddingValues: PaddingValues, movieList: List<String> = listOf(
-        "Movie1",
-        "Movie2",
-        "Movie3",
-        "Movie4",
-        "Movie5",
-        "Movie6",
-        "Movie7",
-        "Movie8",
-        "Movie9",
-        "Movie10",
-        "Movie11",
-        "Movie12",
-        "Movie13",
-        "Movie14",
-        "Movie15",
-        "Movie16",
-        "Movie17",
-        "Movie18"
-    )
+    paddingValues: PaddingValues, movieList: List<Movie> = getMovies()
 ) {
     Column {
         LazyColumn(
