@@ -71,5 +71,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.androidx.navigation.compose)
+
     implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp) // Only available on Android/JVM.
+//    implementation(libs.coil.network.ktor2)
+//    implementation(libs.coil.network.ktor3)
 }

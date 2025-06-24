@@ -1,10 +1,12 @@
 package com.farasatnovruzov.movieappcompose.widgets
 
+import android.graphics.drawable.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,7 +15,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -21,6 +23,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,6 +49,7 @@ fun MovieRow(
     movie: com.farasatnovruzov.movieappcompose.model.Movie = getMovies()[0],
     onItemClick: (String) -> Unit = {}
 ) {
+    val expanded = remember { mutableStateOf(false) }
     Card(
         modifier = Modifier
             .padding(4.dp)
@@ -72,30 +77,45 @@ fun MovieRow(
                 tonalElevation = 4.dp,
             ) {
 //                Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "Movie Icon")
-
                 //Deprecated!
-                Image(
-                    painter = rememberAsyncImagePainter(movie.images.first()),
-                    contentDescription = "Movie Image",
-                    modifier = Modifier.clip(CircleShape),
-                    contentScale = ContentScale.Crop,
-                )
+//                Image(
+//                    painter = rememberAsyncImagePainter(movie.images.first()),
+//                    contentDescription = "Movie Image",
+//                    modifier = Modifier.clip(CircleShape),
+//                    contentScale = ContentScale.Crop,
+//                )
 
 //                AsyncImage(
 //                    model = movie.images[0],
 //                    contentDescription = null,
 //                )
-
-//                AsyncImage(
-//                    model = Builder(LocalContext.current)
-//                        .data(movie.images.first())
-//                        .crossfade(true)
-//                        .transformations(CircleCropTransformation())
+                //--------------------
+//                AsyncImge(
+//                    model = ImageRequest.Builder(LocalContext.current)
+//                        .data(movie.images[0])
+//                        .crossfade(true) // Optional: add a crossfade animation
 //                        .build(),
-//                    contentDescription = "Movie Poster"
+//                    contentDescription = "Image from internet",
+//                    modifier = Modifier.fillMaxSize(),
+//                    onLoading = {
+//                        println("Image loading.... ")
+//                    },
+//                    onSuccess = { successState ->
+//                        println("Image loaded successfully: ${successState.result.dataSource}")
+//                    },
+//                    onError = { errorState ->
+//                        println("Image failed to load: ${errorState.result.throwable?.message}")
+//                    }
 //                )
 
-
+                AsyncImage(
+                    model = Builder(LocalContext.current)
+                        .data(movie.images.first())
+                        .crossfade(true)
+                        .transformations(CircleCropTransformation())
+                        .build(),
+                    contentDescription = "Movie Poster"
+                )
             }
             Column(modifier = Modifier.padding(4.dp)) {
                 Text(
@@ -112,6 +132,17 @@ fun MovieRow(
                     style = MaterialTheme.typography.titleMedium,
                     text = "Released: ${movie.year}", modifier = Modifier
                         .fillMaxWidth()
+                )
+
+                Icon(
+                    imageVector = Icons.Default.ArrowDropDown,
+                    contentDescription = "Down Arrow",
+                    modifier = Modifier
+                        .size(25.dp)
+                        .clickable {
+                            expanded.value = !expanded.value
+                        },
+                    tint = Color.DarkGray
                 )
             }
 

@@ -42,7 +42,7 @@ fun getMovies(): List<Movie>{
             message = "",
             items = emptyList(),
             totalResults = "",
-            images = listOf("https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_SX300.jpg")
+            images = listOf("https://upload.wikimedia.org/wikipedia/en/8/83/Dark_knight_rises_poster.jpg")
         )
     )
 }
