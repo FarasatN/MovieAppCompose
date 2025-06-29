@@ -32,11 +32,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.farasatnovruzov.movieappcompose.model.getMovies
 import com.farasatnovruzov.movieappcompose.screens.home.MainContent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailsScreen(navController: NavController, movieData: String?) {
+fun DetailsScreen(navController: NavController, movieId: String?) {
 //    Surface(
 //         modifier = Modifier.fillMaxHeight().fillMaxWidth()
 //    ) {
@@ -49,6 +50,7 @@ fun DetailsScreen(navController: NavController, movieData: String?) {
 //            })
 //        }
 
+    val newMovieList = getMovies().filter { it.id == movieId }
 
     Scaffold(
         topBar = {
@@ -77,7 +79,7 @@ fun DetailsScreen(navController: NavController, movieData: String?) {
             horizontalAlignment = CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(style = MaterialTheme.typography.headlineMedium,text = movieData.toString(), textDecoration = androidx.compose.ui.text.style.TextDecoration.Underline, modifier = Modifier.clickable(){
+            Text(style = MaterialTheme.typography.headlineMedium,text = newMovieList[0].title, textDecoration = androidx.compose.ui.text.style.TextDecoration.Underline, modifier = Modifier.clickable(){
                 navController.popBackStack()
             })
         }

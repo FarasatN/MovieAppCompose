@@ -43,6 +43,26 @@ fun getMovies(): List<Movie>{
             items = emptyList(),
             totalResults = "",
             images = listOf("https://upload.wikimedia.org/wikipedia/en/8/83/Dark_knight_rises_poster.jpg")
+        ),
+        Movie(
+            id = "tt0071562",
+            title = "The Shawshank Redemption",
+            year = "1994",
+            genre = "Drama",
+            director = "Frank Darabont",
+            actors = "Tim Robbins, Morgan Freeman, Bob Gunton",
+            plot = "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
+            poster = "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_SX300.jpg",
+            imdbRating = "9.3",
+            imdbVotes = "2,123,456",
+            type = "movie",
+            response = "True",
+            errorMessage = "",
+            error = "",
+            message = "",
+            items = emptyList(),
+            totalResults = "",
+            images = listOf("https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_SX300.jpg")
         )
     )
 }
