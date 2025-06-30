@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -113,7 +114,8 @@ fun MovieRow(
                         .crossfade(true)
                         .transformations(CircleCropTransformation())
                         .build(),
-                    contentDescription = "Movie Poster"
+                    contentDescription = "Movie Poster",
+                    contentScale = ContentScale.Crop,
                 )
             }
             Column(modifier = Modifier.padding(4.dp)) {
@@ -181,8 +183,6 @@ fun MovieRow(
                     tint = Color.DarkGray
                 )
             }
-
         }
-
     }
 }
