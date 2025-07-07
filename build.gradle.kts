@@ -2,6 +2,9 @@
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
-    // Add this line:
     alias(libs.plugins.composeCompiler) apply false
+    alias(libs.plugins.androidx.room) apply false // Apply false here for project-level
+    alias(libs.plugins.hiltAndroid) apply false
+    alias(libs.plugins.kotlinAndroidKsp) apply false
 }
+

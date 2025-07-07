@@ -1,8 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    // Add this line:
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.androidx.room) // Apply true here for the module
+    alias(libs.plugins.kotlinAndroidKsp)
+    alias(libs.plugins.hiltAndroid)
 }
 
 android {
@@ -41,18 +43,20 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
-    }
+//    composeOptions {
+//        kotlinCompilerExtensionVersion = "1.5.1"
+//    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    room { // This block is for the Room Gradle Plugin
+        schemaDirectory("$projectDir/schemas")
+    }
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -76,4 +80,18 @@ dependencies {
     implementation(libs.coil.network.okhttp) // Only available on Android/JVM.
 //    implementation(libs.coil.network.ktor2)
 //    implementation(libs.coil.network.ktor3)
+
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    implementation(libs.androidx.room.runtime)
+    // If this project uses any Kotlin source, use Kotlin Symbol Processing (KSP)
+    // See Add the KSP plugin to your project
+    ksp(libs.androidx.room.compiler)
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation(libs.androidx.room.ktx)
+    // optional - Paging 3 Integration
+    implementation(libs.androidx.room.paging)
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 }
