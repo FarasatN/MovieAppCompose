@@ -5,8 +5,6 @@ plugins {
     alias(libs.plugins.androidx.room) // Apply true here for the module
     alias(libs.plugins.kotlinAndroidKsp)
     alias(libs.plugins.hiltAndroid)
-//    id("com.google.devtools.ksp")
-//    id("com.google.dagger.hilt.android")
 }
 
 android {
