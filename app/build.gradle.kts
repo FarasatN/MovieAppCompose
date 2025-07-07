@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.androidx.room) // Apply true here for the module
     alias(libs.plugins.kotlinAndroidKsp)
     alias(libs.plugins.hiltAndroid)
+//    id("com.google.devtools.ksp")
+//    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -37,9 +39,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
+//    kotlinOptions {
+//        jvmTarget = "1.8"
+//    }
+
     buildFeatures {
         compose = true
     }
@@ -53,6 +56,15 @@ android {
     }
     room { // This block is for the Room Gradle Plugin
         schemaDirectory("$projectDir/schemas")
+    }
+}
+// ADD or MODIFY this block
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
+        // You can add other Kotlin compiler options here if needed
+        // For example:
+        // freeCompilerArgs.add("-Xcontext-receivers")
     }
 }
 
@@ -84,14 +96,20 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     implementation(libs.androidx.room.runtime)
-    // If this project uses any Kotlin source, use Kotlin Symbol Processing (KSP)
-    // See Add the KSP plugin to your project
     ksp(libs.androidx.room.compiler)
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation(libs.androidx.room.ktx)
     // optional - Paging 3 Integration
     implementation(libs.androidx.room.paging)
 
+
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+    // For ViewModels
+    implementation(libs.androidx.hilt.navigation.compose) // If using Compose Navigation
+
+//    implementation("com.google.dagger:hilt-android:2.51.1") // Or latest compatible Hilt
+//    ksp("com.google.dagger:hilt-compiler:2.51.1")     // Or latest compatible Hilt
+
+
 }

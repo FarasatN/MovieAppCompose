@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -157,7 +158,7 @@ fun MovieRow(
                             }
 
                         }, modifier = Modifier.padding(6.dp))
-                        Divider(modifier = Modifier.padding(3.dp))
+                        HorizontalDivider(modifier = Modifier.padding(3.dp))
                         Text(
                             text = "Director: ${movie.director}",
                             style = MaterialTheme.typography.labelMedium

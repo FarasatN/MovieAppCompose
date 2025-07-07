@@ -1,7 +1,8 @@
 [versions]
-agp = "8.6.1"
+agp = "8.11.0"
 coilCompose = "3.2.0"
-kotlin = "2.1.21"
+hiltNavigationCompose = "1.2.0"
+kotlin = "2.2.0"
 coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -17,11 +18,12 @@ roomCompiler = "2.7.2"
 roomKtx = "2.7.2"
 roomPaging = "2.7.2"
 roomRuntime = "2.7.2"
-kspVersion = "2.1.21-2.0.1"
-hiltVersion = "2.51.1"
+kspVersion = "2.2.0-2.0.2"
+hiltVersion = "2.56.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
