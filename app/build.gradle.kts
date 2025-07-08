@@ -9,11 +9,11 @@ plugins {
 
 android {
     namespace = "com.farasatnovruzov.movieappcompose"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.farasatnovruzov.movieappcompose"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -34,8 +34,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 //    kotlinOptions {
 //        jvmTarget = "1.8"
@@ -55,15 +55,30 @@ android {
     room { // This block is for the Room Gradle Plugin
         schemaDirectory("$projectDir/schemas")
     }
+
+//    android {
+//        compileOptions {
+//            sourceCompatibility JavaVersion.VERSION_17
+//                    targetCompatibility JavaVersion.VERSION_17
+//        }
+//
+//        kotlinOptions {
+//            jvmTarget = '17'
+//        }
+//    }
 }
 // ADD or MODIFY this block
 kotlin {
     compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         // You can add other Kotlin compiler options here if needed
         // For example:
         // freeCompilerArgs.add("-Xcontext-receivers")
+
     }
+}
+tasks.withType<JavaCompile>().configureEach {
+    options.compilerArgs.add("-Xlint:deprecation")
 }
 
 dependencies {

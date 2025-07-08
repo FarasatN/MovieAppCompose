@@ -5,21 +5,31 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import com.farasatnovruzov.movieappcompose.navigation.MovieNavigation
+import com.farasatnovruzov.movieappcompose.screens.note.NoteViewModel
 import com.farasatnovruzov.movieappcompose.ui.theme.MovieAppComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.getValue
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             MyApp { ->
-                MovieNavigation()
+//            val noteViewModel = viewModel<NoteViewModel>()
+                val noteViewModel: NoteViewModel by viewModels()
+
+                MovieNavigation(noteViewModel)
+
             }
         }
     }
@@ -33,11 +43,10 @@ fun MyApp(content: @Composable () -> Unit) {
     }
 }
 
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultAppPreview() {
-    MyApp { ->
-        MovieNavigation()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun DefaultAppPreview() {
+//    MyApp { ->
+//        MovieNavigation(noteViewModel)
+//    }
+//}

@@ -8,15 +8,16 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.farasatnovruzov.movieappcompose.screens.details.DetailsScreen
 import com.farasatnovruzov.movieappcompose.screens.home.HomeScreen
+import com.farasatnovruzov.movieappcompose.screens.note.NoteViewModel
 
 @Composable
-fun MovieNavigation(){
+fun MovieNavigation(viewModel: NoteViewModel){
     val navController = rememberNavController()
     NavHost(navController = navController,
         startDestination = MovieScreens.HomeScreen.name){
         composable(MovieScreens.HomeScreen.name){
             //here we pass where this should lead us to
-            HomeScreen(navController = navController)
+            HomeScreen(navController = navController, noteViewModel = viewModel)
         }
         composable(MovieScreens.DetailScreen.name+"/{movie}",
             arguments = listOf(navArgument(name = "movie"){type = NavType.StringType})){ backStackEntry ->

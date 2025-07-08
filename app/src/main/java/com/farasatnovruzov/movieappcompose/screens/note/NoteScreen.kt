@@ -1,8 +1,6 @@
 package com.farasatnovruzov.movieappcompose.screens.note
 
-import android.os.Build
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,16 +36,15 @@ import com.farasatnovruzov.movieappcompose.components.NoteButton
 import com.farasatnovruzov.movieappcompose.components.NoteIntputText
 import com.farasatnovruzov.movieappcompose.data.NotesDataSource
 import com.farasatnovruzov.movieappcompose.model.Note
-import java.time.format.DateTimeFormatter
+import com.farasatnovruzov.movieappcompose.util.formatDate
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteScreen(
     notes: List<Note>,
     onAddNote: (Note) -> Unit = {},
     onRemoveNote: (Note) -> Unit = {}
-){
+) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     val context = LocalContext.current
@@ -64,8 +61,8 @@ fun NoteScreen(
                     contentDescription = "Icon"
                 )
             }, colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color(0xFFA7D7FF),
-                titleContentColor = Color.Black.copy(alpha = 0.87f),
+                containerColor = Color(0xff2e6755),
+//                titleContentColor = Color.Black.copy(alpha = 0.87f),
                 navigationIconContentColor = Color.Black.copy(alpha = 0.87f),
                 actionIconContentColor = Color.Black.copy(alpha = 0.87f)
             )
@@ -109,14 +106,12 @@ fun NoteScreen(
             )
         }
         HorizontalDivider(modifier = Modifier.padding(2.dp))
-        LazyColumn{
-            items(notes) {note->
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    NoteRow(note = note, onNoteClicked = {
-                        onRemoveNote(note)
-                        Toast.makeText(context, "Note Removed", Toast.LENGTH_SHORT).show()
-                    })
-                }
+        LazyColumn {
+            items(notes) { note ->
+                NoteRow(note = note, onNoteClicked = {
+                    onRemoveNote(note)
+                    Toast.makeText(context, "Note Removed", Toast.LENGTH_SHORT).show()
+                })
             }
         }
 
@@ -124,19 +119,21 @@ fun NoteScreen(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun NoteRow(
     modifier: Modifier = Modifier,
     note: Note,
-    onNoteClicked: (Note) -> Unit) {
-    Surface(modifier
-        .padding(2.dp)
-        .fillMaxWidth()
-        .clip(RoundedCornerShape(topEnd = 12.dp, bottomStart = 12.dp)),
-        color = Color(0xFFA7D7FF),
+    onNoteClicked: (Note) -> Unit
+) {
+    Surface(
+        modifier
+            .padding(2.dp)
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(topEnd = 12.dp, bottomStart = 12.dp)),
+        color = Color(0xff2e6755),
         shadowElevation = 4.dp,
-        ){
+    ) {
         Column(
             modifier
                 .clickable { onNoteClicked(note) }
@@ -145,7 +142,7 @@ fun NoteRow(
             Text(text = note.title, style = MaterialTheme.typography.titleMedium)
             Text(text = note.description, style = MaterialTheme.typography.titleSmall)
 //            Text(text = note.entryDate.toString(), style = MaterialTheme.typography.bodySmall)
-            Text(text = note.entryDate.format(DateTimeFormatter.ofPattern("EEE, d MMM")), style = MaterialTheme.typography.bodySmall)
+            Text(text = formatDate(note.entryDate.time), style = MaterialTheme.typography.bodySmall)
 
         }
 
@@ -156,8 +153,6 @@ fun NoteRow(
 
 @Preview(showBackground = true)
 @Composable
-fun NoteScreenPreview(){
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        NoteScreen(notes = NotesDataSource().loadNotes(),onAddNote = {}, onRemoveNote = {})
-    }
+fun NoteScreenPreview() {
+    NoteScreen(notes = NotesDataSource().loadNotes(), onAddNote = {}, onRemoveNote = {})
 }
