@@ -56,45 +56,53 @@ fun MainContent(
     noteViewModel: NoteViewModel
 ) {
     Column {
-        LazyColumn(
-            modifier = Modifier.padding(paddingValues)
-        ) {
-            items(movieList) {
-                MovieRow(movie = it) { movie ->
-                    Log.d("TAG", "MainContent: $movie")
-                    navController.navigate(route = MovieScreens.DetailScreen.name + "/$movie")
-                }
-            }
-        }
+//        LazyColumn(
+//            modifier = Modifier.padding(paddingValues)
+//        ) {
+//            items(movieList) {
+//                MovieRow(movie = it) { movie ->
+//                    Log.d("TAG", "MainContent: $movie")
+//                    navController.navigate(route = MovieScreens.DetailScreen.name + "/$movie")
+//                }
+//            }
+//        }
 
         Surface(color = MaterialTheme.colorScheme.background) {
             //view model different options:
-            NotesApp(noteViewModel = noteViewModel)
+//            NotesApp(noteViewModel = noteViewModel)
+
+            //JetTriviaApp()
+
+
         }
     }
 }
 
 
-@Composable
-fun NotesApp(noteViewModel: NoteViewModel) {
-//        val notes = remember{
-//            mutableStateListOf<Note>()
+
+
+
+
+//@Composable
+//fun NotesApp(noteViewModel: NoteViewModel) {
+////        val notes = remember{
+////            mutableStateListOf<Note>()
+////        }
+//
+////        val notesList = noteViewModel.getAllNotes()
+//    val notesList = noteViewModel.noteList.collectAsState().value
+//    NoteScreen(
+////                    notes = NotesDataSource().loadNotes(),
+//        notes = notesList,
+//        onAddNote = {
+//            noteViewModel.addNote(it)
+//        },
+//        onRemoveNote = {
+//            noteViewModel.removeNote(it)
 //        }
-
-//        val notesList = noteViewModel.getAllNotes()
-    val notesList = noteViewModel.noteList.collectAsState().value
-    NoteScreen(
-//                    notes = NotesDataSource().loadNotes(),
-        notes = notesList,
-        onAddNote = {
-            noteViewModel.addNote(it)
-        },
-        onRemoveNote = {
-            noteViewModel.removeNote(it)
-        }
-    )
-
-}
+//    )
+//
+//}
 
 //@Preview(showBackground = true)
 //@Composable
