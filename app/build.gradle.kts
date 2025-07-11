@@ -129,6 +129,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.play.services)
 
     implementation(libs.retrofit)
+    implementation(libs.converter.gson)
     implementation(libs.gson)
 
 

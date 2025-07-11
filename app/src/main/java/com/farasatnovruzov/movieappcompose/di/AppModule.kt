@@ -4,12 +4,16 @@ import android.content.Context
 import androidx.room.Room
 import com.farasatnovruzov.movieappcompose.data.NoteDatabase
 import com.farasatnovruzov.movieappcompose.data.NoteDatabaseDao
+import com.farasatnovruzov.movieappcompose.network.QuestionApi
+import com.farasatnovruzov.movieappcompose.util.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import retrofit2.Retrofit
 import javax.inject.Singleton
+import retrofit2.converter.gson.GsonConverterFactory
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -28,5 +32,15 @@ object AppModule {
                 NoteDatabase::class.java,
                 "notes_db"
             ).fallbackToDestructiveMigration(false).build()
+
+    @Singleton
+    @Provides
+    fun provideQuestionApi(): QuestionApi {
+        return Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(QuestionApi::class.java)
+    }
 
 }
