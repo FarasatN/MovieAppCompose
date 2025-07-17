@@ -5,6 +5,8 @@ import androidx.room.Room
 import com.farasatnovruzov.movieappcompose.data.NoteDatabase
 import com.farasatnovruzov.movieappcompose.data.NoteDatabaseDao
 import com.farasatnovruzov.movieappcompose.network.QuestionApi
+import com.farasatnovruzov.movieappcompose.repository.NoteRepository
+import com.farasatnovruzov.movieappcompose.repository.QuestionRepository
 import com.farasatnovruzov.movieappcompose.util.Constants
 import dagger.Module
 import dagger.Provides
@@ -42,5 +44,10 @@ object AppModule {
             .build()
             .create(QuestionApi::class.java)
     }
+
+    @Singleton
+    @Provides
+    fun provideQuestionRepository(api: QuestionApi) = QuestionRepository(api)
+
 
 }
