@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import com.farasatnovruzov.movieappcompose.navigation.MovieNavigation
 import com.farasatnovruzov.movieappcompose.screens.note.NoteViewModel
+import com.farasatnovruzov.movieappcompose.screens.questions.QuestionsViewModel
 import com.farasatnovruzov.movieappcompose.ui.theme.MovieAppComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.getValue
@@ -27,8 +28,9 @@ class MainActivity : ComponentActivity() {
             MyApp { ->
 //            val noteViewModel = viewModel<NoteViewModel>()
                 val noteViewModel: NoteViewModel by viewModels()
+                val questionsViewModel: QuestionsViewModel by viewModels()
 
-                MovieNavigation(noteViewModel)
+                MovieNavigation(noteViewModel, questionsViewModel)
 
             }
         }

@@ -132,5 +132,10 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.gson)
 
+//    Example: For Google Mobile Ads (AdMob)
+//    implementation("com.google.android.gms:play-services-ads:22.6.0") // Use the latest version
+
+// Example: For basic Play Services tasks
+//    implementation("com.google.android.gms:play-services-base:18.2.0") // Use the latest version
 
 }
