@@ -29,7 +29,6 @@ class MainActivity : ComponentActivity() {
 //            val noteViewModel = viewModel<NoteViewModel>()
                 val noteViewModel: NoteViewModel by viewModels()
                 val questionsViewModel: QuestionsViewModel by viewModels()
-
                 MovieNavigation(noteViewModel, questionsViewModel)
 
             }

@@ -2,6 +2,7 @@ package com.farasatnovruzov.movieappcompose.screens.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -10,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavController
 import com.farasatnovruzov.movieappcompose.model.Movie
@@ -45,7 +47,7 @@ fun HomeScreen(navController: NavController, noteViewModel: NoteViewModel, quest
             innerPadding,
 //            getMovies(),
 //            noteViewModel,
-//            questionsViewModel
+            questionsViewModel
         )
     }
 }
@@ -56,7 +58,7 @@ fun MainContent(
     paddingValues: PaddingValues,
 //    movieList: List<Movie> = getMovies(),
 //    noteViewModel: NoteViewModel,
-//    questionsViewModel: QuestionsViewModel
+    questionsViewModel: QuestionsViewModel
 ) {
     Column {
 //        LazyColumn(
@@ -71,12 +73,12 @@ fun MainContent(
 //        }
 
 
-        Surface(color = MaterialTheme.colorScheme.background) {
+        Surface(color = MaterialTheme.colorScheme.background,modifier = Modifier.padding(paddingValues)) {
             //view model different options:
 //            NotesApp(noteViewModel = noteViewModel)
 
             TriviaHome(
-//                questionsViewModel = questionsViewModel
+                questionsViewModel
             )
 
 

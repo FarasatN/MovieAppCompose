@@ -1,14 +1,16 @@
 package com.farasatnovruzov.movieappcompose.components
 
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,11 +25,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
@@ -36,6 +38,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -57,8 +60,21 @@ fun Questions(
 
     if (viewModel.data.value.loading == true) {
 //        Log.d("loading", "Loading:  ${viewModel.data.value.loading}")
-        CircularProgressIndicator(modifier = Modifier.size(100.dp))
-//        QuestionDisplay()
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = Color.Transparent
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(60.dp),
+                    color = AppColors.mLightGray,
+//                    strokeWidth = 10.dp
+                )
+            }
+        }
     } else {
 //        questions?.forEach { questionItem ->
 //            Log.d("result", "Questions: ${questionItem.question}")
@@ -73,12 +89,13 @@ fun Questions(
                 question = question!!,
                 questionIndex = questionIndex,
                 viewModel = viewModel
-            ){
+            ) {
                 questionIndex.value = questionIndex.value + 1
             }
         }
     }
 }
+
 
 //@Preview
 @Composable
@@ -119,14 +136,12 @@ fun QuestionDisplay(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
-            Text("DEBUG: TOP OF COLUMN", color = Color.White) // Debug text
+            if (questionIndex.value >= 1) ShowProgress(score = questionIndex.value/viewModel.getTotalQuestionCount())
             QuestionTracker( // Use hardcoded values for extreme simplicity first
-                counter = 1,
-                outOf = 5
+                counter = questionIndex.value,
+                outOf = viewModel.getTotalQuestionCount()
             )
             DrawDottedLine(pathEffect)
-
-            Text("DEBUG: TOP OF COLUMN", color = Color.White) // Debug text
 
             Column {
                 Text(
@@ -138,7 +153,7 @@ fun QuestionDisplay(
                     modifier = Modifier
                         .padding(8.dp)
                         .align(alignment = Alignment.Start)
-//                        .fillMaxHeight(0.3f)
+                        .fillMaxHeight(0.3f)
                 )
 
 
@@ -202,7 +217,7 @@ fun QuestionDisplay(
                     }
                 }
                 Button(
-                    onClick = {onNextClicked(questionIndex.value)},
+                    onClick = { onNextClicked(questionIndex.value) },
                     modifier = Modifier
                         .padding(3.dp)
                         .align(Alignment.CenterHorizontally),
@@ -223,7 +238,7 @@ fun QuestionDisplay(
     }
 }
 
-@Preview
+//@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun QuestionTracker(counter: Int = 10, outOf: Int = 100) {
     Text(
@@ -258,7 +273,7 @@ fun DrawDottedLine(pathEffect: PathEffect) {
     Canvas(
         modifier = Modifier
             .fillMaxWidth()
-            .height(1.dp),
+            .height(3.dp),
         onDraw = {
             drawLine(
                 color = AppColors.mLightGray,
@@ -267,4 +282,78 @@ fun DrawDottedLine(pathEffect: PathEffect) {
                 pathEffect = pathEffect
             )
         })
+}
+
+
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
+fun ShowProgress(score: Int = 12) {
+    val gradient = Brush.linearGradient(
+        listOf(
+            Color(0xFFF95075),
+            Color(0xFFBE6BE5),
+//        Color(0xFF6A1B9A),
+        )
+    )
+    val progressFactor = remember(score) {
+        mutableStateOf(score * 0.005f)
+    }
+    Row(
+        modifier = Modifier
+            .padding(3.dp)
+            .fillMaxWidth()
+            .height(45.dp)
+            .border(
+                width = 4.dp,
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        AppColors.mLightPurple,
+                        AppColors.mLightPurple
+                    )
+                ),
+                shape = RoundedCornerShape(34.dp)
+            )
+            .clip(
+                RoundedCornerShape(
+                    topStartPercent = 50,
+                    topEndPercent = 50,
+                    bottomStartPercent = 50,
+                    bottomEndPercent = 50
+                )
+            )
+            .background(Color.Transparent),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Button(
+            contentPadding = PaddingValues(1.dp),
+            onClick = {},
+            modifier = Modifier
+                .fillMaxWidth(
+//                    progressFactor.value
+                )
+                .background(brush = gradient),
+            enabled = false,
+            elevation = ButtonDefaults.buttonElevation(
+                defaultElevation = 0.dp,
+                pressedElevation = 0.dp
+            ),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Transparent,
+//                contentColor = AppColors.mOffWhite,
+                disabledContainerColor = Color.Transparent
+            )
+
+        ) {
+            Text(
+                text = (score * 10).toString(),
+                modifier = Modifier
+                    .clip(shape = RoundedCornerShape(23.dp))
+                    .fillMaxHeight(0.87f)
+                    .fillMaxWidth()
+                    .padding(6.dp),
+                color = AppColors.mOffWhite,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
 }
