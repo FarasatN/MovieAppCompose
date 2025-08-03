@@ -3,7 +3,6 @@ package com.farasatnovruzov.movieappcompose.components
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,13 +52,11 @@ fun Questions(
     viewModel: QuestionsViewModel
 ) {
     val questions = viewModel.data.value.data?.toMutableList()
-//    Log.d("size", "Questions: ${questions?.size}")
     val questionIndex = remember {
         mutableStateOf(0)
     }
 
     if (viewModel.data.value.loading == true) {
-//        Log.d("loading", "Loading:  ${viewModel.data.value.loading}")
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = Color.Transparent
@@ -71,14 +68,10 @@ fun Questions(
                 CircularProgressIndicator(
                     modifier = Modifier.size(60.dp),
                     color = AppColors.mLightGray,
-//                    strokeWidth = 10.dp
                 )
             }
         }
     } else {
-//        questions?.forEach { questionItem ->
-//            Log.d("result", "Questions: ${questionItem.question}")
-//        }
         val question = try {
             questions?.get(questionIndex.value)
         } catch (ex: Exception) {
@@ -90,18 +83,16 @@ fun Questions(
                 questionIndex = questionIndex,
                 viewModel = viewModel
             ) {
+                // Increment question index
                 questionIndex.value = questionIndex.value + 1
             }
         }
     }
 }
 
-
-//@Preview
 @Composable
 fun QuestionDisplay(
     question: QuestionItem,
-//            = QuestionItem(answer ="4", category ="math", choices = listOf("3", "4", "5"), "2x2=?"),
     questionIndex: MutableState<Int>,
     viewModel: QuestionsViewModel,
     onNextClicked: (Int) -> Unit = {}
@@ -130,15 +121,19 @@ fun QuestionDisplay(
             .padding(4.dp),
         color = AppColors.mDarkPurple
     ) {
-
         Column(
             modifier = Modifier.padding(4.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
-            if (questionIndex.value >= 1) ShowProgress(score = questionIndex.value/viewModel.getTotalQuestionCount())
-            QuestionTracker( // Use hardcoded values for extreme simplicity first
-                counter = questionIndex.value,
+            // Pass the current question number (index + 1) and total questions
+            ShowProgress(
+                score = questionIndex.value + 1,
+                totalQuestions = viewModel.getTotalQuestionCount()
+            )
+
+            QuestionTracker(
+                counter = questionIndex.value + 1, // Display 1-based index
                 outOf = viewModel.getTotalQuestionCount()
             )
             DrawDottedLine(pathEffect)
@@ -156,13 +151,11 @@ fun QuestionDisplay(
                         .fillMaxHeight(0.3f)
                 )
 
-
                 //choices
                 choicesState.forEachIndexed { index, answerText ->
                     Row(
                         modifier = Modifier
                             .background(Color.Transparent)
-//                            .background(Color.DarkGray)
                             .padding(4.dp)
                             .fillMaxWidth()
                             .height(45.dp)
@@ -211,7 +204,6 @@ fun QuestionDisplay(
                         }
                         Text(
                             text = annotatedString,
-//                            color = AppColors.mOffWhite,
                             modifier = Modifier.padding(6.dp)
                         )
                     }
@@ -238,7 +230,6 @@ fun QuestionDisplay(
     }
 }
 
-//@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun QuestionTracker(counter: Int = 10, outOf: Int = 100) {
     Text(
@@ -284,20 +275,29 @@ fun DrawDottedLine(pathEffect: PathEffect) {
         })
 }
 
-
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun ShowProgress(score: Int = 12) {
+fun ShowProgress(score: Int = 7, totalQuestions: Int = 10) { // Add totalQuestions parameter
     val gradient = Brush.linearGradient(
         listOf(
-            Color(0xFFF95075),
-            Color(0xFFBE6BE5),
-//        Color(0xFF6A1B9A),
+            Color(0xfffab075),
+            Color(0xffec67a7),
+            Color(0xffae50d6),
+            Color(0xff8040df),
+            Color(0xff4459d6),
+
         )
     )
-    val progressFactor = remember(score) {
-        mutableStateOf(score * 0.005f)
+
+    // Calculate progressFactor as a float between 0.0f and 1.0f
+    val progressFactor = remember(score, totalQuestions) {
+        if (totalQuestions > 0) {
+            (score.toFloat() / totalQuestions.toFloat())
+        } else {
+            0f // Avoid division by zero
+        }
     }
+
     Row(
         modifier = Modifier
             .padding(3.dp)
@@ -322,15 +322,15 @@ fun ShowProgress(score: Int = 12) {
                 )
             )
             .background(Color.Transparent),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+//        horizontalArrangement = Arrangement.Center
     ) {
+
         Button(
             contentPadding = PaddingValues(1.dp),
             onClick = {},
             modifier = Modifier
-                .fillMaxWidth(
-//                    progressFactor.value
-                )
+                .fillMaxWidth(progressFactor) // UNCOMMENT THIS LINE
                 .background(brush = gradient),
             enabled = false,
             elevation = ButtonDefaults.buttonElevation(
@@ -339,21 +339,22 @@ fun ShowProgress(score: Int = 12) {
             ),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent,
-//                contentColor = AppColors.mOffWhite,
                 disabledContainerColor = Color.Transparent
             )
-
         ) {
-            Text(
-                text = (score * 10).toString(),
-                modifier = Modifier
-                    .clip(shape = RoundedCornerShape(23.dp))
-                    .fillMaxHeight(0.87f)
-                    .fillMaxWidth()
-                    .padding(6.dp),
-                color = AppColors.mOffWhite,
-                textAlign = TextAlign.Center
-            )
+            // Display percentage or current score/total
+
         }
+        Text(
+            text = "${(progressFactor * 100).toDouble()}%", // Display percentage
+            modifier = Modifier
+//                    .clip(shape = RoundedCornerShape(23.dp))
+//                    .fillMaxHeight(0.87f)
+                .fillMaxWidth()
+//                    .padding(6.dp)
+            ,
+            color = AppColors.mOffWhite,
+            textAlign = TextAlign.Center
+        )
     }
 }
