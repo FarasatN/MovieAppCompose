@@ -24,7 +24,9 @@ import com.farasatnovruzov.movieappcompose.screens.questions.TriviaHome
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 
-fun HomeScreen(navController: NavController, noteViewModel: NoteViewModel, questionsViewModel: QuestionsViewModel) {
+fun HomeScreen(navController: NavController,
+//               noteViewModel:NoteViewModel,
+               questionsViewModel: QuestionsViewModel) {
     Scaffold(
         topBar = {
             TopAppBar(

@@ -1,4 +1,4 @@
-package com.farasatnovruzov.movieappcompose.util
+package com.farasatnovruzov.movieappcompose.utils
 
 import java.text.SimpleDateFormat
 import java.util.Date

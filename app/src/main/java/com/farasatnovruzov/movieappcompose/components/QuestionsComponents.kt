@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.farasatnovruzov.movieappcompose.model.QuestionItem
 import com.farasatnovruzov.movieappcompose.screens.questions.QuestionsViewModel
-import com.farasatnovruzov.movieappcompose.util.AppColors
+import com.farasatnovruzov.movieappcompose.utils.AppColors
 
 @Composable
 fun Questions(

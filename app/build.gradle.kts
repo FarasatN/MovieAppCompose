@@ -128,9 +128,15 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.play.services)
 
+    implementation(libs.okhttp)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.gson)
+
+    implementation(libs.lottie.compose)
+//    implementation(libs.lottie.dotlottie)
+    implementation(libs.dotlottie.android)
+// Replace VERSION_NUMBER with the latest stable version
 
 //    Example: For Google Mobile Ads (AdMob)
 //    implementation("com.google.android.gms:play-services-ads:22.6.0") // Use the latest version

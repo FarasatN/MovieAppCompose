@@ -5,9 +5,8 @@ import androidx.room.Room
 import com.farasatnovruzov.movieappcompose.data.NoteDatabase
 import com.farasatnovruzov.movieappcompose.data.NoteDatabaseDao
 import com.farasatnovruzov.movieappcompose.network.QuestionApi
-import com.farasatnovruzov.movieappcompose.repository.NoteRepository
 import com.farasatnovruzov.movieappcompose.repository.QuestionRepository
-import com.farasatnovruzov.movieappcompose.util.Constants
+import com.farasatnovruzov.movieappcompose.utils.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,6 +18,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 @InstallIn(SingletonComponent::class)
 @Module
+//class AppModule {
 object AppModule {
 
     @Singleton

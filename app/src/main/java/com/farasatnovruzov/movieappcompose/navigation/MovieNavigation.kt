@@ -12,17 +12,30 @@ import com.farasatnovruzov.movieappcompose.screens.note.NoteViewModel
 import com.farasatnovruzov.movieappcompose.screens.questions.QuestionsViewModel
 
 @Composable
-fun MovieNavigation(noteViewModel: NoteViewModel, questionsViewModel: QuestionsViewModel){
+fun MovieNavigation(
+//    noteViewModel: NoteViewModel,
+    questionsViewModel: QuestionsViewModel) {
     val navController = rememberNavController()
-    NavHost(navController = navController,
-        startDestination = MovieScreens.HomeScreen.name){
-        composable(MovieScreens.HomeScreen.name){
+    NavHost(
+        navController = navController,
+        startDestination = MovieScreens.HomeScreen.name
+    ) {
+        composable(MovieScreens.HomeScreen.name) {
             //here we pass where this should lead us to
-            HomeScreen(navController = navController, noteViewModel = noteViewModel, questionsViewModel = questionsViewModel)
+            HomeScreen(
+                navController = navController,
+//                noteViewModel = noteViewModel,
+                questionsViewModel = questionsViewModel
+            )
         }
-        composable(MovieScreens.DetailScreen.name+"/{movie}",
-            arguments = listOf(navArgument(name = "movie"){type = NavType.StringType})){ backStackEntry ->
-            DetailsScreen(navController = navController,backStackEntry.arguments?.getString("movie"))
+        composable(
+            MovieScreens.DetailScreen.name + "/{movie}",
+            arguments = listOf(navArgument(name = "movie") { type = NavType.StringType })
+        ) { backStackEntry ->
+            DetailsScreen(
+                navController = navController,
+                backStackEntry.arguments?.getString("movie")
+            )
         }
     }
 }

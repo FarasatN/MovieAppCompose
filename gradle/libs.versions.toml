@@ -2,6 +2,7 @@
 agp = "8.11.0"
 coilCompose = "3.2.0"
 converterGson = "3.0.0"
+dotlottieAndroid = "0.9.2"
 gson = "2.13.1"
 hiltNavigationCompose = "1.2.0"
 kotlin = "2.2.0"
@@ -16,8 +17,11 @@ lifecycleRuntimeKtx = "2.9.1"
 activityCompose = "1.10.1"
 composeBom = "2025.06.01"
 lifecycleViewmodelCompose = "2.9.1"
+lottieCompose = "6.6.7"
+lottieDotlottie = "6.4.1"
 navigationCompose = "2.9.1"
 navigationRuntimeAndroid = "2.9.1"
+okhttp = "5.1.0"
 retrofit = "3.0.0"
 room = "2.7.2" # Or the latest version
 roomCompiler = "2.7.2"
@@ -41,6 +45,7 @@ coil-network-ktor2 = { module = "io.coil-kt.coil3:coil-network-ktor2", version.r
 coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coilCompose" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+dotlottie-android = { module = "com.github.LottieFiles:dotlottie-android", version.ref = "dotlottieAndroid" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -61,6 +66,9 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler" , version.
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServices" }
+lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
+lottie-dotlottie = { module = "com.airbnb.android:lottie-dotlottie", version.ref = "lottieDotlottie" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 
 

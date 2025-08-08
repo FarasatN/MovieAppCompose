@@ -1,4 +1,4 @@
-package com.farasatnovruzov.movieappcompose.util
+package com.farasatnovruzov.movieappcompose.utils
 
 import androidx.room.TypeConverter
 import java.util.Date

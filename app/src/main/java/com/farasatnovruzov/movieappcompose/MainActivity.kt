@@ -1,22 +1,20 @@
 package com.farasatnovruzov.movieappcompose
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.tooling.preview.Preview
-import com.farasatnovruzov.movieappcompose.navigation.MovieNavigation
-import com.farasatnovruzov.movieappcompose.screens.note.NoteViewModel
-import com.farasatnovruzov.movieappcompose.screens.questions.QuestionsViewModel
-import com.farasatnovruzov.movieappcompose.ui.theme.MovieAppComposeTheme
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import com.farasatnovruzov.movieappcompose.navigation.WeatherNavigation
+import com.farasatnovruzov.movieappcompose.ui.theme.WeatherAppComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.getValue
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -25,24 +23,51 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MyApp { ->
-//            val noteViewModel = viewModel<NoteViewModel>()
-                val noteViewModel: NoteViewModel by viewModels()
-                val questionsViewModel: QuestionsViewModel by viewModels()
-                MovieNavigation(noteViewModel, questionsViewModel)
+//            MyApp { ->
+////            val noteViewModel = viewModel<NoteViewModel>()
+////                val noteViewModel: NoteViewModel by viewModels()
+//                val questionsViewModel: QuestionsViewModel by viewModels()
+//                MovieNavigation(
+////                    noteViewModel,
+//                    questionsViewModel)
+//
+//            }
 
-            }
+            //---------------------------------------------------
+            //Weather App
+            WeatherApp()
         }
     }
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MyApp(content: @Composable () -> Unit) {
-    MovieAppComposeTheme {
-        content()
+fun WeatherApp(){
+    WeatherAppComposeTheme {
+        Surface(color = MaterialTheme.colorScheme.background,
+            modifier = Modifier
+                .fillMaxSize()) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                WeatherNavigation()
+            }
+
+        }
     }
+
+
 }
+
+//@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+//@Composable
+//fun MyApp(content: @Composable () -> Unit) {
+//    MovieAppComposeTheme {
+//        content()
+//    }
+//}
+
+
+
 
 //@Preview(showBackground = true)
 //@Composable

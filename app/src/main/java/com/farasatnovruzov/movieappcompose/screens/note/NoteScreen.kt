@@ -36,7 +36,7 @@ import com.farasatnovruzov.movieappcompose.components.NoteButton
 import com.farasatnovruzov.movieappcompose.components.NoteIntputText
 import com.farasatnovruzov.movieappcompose.data.NotesDataSource
 import com.farasatnovruzov.movieappcompose.model.Note
-import com.farasatnovruzov.movieappcompose.util.formatDate
+import com.farasatnovruzov.movieappcompose.utils.formatDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -1,4 +1,4 @@
-package com.farasatnovruzov.movieappcompose.util
+package com.farasatnovruzov.movieappcompose.utils
 
 object Constants
 {
