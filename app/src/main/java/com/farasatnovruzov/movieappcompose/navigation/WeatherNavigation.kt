@@ -7,10 +7,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.farasatnovruzov.movieappcompose.screens.weather.AboutScreen
 import com.farasatnovruzov.movieappcompose.screens.weather.FavoritesScreen
-import com.farasatnovruzov.movieappcompose.screens.weather.MainScreen
+import com.farasatnovruzov.movieappcompose.screens.weather.main.MainScreen
 import com.farasatnovruzov.movieappcompose.screens.weather.SearchScreen
 import com.farasatnovruzov.movieappcompose.screens.weather.SettingsScreen
-import com.farasatnovruzov.movieappcompose.screens.weather.WeatherSplashScreen
+import com.farasatnovruzov.movieappcompose.screens.weather.splash.WeatherSplashScreen
 
 @Preview(showBackground = true)
 @Composable
