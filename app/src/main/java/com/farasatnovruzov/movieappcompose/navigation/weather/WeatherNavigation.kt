@@ -1,7 +1,8 @@
-package com.farasatnovruzov.movieappcompose.navigation
+package com.farasatnovruzov.movieappcompose.navigation.weather
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -10,6 +11,7 @@ import com.farasatnovruzov.movieappcompose.screens.weather.FavoritesScreen
 import com.farasatnovruzov.movieappcompose.screens.weather.main.MainScreen
 import com.farasatnovruzov.movieappcompose.screens.weather.SearchScreen
 import com.farasatnovruzov.movieappcompose.screens.weather.SettingsScreen
+import com.farasatnovruzov.movieappcompose.screens.weather.main.MainViewModel
 import com.farasatnovruzov.movieappcompose.screens.weather.splash.WeatherSplashScreen
 
 @Preview(showBackground = true)
@@ -21,7 +23,8 @@ fun WeatherNavigation() {
             WeatherSplashScreen(navController = navController)
         }
         composable(WeatherScreens.MainScreen.name) {
-            MainScreen(navController = navController)
+            val mainViewModel = hiltViewModel<MainViewModel>()
+            MainScreen(navController = navController, mainViewModel)
         }
         composable(WeatherScreens.AboutScreen.name) {
             AboutScreen(navController = navController)

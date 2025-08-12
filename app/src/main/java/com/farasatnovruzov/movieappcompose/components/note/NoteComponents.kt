@@ -1,4 +1,4 @@
-package com.farasatnovruzov.movieappcompose.components
+package com.farasatnovruzov.movieappcompose.components.note
 
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions

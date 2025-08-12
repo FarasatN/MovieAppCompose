@@ -1,4 +1,4 @@
-package com.farasatnovruzov.movieappcompose.components
+package com.farasatnovruzov.movieappcompose.components.question
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
@@ -43,7 +44,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.farasatnovruzov.movieappcompose.model.QuestionItem
+import com.farasatnovruzov.movieappcompose.model.question.QuestionItem
 import com.farasatnovruzov.movieappcompose.screens.questions.QuestionsViewModel
 import com.farasatnovruzov.movieappcompose.utils.AppColors
 
@@ -238,7 +239,7 @@ fun QuestionTracker(counter: Int = 10, outOf: Int = 100) {
                 withStyle(
                     style = SpanStyle(
                         color = AppColors.mLightGray,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = Bold,
                         fontSize = 27.sp
                     )
                 ) {
@@ -268,8 +269,8 @@ fun DrawDottedLine(pathEffect: PathEffect) {
         onDraw = {
             drawLine(
                 color = AppColors.mLightGray,
-                start = androidx.compose.ui.geometry.Offset(0f, 0f),
-                end = androidx.compose.ui.geometry.Offset(size.width, 0f),
+                start = Offset(0f, 0f),
+                end = Offset(size.width, 0f),
                 pathEffect = pathEffect
             )
         })

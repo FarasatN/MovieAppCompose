@@ -1,7 +1,7 @@
-package com.farasatnovruzov.movieappcompose.repository
+package com.farasatnovruzov.movieappcompose.repository.note
 
-import com.farasatnovruzov.movieappcompose.data.NoteDatabaseDao
-import com.farasatnovruzov.movieappcompose.model.Note
+import com.farasatnovruzov.movieappcompose.data.note.NoteDatabaseDao
+import com.farasatnovruzov.movieappcompose.model.note.Note
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

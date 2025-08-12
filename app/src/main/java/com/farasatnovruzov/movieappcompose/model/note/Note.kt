@@ -1,11 +1,10 @@
-package com.farasatnovruzov.movieappcompose.model
+package com.farasatnovruzov.movieappcompose.model.note
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.Date
 import java.util.UUID
-
 
 @Entity(tableName = "notes_tbl")
 data class Note(

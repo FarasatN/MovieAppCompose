@@ -28,7 +28,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.farasatnovruzov.movieappcompose.R
-import com.farasatnovruzov.movieappcompose.navigation.WeatherScreens
+import com.farasatnovruzov.movieappcompose.navigation.weather.WeatherScreens
 import kotlinx.coroutines.delay
 
 //@Preview(showBackground = true)

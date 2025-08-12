@@ -1,10 +1,9 @@
-package com.farasatnovruzov.movieappcompose.repository
+package com.farasatnovruzov.movieappcompose.repository.question
 
-import android.content.ContentValues.TAG
 import android.util.Log
 import com.farasatnovruzov.movieappcompose.data.DataOrException
-import com.farasatnovruzov.movieappcompose.model.QuestionItem
-import com.farasatnovruzov.movieappcompose.network.QuestionApi
+import com.farasatnovruzov.movieappcompose.model.question.QuestionItem
+import com.farasatnovruzov.movieappcompose.network.question.QuestionApi
 import javax.inject.Inject
 
 class QuestionRepository @Inject constructor(private val questionApi: QuestionApi) {

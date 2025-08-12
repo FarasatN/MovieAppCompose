@@ -1,13 +1,12 @@
-package com.farasatnovruzov.movieappcompose.data
+package com.farasatnovruzov.movieappcompose.data.note
 
-import androidx.compose.runtime.MutableState
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.farasatnovruzov.movieappcompose.model.Note
+import com.farasatnovruzov.movieappcompose.model.note.Note
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 

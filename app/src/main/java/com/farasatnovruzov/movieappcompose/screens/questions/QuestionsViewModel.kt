@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.farasatnovruzov.movieappcompose.data.DataOrException
-import com.farasatnovruzov.movieappcompose.model.QuestionItem
-import com.farasatnovruzov.movieappcompose.repository.QuestionRepository
+import com.farasatnovruzov.movieappcompose.model.question.QuestionItem
+import com.farasatnovruzov.movieappcompose.repository.question.QuestionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

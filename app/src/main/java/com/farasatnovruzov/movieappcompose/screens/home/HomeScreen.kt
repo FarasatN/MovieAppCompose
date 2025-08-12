@@ -14,9 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavController
-import com.farasatnovruzov.movieappcompose.model.Movie
-import com.farasatnovruzov.movieappcompose.model.getMovies
-import com.farasatnovruzov.movieappcompose.screens.note.NoteViewModel
 import com.farasatnovruzov.movieappcompose.screens.questions.QuestionsViewModel
 import com.farasatnovruzov.movieappcompose.screens.questions.TriviaHome
 

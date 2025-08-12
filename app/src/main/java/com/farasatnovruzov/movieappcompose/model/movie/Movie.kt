@@ -1,4 +1,4 @@
-package com.farasatnovruzov.movieappcompose.model
+package com.farasatnovruzov.movieappcompose.model.movie
 
 data class Movie(
     val id: String,

@@ -16,7 +16,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -42,12 +41,13 @@ import coil3.request.ImageRequest.Builder
 import coil3.request.crossfade
 import coil3.request.transformations
 import coil3.transform.CircleCropTransformation
-import com.farasatnovruzov.movieappcompose.model.getMovies
+import com.farasatnovruzov.movieappcompose.model.movie.Movie
+import com.farasatnovruzov.movieappcompose.model.movie.getMovies
 
 @Preview
 @Composable
 fun MovieRow(
-    movie: com.farasatnovruzov.movieappcompose.model.Movie = getMovies()[0],
+    movie: Movie = getMovies()[0],
     onItemClick: (String) -> Unit = {}
 ) {
     val expanded = remember { mutableStateOf(false) }

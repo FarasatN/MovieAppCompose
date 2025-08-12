@@ -1,8 +1,8 @@
-package com.farasatnovruzov.movieappcompose.data
+package com.farasatnovruzov.movieappcompose.data.note
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.farasatnovruzov.movieappcompose.model.Note
+import com.farasatnovruzov.movieappcompose.model.note.Note
 
 class NotesDataSource{
     @RequiresApi(Build.VERSION_CODES.O)

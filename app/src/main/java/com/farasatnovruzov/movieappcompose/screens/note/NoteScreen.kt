@@ -32,10 +32,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.farasatnovruzov.movieappcompose.R
-import com.farasatnovruzov.movieappcompose.components.NoteButton
-import com.farasatnovruzov.movieappcompose.components.NoteIntputText
-import com.farasatnovruzov.movieappcompose.data.NotesDataSource
-import com.farasatnovruzov.movieappcompose.model.Note
+import com.farasatnovruzov.movieappcompose.components.note.NoteButton
+import com.farasatnovruzov.movieappcompose.components.note.NoteIntputText
+import com.farasatnovruzov.movieappcompose.data.note.NotesDataSource
+import com.farasatnovruzov.movieappcompose.model.note.Note
 import com.farasatnovruzov.movieappcompose.utils.formatDate
 
 @OptIn(ExperimentalMaterial3Api::class)

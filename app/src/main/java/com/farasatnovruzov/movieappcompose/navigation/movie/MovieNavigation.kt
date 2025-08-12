@@ -1,4 +1,4 @@
-package com.farasatnovruzov.movieappcompose.navigation
+package com.farasatnovruzov.movieappcompose.navigation.movie
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
@@ -8,7 +8,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.farasatnovruzov.movieappcompose.screens.details.DetailsScreen
 import com.farasatnovruzov.movieappcompose.screens.home.HomeScreen
-import com.farasatnovruzov.movieappcompose.screens.note.NoteViewModel
 import com.farasatnovruzov.movieappcompose.screens.questions.QuestionsViewModel
 
 @Composable

@@ -1,4 +1,4 @@
-package com.farasatnovruzov.movieappcompose.navigation
+package com.farasatnovruzov.movieappcompose.navigation.movie
 
 //www.google.com/sign_in
 enum class MovieScreens {

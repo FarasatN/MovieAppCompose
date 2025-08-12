@@ -3,8 +3,8 @@ package com.farasatnovruzov.movieappcompose.screens.note
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.farasatnovruzov.movieappcompose.model.Note
-import com.farasatnovruzov.movieappcompose.repository.NoteRepository
+import com.farasatnovruzov.movieappcompose.model.note.Note
+import com.farasatnovruzov.movieappcompose.repository.note.NoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

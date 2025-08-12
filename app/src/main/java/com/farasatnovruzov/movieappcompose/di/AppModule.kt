@@ -2,10 +2,11 @@ package com.farasatnovruzov.movieappcompose.di
 
 import android.content.Context
 import androidx.room.Room
-import com.farasatnovruzov.movieappcompose.data.NoteDatabase
-import com.farasatnovruzov.movieappcompose.data.NoteDatabaseDao
-import com.farasatnovruzov.movieappcompose.network.QuestionApi
-import com.farasatnovruzov.movieappcompose.repository.QuestionRepository
+import com.farasatnovruzov.movieappcompose.data.note.NoteDatabase
+import com.farasatnovruzov.movieappcompose.data.note.NoteDatabaseDao
+import com.farasatnovruzov.movieappcompose.network.question.QuestionApi
+import com.farasatnovruzov.movieappcompose.network.weather.WeatherApi
+import com.farasatnovruzov.movieappcompose.repository.question.QuestionRepository
 import com.farasatnovruzov.movieappcompose.utils.Constants
 import dagger.Module
 import dagger.Provides
@@ -19,15 +20,30 @@ import retrofit2.converter.gson.GsonConverterFactory
 @InstallIn(SingletonComponent::class)
 @Module
 //class AppModule {
-object AppModule {
+object AppModule { //hilt best practice used with "object"
 
-    @Singleton
+    //Weather
     @Provides
+    @Singleton
+    fun provideOpenWeatherApi(): WeatherApi {
+        return Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL_WEATHER)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(WeatherApi::class.java)
+    }
+
+
+
+
+    //Note
+    @Provides
+    @Singleton
     fun provideNotesDao(noteDatabase: NoteDatabase): NoteDatabaseDao=
         noteDatabase.noteDao()
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context): NoteDatabase=
         Room.databaseBuilder(
                 context,
@@ -35,8 +51,10 @@ object AppModule {
                 "notes_db"
             ).fallbackToDestructiveMigration(false).build()
 
-    @Singleton
+
+    //Trivia
     @Provides
+    @Singleton
     fun provideQuestionApi(): QuestionApi {
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
@@ -45,8 +63,8 @@ object AppModule {
             .create(QuestionApi::class.java)
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideQuestionRepository(api: QuestionApi) = QuestionRepository(api)
 
 

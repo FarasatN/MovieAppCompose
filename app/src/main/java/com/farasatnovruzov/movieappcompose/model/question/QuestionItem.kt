@@ -1,4 +1,4 @@
-package com.farasatnovruzov.movieappcompose.model
+package com.farasatnovruzov.movieappcompose.model.question
 
 data class QuestionItem(
     val answer: String,

@@ -1,4 +1,4 @@
-package com.farasatnovruzov.movieappcompose.navigation
+package com.farasatnovruzov.movieappcompose.navigation.weather
 
 enum class WeatherScreens {
     SplashScreen,
