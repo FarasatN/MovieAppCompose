@@ -3,4 +3,5 @@
     <string name="app_name2">Weather App</string>
     <string name="notes">Notes</string>
     <string name="trivia">Trivia</string>
+    <string name="weather">Weather</string>
 </resources>

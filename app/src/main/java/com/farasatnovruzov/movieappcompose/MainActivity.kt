@@ -12,6 +12,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.core.view.WindowCompat
 import com.farasatnovruzov.movieappcompose.navigation.weather.WeatherNavigation
 import com.farasatnovruzov.movieappcompose.ui.theme.WeatherAppComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,7 +45,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun WeatherApp(){
     WeatherAppComposeTheme {
-        Surface(color = MaterialTheme.colorScheme.background,
+        Surface(
+            color = MaterialTheme.colorScheme.background,
             modifier = Modifier
                 .fillMaxSize()) {
             Column(
@@ -51,12 +54,13 @@ fun WeatherApp(){
                 horizontalAlignment = Alignment.CenterHorizontally) {
                 WeatherNavigation()
             }
-
         }
     }
 
 
 }
+
+
 
 //@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 //@Composable

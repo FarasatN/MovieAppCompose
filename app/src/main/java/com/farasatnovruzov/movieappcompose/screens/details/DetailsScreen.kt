@@ -35,7 +35,7 @@ import coil3.request.ImageRequest.Builder
 import coil3.request.crossfade
 import com.farasatnovruzov.movieappcompose.model.movie.Movie
 import com.farasatnovruzov.movieappcompose.model.movie.getMovies
-import com.farasatnovruzov.movieappcompose.widgets.MovieRow
+import com.farasatnovruzov.movieappcompose.widgets.movie.MovieRow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -1,15 +1,10 @@
 package com.farasatnovruzov.movieappcompose.screens.weather.main
 
-import android.util.Log
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.farasatnovruzov.movieappcompose.data.DataOrException
 import com.farasatnovruzov.movieappcompose.model.weather.Weather
 import com.farasatnovruzov.movieappcompose.repository.weather.WeatherRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -17,7 +12,6 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(private val repository: WeatherRepository): ViewModel() {
     suspend fun getWeatherData(city: String): DataOrException<Weather, Boolean, Exception> {
         return repository.getWeather(cityQuery = city)
-
     }
 
 
@@ -43,4 +37,5 @@ class MainViewModel @Inject constructor(private val repository: WeatherRepositor
 //        Log.d("GET", "getWeather: ${data.value.data.toString()}")
 //
 //    }
+
 }

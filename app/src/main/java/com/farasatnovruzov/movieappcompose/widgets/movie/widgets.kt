@@ -1,4 +1,4 @@
-package com.farasatnovruzov.movieappcompose.widgets
+package com.farasatnovruzov.movieappcompose.widgets.movie
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
