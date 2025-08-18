@@ -1,19 +1,23 @@
 package com.farasatnovruzov.movieappcompose.screens.weather.main
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Compress
+import androidx.compose.material.icons.filled.WaterDrop
+import androidx.compose.material.icons.filled.WindPower
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -22,21 +26,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
-import coil3.request.ImageRequest
-import coil3.request.crossfade
 import com.farasatnovruzov.movieappcompose.data.DataOrException
 import com.farasatnovruzov.movieappcompose.model.weather.Weather
+import com.farasatnovruzov.movieappcompose.model.weather.WeatherItem
 import com.farasatnovruzov.movieappcompose.utils.fahrenheitToCelsius
 import com.farasatnovruzov.movieappcompose.utils.formatDate
 import com.farasatnovruzov.movieappcompose.widgets.weather.WeatherAppBar
@@ -109,7 +108,7 @@ fun MainContent(data: Weather, paddingValues: PaddingValues = PaddingValues()) {
             ) {
                 WeatherStateImage(imageUrl = imageUrl)
                 Text(
-                    text = fahrenheitToCelsius(data.list[0].temp.day)+"°",
+                    text = fahrenheitToCelsius(data.list[0].temp.day) + "°",
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.ExtraBold
                 )
@@ -120,8 +119,59 @@ fun MainContent(data: Weather, paddingValues: PaddingValues = PaddingValues()) {
 
             }
         }
+        HumidityWindPressureRow(weather = data.list[0])
+        HorizontalDivider()
     }
+
 }
+
+@Composable
+fun HumidityWindPressureRow(weather: WeatherItem) {
+    Row(
+        modifier = Modifier
+            .padding(12.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(modifier = Modifier.padding(4.dp)) {
+            Icon(
+                imageVector = Icons.Default.WaterDrop,
+                contentDescription = "Humidity Icon",
+                modifier = Modifier.size(20.dp)
+            )
+            Text(
+                text = "${weather.humidity}%",
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+        Row(modifier = Modifier.padding(4.dp)) {
+            Icon(
+                imageVector = Icons.Default.Compress,
+                contentDescription = "Pressure Icon",
+                modifier = Modifier.size(20.dp)
+            )
+            Text(
+                text = "${weather.pressure} psi",
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+        Row(modifier = Modifier.padding(4.dp)) {
+            Icon(
+                imageVector = Icons.Default.WindPower,
+                contentDescription = "Wind Icon",
+                modifier = Modifier.size(20.dp)
+            )
+            Text(
+                text = "${weather.speed} mph",
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+
+    }
+
+}
+
 
 @Composable
 fun WeatherStateImage(
