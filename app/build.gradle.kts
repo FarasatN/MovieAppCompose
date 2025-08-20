@@ -145,5 +145,5 @@ dependencies {
 //    implementation("com.google.android.gms:play-services-base:18.2.0") // Use the latest version
 
 
-    implementation("androidx.compose.material:material-icons-extended")
+    implementation(libs.androidx.material.icons.extended)
 }
