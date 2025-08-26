@@ -6,6 +6,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,8 +35,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -48,6 +51,8 @@ import com.farasatnovruzov.movieappcompose.model.weather.WeatherItem
 import com.farasatnovruzov.movieappcompose.ui.theme.SkyBlue
 import com.farasatnovruzov.movieappcompose.utils.fahrenheitToCelsius
 import com.farasatnovruzov.movieappcompose.utils.formatDate
+import kotlin.math.max
+import kotlin.math.min
 
 
 @Composable
@@ -88,7 +93,7 @@ fun SunsetSunRiseRow(data: Weather) {
     }
 
     Text(
-        "This Week",
+        "Today",
         style = MaterialTheme.typography.headlineSmall,
         fontWeight = FontWeight.Bold
     )
@@ -126,7 +131,17 @@ enum class WeatherType {
 @Composable
 fun WeatherDetailRow(weatherItem: WeatherItem) {
     val animatedBrush = GetWeatherAnimatedBrush(weatherItem)
-
+// Determine the weather type to pass to the particle system
+    val weatherType = when (weatherItem.weather[0].main) {
+        "Clear" -> WeatherType.Clear
+        "Clouds" -> WeatherType.Clouds
+        "Rain" -> WeatherType.Rain
+        "Snow" -> WeatherType.Snow
+        "Thunderstorm" -> WeatherType.Thunderstorm
+        "Drizzle" -> WeatherType.Drizzle
+        "Fog" -> WeatherType.Fogg
+        else -> WeatherType.Unknown
+    }
     Surface(
         modifier = Modifier
             .padding(3.dp)
@@ -135,19 +150,36 @@ fun WeatherDetailRow(weatherItem: WeatherItem) {
         color = Color.Transparent,
         shadowElevation = 1.dp
     ) {
+
         Box(
             modifier = Modifier
 //                .fillMaxWidth()
                 .fillMaxSize()
                 .background(animatedBrush)
-        ) {
+        )
+        {
+//            for (i in 0 until 20) {
+//                Raindrop(
+//                    modifier = Modifier
+//                        .offset(
+//                            x = (i * 50).dp,
+//                            y = (i * 10).dp
+//                        )
+////                    .size(4.dp, 100.dp)
+//                    .fillMaxSize()
+//                        .rotate(15f) // Angle for rainfall
+//                )
+//            }
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+            )
+            {
                 Text(
-                    text = formatDate(weatherItem.dt.toLong()).split(",")[0],
+//                    text = formatDate(weatherItem.dt.toLong()).split(",")[0],
+                    text = formatDate(weatherItem.dt.toLong()),
                     modifier = Modifier.padding(start = 5.dp)
                 )
                 WeatherStateImage(
@@ -208,7 +240,6 @@ fun WeatherStateImage(todayImageUrl: String, size: Dp = 120.dp) {
     )
 }
 
-
 @Composable
 fun HumidityWindPressureRow(weather: WeatherItem) {
     Row(
@@ -255,8 +286,7 @@ fun HumidityWindPressureRow(weather: WeatherItem) {
 }
 
 
-//============================
-
+//=========================================================================================
 fun getGradientColors(targetState: WeatherType): List<Color> {
     return when (targetState) {
         WeatherType.Clear -> listOf(
@@ -268,7 +298,7 @@ fun getGradientColors(targetState: WeatherType): List<Color> {
         WeatherType.Rain -> listOf(
             Color(0xFFB3CDE0), // soft rain blue
             Color(0xFF90AFC5), // mid rain blue-gray
-            Color(0xFF5D6D7E)  // shadow rain
+            Color(0xff6b87a1)  // shadow rain
         )
 
         WeatherType.Clouds -> listOf(
@@ -345,4 +375,52 @@ fun GetWeatherAnimatedBrush(weatherItem: WeatherItem): Brush {
         startX = -1000f + offset,
         endX = offset
     )
+}
+
+
+//############################################################################################
+@Composable
+fun Raindrop(modifier: Modifier = Modifier) {
+    // Infinite animation for continuous movement
+    val infiniteTransition = rememberInfiniteTransition()
+    val animateState by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            tween(durationMillis = 1000, easing = LinearEasing),
+            RepeatMode.Restart
+        )
+    )
+
+    Canvas(modifier = modifier) {
+        val width = size.width
+        val height = size.height
+        val centerX = size.width / 2
+
+        // Calculate positions based on animation state
+        val scopeHeight = height - width / 2
+        val space = height / 2.2f + width / 2
+        val spacePos = scopeHeight * animateState
+        val sy1 = spacePos - space / 2
+        val sy2 = spacePos + space / 2
+        val lineHeight = scopeHeight - space
+
+        // Draw first line segment
+        drawLine(
+            color = Color.White,
+            start = Offset(centerX, max(0f, sy1 - lineHeight)),
+            end = Offset(centerX, max(0f, sy1)),
+            strokeWidth = width,
+            cap = StrokeCap.Round
+        )
+
+        // Draw second line segment
+        drawLine(
+            color = Color.White,
+            start = Offset(centerX, min(sy2, scopeHeight)),
+            end = Offset(centerX, min(sy2 + lineHeight, scopeHeight)),
+            strokeWidth = width,
+            cap = StrokeCap.Round
+        )
+    }
 }

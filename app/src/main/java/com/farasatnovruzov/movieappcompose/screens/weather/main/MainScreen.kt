@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -30,7 +28,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.farasatnovruzov.movieappcompose.data.DataOrException
 import com.farasatnovruzov.movieappcompose.model.weather.Weather
-import com.farasatnovruzov.movieappcompose.ui.theme.SkyBlue
+import com.farasatnovruzov.movieappcompose.navigation.weather.WeatherScreens
 import com.farasatnovruzov.movieappcompose.utils.fahrenheitToCelsius
 import com.farasatnovruzov.movieappcompose.utils.formatDate
 import com.farasatnovruzov.movieappcompose.widgets.weather.GetWeatherAnimatedBrush
@@ -40,11 +38,12 @@ import com.farasatnovruzov.movieappcompose.widgets.weather.WeatherAppBar
 import com.farasatnovruzov.movieappcompose.widgets.weather.WeatherStateImage
 
 @Composable
-fun MainScreen(navController: NavController, mainViewModel: MainViewModel = hiltViewModel()) {
+fun MainScreen(navController: NavController, mainViewModel: MainViewModel = hiltViewModel(), city: String?) {
     val weatherData = produceState(
         initialValue = DataOrException(loading = true)
     ) {
-        value = mainViewModel.getWeatherData("Helsinki")
+//        value = mainViewModel.getWeatherData("Melbourne")
+        value = mainViewModel.getWeatherData(city = city ?: "Baku")
 //        value = mainViewModel.data.value
     }.value
 
@@ -62,12 +61,14 @@ fun MainScaffold(weather: Weather, navController: NavController) {
     Scaffold(topBar = {
         WeatherAppBar(
             title = weather.city.name + ",${weather.city.country}",
-            icon = Icons.AutoMirrored.Filled.ArrowBack,
+//            icon = Icons.AutoMirrored.Filled.ArrowBack,
             elevation = 25.dp,
             padding = 0.dp,
-        ) {
-            navController.popBackStack()
-        }
+            onAddActionClicked = {
+                navController.navigate(WeatherScreens.SearchScreen.name)
+            },
+            navController = navController
+        )
     }) { paddingValues ->
         MainContent(data = weather, paddingValues)
     }

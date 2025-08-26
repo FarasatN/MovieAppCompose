@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.airbnb.lottie.compose.LottieAnimatable
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionResult
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -36,6 +37,7 @@ import kotlinx.coroutines.delay
 fun WeatherSplashScreen(
     navController: NavController,
 ) {
+    val defaultCity = "Baku"
     val scale = remember {
         Animatable(0f)
     }
@@ -47,7 +49,7 @@ fun WeatherSplashScreen(
             })
         )
         delay(3000L)
-        navController.navigate(WeatherScreens.MainScreen.name)
+        navController.navigate(WeatherScreens.MainScreen.name + "/$defaultCity")
     })
 
     Surface(
@@ -99,6 +101,6 @@ fun LottieAnimationLoader(
     )
     LottieAnimation(
         composition = compositeResult.value,
-        progress = progressAnimation.progress
+        progress = progressAnimation.progress,
     )
 }
