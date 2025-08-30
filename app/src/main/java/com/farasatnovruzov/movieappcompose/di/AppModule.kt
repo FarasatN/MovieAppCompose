@@ -2,8 +2,10 @@ package com.farasatnovruzov.movieappcompose.di
 
 import android.content.Context
 import androidx.room.Room
+import com.farasatnovruzov.movieappcompose.data.WeatherDatabase
 import com.farasatnovruzov.movieappcompose.data.note.NoteDatabase
 import com.farasatnovruzov.movieappcompose.data.note.NoteDatabaseDao
+import com.farasatnovruzov.movieappcompose.data.weather.WeatherDao
 import com.farasatnovruzov.movieappcompose.network.question.QuestionApi
 import com.farasatnovruzov.movieappcompose.network.weather.WeatherApi
 import com.farasatnovruzov.movieappcompose.repository.question.QuestionRepository
@@ -33,6 +35,18 @@ object AppModule { //hilt best practice used with "object"
             .create(WeatherApi::class.java)
     }
 
+    @Provides
+    @Singleton
+    fun provideWeatherDao(weatherDatabase: WeatherDatabase): WeatherDao = weatherDatabase.weatherDao()
+
+    @Provides
+    @Singleton
+    fun provideWeatherAppDatabase(@ApplicationContext context: Context): WeatherDatabase =
+        Room.databaseBuilder(
+            context,
+            WeatherDatabase::class.java,
+            "weather_db"
+        ).fallbackToDestructiveMigration(false).build()
 
 
 
@@ -44,7 +58,7 @@ object AppModule { //hilt best practice used with "object"
 
     @Provides
     @Singleton
-    fun provideAppDatabase(@ApplicationContext context: Context): NoteDatabase=
+    fun provideNoteAppDatabase(@ApplicationContext context: Context): NoteDatabase=
         Room.databaseBuilder(
                 context,
                 NoteDatabase::class.java,

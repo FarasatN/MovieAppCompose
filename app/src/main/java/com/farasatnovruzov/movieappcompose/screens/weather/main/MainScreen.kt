@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.farasatnovruzov.movieappcompose.data.DataOrException
-import com.farasatnovruzov.movieappcompose.model.weather.Weather
+import com.farasatnovruzov.movieappcompose.model.weather.remote.Weather
 import com.farasatnovruzov.movieappcompose.navigation.weather.WeatherScreens
 import com.farasatnovruzov.movieappcompose.utils.fahrenheitToCelsius
 import com.farasatnovruzov.movieappcompose.utils.formatDate

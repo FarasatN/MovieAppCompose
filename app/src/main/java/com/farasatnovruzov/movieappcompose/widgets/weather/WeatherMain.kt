@@ -46,8 +46,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.rememberAsyncImagePainter
-import com.farasatnovruzov.movieappcompose.model.weather.Weather
-import com.farasatnovruzov.movieappcompose.model.weather.WeatherItem
+import com.farasatnovruzov.movieappcompose.model.weather.remote.Weather
+import com.farasatnovruzov.movieappcompose.model.weather.remote.WeatherItem
 import com.farasatnovruzov.movieappcompose.ui.theme.SkyBlue
 import com.farasatnovruzov.movieappcompose.utils.fahrenheitToCelsius
 import com.farasatnovruzov.movieappcompose.utils.formatDate

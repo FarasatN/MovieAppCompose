@@ -2,7 +2,7 @@ package com.farasatnovruzov.movieappcompose.repository.weather
 
 import android.util.Log
 import com.farasatnovruzov.movieappcompose.data.DataOrException
-import com.farasatnovruzov.movieappcompose.model.weather.Weather
+import com.farasatnovruzov.movieappcompose.model.weather.remote.Weather
 import com.farasatnovruzov.movieappcompose.network.weather.WeatherApi
 import javax.inject.Inject
 
@@ -18,6 +18,8 @@ class WeatherRepository @Inject constructor(private val api: WeatherApi) {
         Log.d("WEATHER", "getWeather: $response")
         return DataOrException(data = response)
     }
+
+
 
 
 

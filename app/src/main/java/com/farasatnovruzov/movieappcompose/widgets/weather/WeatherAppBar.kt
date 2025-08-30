@@ -180,7 +180,7 @@ fun SettingsDropDownMenu(showDialog: MutableState<Boolean>, navController: NavCo
                             Icon(
                                 imageVector = when (text) {
                                     "About" -> Icons.Default.Info
-                                    "Favorites" -> Icons.Default.Favorite
+                                    "Favorites" -> Icons.Default.FavoriteBorder
                                     else -> Icons.Default.Settings
                                 },
                                 contentDescription = null,

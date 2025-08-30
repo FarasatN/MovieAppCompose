@@ -1,6 +1,6 @@
 package com.farasatnovruzov.movieappcompose.network.weather
 
-import com.farasatnovruzov.movieappcompose.model.weather.Weather
+import com.farasatnovruzov.movieappcompose.model.weather.remote.Weather
 import com.farasatnovruzov.movieappcompose.utils.Constants
 import retrofit2.http.GET
 import retrofit2.http.Query

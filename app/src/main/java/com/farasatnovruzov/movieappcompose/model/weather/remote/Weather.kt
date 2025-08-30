@@ -1,4 +1,4 @@
-package com.farasatnovruzov.movieappcompose.model.weather
+package com.farasatnovruzov.movieappcompose.model.weather.remote
 
 data class Weather(
     val city: City,

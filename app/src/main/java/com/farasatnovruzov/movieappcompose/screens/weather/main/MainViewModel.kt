@@ -2,7 +2,7 @@ package com.farasatnovruzov.movieappcompose.screens.weather.main
 
 import androidx.lifecycle.ViewModel
 import com.farasatnovruzov.movieappcompose.data.DataOrException
-import com.farasatnovruzov.movieappcompose.model.weather.Weather
+import com.farasatnovruzov.movieappcompose.model.weather.remote.Weather
 import com.farasatnovruzov.movieappcompose.repository.weather.WeatherRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
