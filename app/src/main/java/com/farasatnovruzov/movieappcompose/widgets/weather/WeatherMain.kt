@@ -49,7 +49,6 @@ import coil3.compose.rememberAsyncImagePainter
 import com.farasatnovruzov.movieappcompose.model.weather.remote.Weather
 import com.farasatnovruzov.movieappcompose.model.weather.remote.WeatherItem
 import com.farasatnovruzov.movieappcompose.ui.theme.SkyBlue
-import com.farasatnovruzov.movieappcompose.utils.fahrenheitToCelsius
 import com.farasatnovruzov.movieappcompose.utils.formatDate
 import kotlin.math.max
 import kotlin.math.min
@@ -198,21 +197,23 @@ fun WeatherDetailRow(weatherItem: WeatherItem) {
                     )
                 }
                 Text(text = buildAnnotatedString {
+
                     withStyle(
                         style = SpanStyle(
                             color = Color.Red.copy(alpha = 0.7f),
                             fontWeight = FontWeight.SemiBold
                         )
                     ) {
-                        append(fahrenheitToCelsius(weatherItem.temp.day) + "°")
+                        append(weatherItem.temp.day.toString())
                     }
+                    append("\n")
                     withStyle(
                         style = SpanStyle(
                             color = Color.DarkGray.copy(alpha = 0.3f),
                             fontWeight = FontWeight.SemiBold
                         )
                     ) {
-                        append(fahrenheitToCelsius(weatherItem.temp.night) + "°")
+                        append(weatherItem.temp.night.toString())
                     }
                 })
             }
@@ -241,7 +242,7 @@ fun WeatherStateImage(todayImageUrl: String, size: Dp = 120.dp) {
 }
 
 @Composable
-fun HumidityWindPressureRow(weather: WeatherItem) {
+fun HumidityWindPressureRow(weather: WeatherItem, isImperial: Boolean) {
     Row(
         modifier = Modifier
             .padding(12.dp)
@@ -278,7 +279,7 @@ fun HumidityWindPressureRow(weather: WeatherItem) {
                 modifier = Modifier.size(20.dp)
             )
             Text(
-                text = "${weather.speed} mph",
+                text = "${weather.speed} "+  if (isImperial) "mph" else "m/s",
                 style = MaterialTheme.typography.bodyMedium
             )
         }

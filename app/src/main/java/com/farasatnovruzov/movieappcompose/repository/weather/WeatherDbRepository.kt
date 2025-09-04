@@ -4,6 +4,7 @@ import com.farasatnovruzov.movieappcompose.data.weather.WeatherDao
 import com.farasatnovruzov.movieappcompose.model.weather.local.Favorite
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import com.farasatnovruzov.movieappcompose.model.Unit
 
 class WeatherDbRepository @Inject constructor(private val weatherDao: WeatherDao) {
 
@@ -13,5 +14,12 @@ class WeatherDbRepository @Inject constructor(private val weatherDao: WeatherDao
     suspend fun updateFavorite(favorite: Favorite) = weatherDao.updateFavorite(favorite)
     suspend fun deleteAllFavorites() = weatherDao.deleteAllFavorites()
     suspend fun deleteFavorite(favorite: Favorite) = weatherDao.deleteFavorite(favorite.city)
+
+    fun getUnits(): Flow<List<Unit>> = weatherDao.getUnits()
+    suspend fun insertUnit(unit: Unit) = weatherDao.insertUnit(unit)
+    suspend fun updateUnit(unit: Unit) = weatherDao.updateUnit(unit)
+    suspend fun deleteAllUnits() = weatherDao.deleteAllUnits()
+    suspend fun deleteUnit(unit: Unit) = weatherDao.deleteUnit(unit)
+
 
 }

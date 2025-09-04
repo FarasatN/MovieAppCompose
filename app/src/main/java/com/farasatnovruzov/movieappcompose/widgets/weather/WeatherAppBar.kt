@@ -1,19 +1,17 @@
 package com.farasatnovruzov.movieappcompose.widgets.weather
 
+import android.content.Context
 import android.util.Log
-import androidx.compose.foundation.background
+import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.absolutePadding
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,9 +34,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -47,13 +45,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.farasatnovruzov.movieappcompose.model.weather.local.Favorite
 import com.farasatnovruzov.movieappcompose.navigation.weather.WeatherScreens
+import com.farasatnovruzov.movieappcompose.screens.weather.favorites.FavoriteViewModel
 import com.farasatnovruzov.movieappcompose.ui.theme.SkyBlue
 
 
@@ -70,11 +72,14 @@ fun WeatherAppBar(
     padding: Dp = 0.dp,
     onAddActionClicked: () -> Unit = {},
     onButtonClicked: () -> Unit = {},
-    navController: NavController?
+    navController: NavController?,
+    favoriteViewModel: FavoriteViewModel = hiltViewModel()
 ) {
     val showDialog = rememberSaveable { mutableStateOf(false) }
+    val showIt = rememberSaveable { mutableStateOf(false) }
+    val context = LocalContext.current
     if (showDialog.value) {
-        SettingsDropDownMenu(showDialog = showDialog, navController = navController)
+        SettingsDropDownMenu2(showDialog = showDialog, navController = navController)
     }
     val roundedShape = RoundedCornerShape(
         topStartPercent = 0,
@@ -140,6 +145,42 @@ fun WeatherAppBar(
                         }
                     )
                 }
+                if (isMainScreen) {
+                    val dataList = title.split(",")
+                    val isAlreadyFavList = favoriteViewModel
+                        .favList.collectAsState().value.filter { item ->
+                            (item.city == dataList[0])
+                        }
+                    if (isAlreadyFavList.isNullOrEmpty()) {
+                        Icon(
+                            imageVector = Icons.Default.FavoriteBorder,
+                            contentDescription = "Favorite Icon",
+                            modifier = Modifier
+                                .padding(start = 10.dp)
+//                            .scale(0.9f)
+                                .clickable {
+                                    favoriteViewModel.insertFavorite(
+                                        Favorite(
+                                            city = dataList[0],
+                                            country = dataList[1],
+                                        )
+                                    ).run {
+                                        showIt.value = true
+                                    }
+                                    ShowToast(context = context, showIt = showIt)
+                                },
+                        )
+                    } else {
+                        showIt.value = false
+                        Icon(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = "Favorite Icon",
+                            tint = Color.Red.copy(alpha = 0.7f),
+                            modifier = Modifier.padding(start = 10.dp)
+//                            .scale(0.9f)
+                        )
+                    }
+                }
             },
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = Color.Transparent,
@@ -153,8 +194,15 @@ fun WeatherAppBar(
 
 }
 
+fun ShowToast(context: Context, showIt: MutableState<Boolean>) {
+    if (showIt.value) {
+        Toast.makeText(context, "City added to Favorites", Toast.LENGTH_SHORT).show()
+        showIt.value = false
+    }
+}
+
 @Composable
-fun SettingsDropDownMenu(showDialog: MutableState<Boolean>, navController: NavController?) {
+fun SettingsDropDownMenu2(showDialog: MutableState<Boolean>, navController: NavController?) {
     var expanded by rememberSaveable { mutableStateOf(true) }
     val items = listOf("About", "Favorites", "Settings")
     Column(

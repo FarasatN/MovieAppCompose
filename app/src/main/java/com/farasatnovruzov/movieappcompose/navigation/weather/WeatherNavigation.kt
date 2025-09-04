@@ -10,11 +10,12 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.farasatnovruzov.movieappcompose.screens.weather.about.AboutScreen
 import com.farasatnovruzov.movieappcompose.screens.weather.favorites.FavoritesScreen
-import com.farasatnovruzov.movieappcompose.screens.weather.main.MainScreen
 import com.farasatnovruzov.movieappcompose.screens.weather.search.SearchScreen
 import com.farasatnovruzov.movieappcompose.screens.weather.settings.SettingsScreen
 import com.farasatnovruzov.movieappcompose.screens.weather.main.MainViewModel
 import com.farasatnovruzov.movieappcompose.screens.weather.splash.WeatherSplashScreen
+import com.farasatnovruzov.movieappcompose.screens.weather.main.MainScreen
+import com.farasatnovruzov.movieappcompose.screens.weather.settings.SettingsViewModel
 
 @Preview(showBackground = true)
 @Composable
@@ -32,7 +33,8 @@ fun WeatherNavigation() {
         )) { navBack ->
             navBack.arguments?.getString("city").let { city ->
                 val mainViewModel = hiltViewModel<MainViewModel>()
-                MainScreen(navController = navController, mainViewModel, city = city)
+                val settingsViewModel = hiltViewModel<SettingsViewModel>()
+                MainScreen(navController = navController,mainViewModel = mainViewModel, settingsViewModel = settingsViewModel, city = city)
             }
         }
         composable(WeatherScreens.AboutScreen.name) {

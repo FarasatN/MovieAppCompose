@@ -10,8 +10,8 @@ interface WeatherApi {
     @GET(value = "data/2.5/forecast/daily")
 //    @GET(value = "data/2.5/forecast/weekly")
     suspend fun getWeather(
-        @Query("q") query : String = "Baku",
-        @Query("units") units: String = "imperial",
+        @Query("q") query : String,
+        @Query("units") units: String = "metric",
         @Query("appid") appid: String = Constants.API_KEY // your api key
     ): Weather
 

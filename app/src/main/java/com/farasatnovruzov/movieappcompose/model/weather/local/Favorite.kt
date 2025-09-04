@@ -13,7 +13,4 @@ data class Favorite(
     val city: String,
     @ColumnInfo(name = "country")
     val country: String,
-
-
-
 )

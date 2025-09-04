@@ -17,18 +17,22 @@ import javax.inject.Inject
 class FavoriteViewModel @Inject constructor(private val repository: WeatherDbRepository) :
     ViewModel() {
 
-    private val _favlist = MutableStateFlow<List<Favorite>>(emptyList())
-    val favlist = _favlist.asStateFlow()
+    private val _favList = MutableStateFlow<List<Favorite>>(emptyList())
+    val favList = _favList.asStateFlow()
 
     init {
+        getFavs()
+    }
+
+    private fun getFavs() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getFavorites().distinctUntilChanged()
                 .collect { listOfFavs ->
                     if (listOfFavs.isNullOrEmpty()) {
-                        Log.d("TAG", ": Empty favs ")
+                        Log.d("FAV", ": Empty favs ")
                     } else {
-                        _favlist.value = listOfFavs
-                        Log.d("FAVS", ":${favlist.value} ")
+                        _favList.value = listOfFavs
+                        Log.d("FAV", "favs :${favList.value} ")
                     }
                 }
         }
@@ -36,17 +40,27 @@ class FavoriteViewModel @Inject constructor(private val repository: WeatherDbRep
 
     fun insertFavorite(favorite: Favorite) = viewModelScope.launch {
         repository.insertFavorite(favorite)
+        Log.d("FAV", "insertFavorite: $favorite")
     }
 
     fun updateFavorite(favorite: Favorite) = viewModelScope.launch {
         repository.updateFavorite(favorite)
+        Log.d("FAV", "updateFavorite: $favorite")
     }
 
     fun deleteFavorite(favorite: Favorite) = viewModelScope.launch {
         repository.deleteFavorite(favorite)
+        Log.d("FAV", "deleteFavorite: $favorite")
+        getFavs()
     }
 
-    fun getFavoriteByIdo(city: String) = viewModelScope.launch {
+    fun getFavoriteById(city: String) = viewModelScope.launch {
         repository.getFavById(city)
+        Log.d("FAV", "getFavoriteById: $city")
+    }
+
+    fun deleteAllFavorites() = viewModelScope.launch {
+        repository.deleteAllFavorites()
+        Log.d("FAV", "deleteAllFavorites: ")
     }
 }

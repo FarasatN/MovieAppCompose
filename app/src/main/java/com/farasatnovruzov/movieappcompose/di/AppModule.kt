@@ -2,7 +2,7 @@ package com.farasatnovruzov.movieappcompose.di
 
 import android.content.Context
 import androidx.room.Room
-import com.farasatnovruzov.movieappcompose.data.WeatherDatabase
+import com.farasatnovruzov.movieappcompose.data.weather.WeatherDatabase
 import com.farasatnovruzov.movieappcompose.data.note.NoteDatabase
 import com.farasatnovruzov.movieappcompose.data.note.NoteDatabaseDao
 import com.farasatnovruzov.movieappcompose.data.weather.WeatherDao
