@@ -1,9 +1,9 @@
 package com.farasatnovruzov.movieappcompose.screens.weather.settings
 
-import androidx.lifecycle.ViewModel
 import android.util.Log
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.farasatnovruzov.movieappcompose.model.Unit
+import com.farasatnovruzov.movieappcompose.model.weather.local.Unit
 import com.farasatnovruzov.movieappcompose.repository.weather.WeatherDbRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -26,8 +26,7 @@ class SettingsViewModel @Inject constructor(private val repository: WeatherDbRep
 
     private fun getUnits() {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getUnits().distinctUntilChanged()
-                .collect { listOfUnits ->
+            repository.getUnits().distinctUntilChanged().collect { listOfUnits ->
                     if (listOfUnits.isNullOrEmpty()) {
                         Log.d("UNIT", ": Empty units ")
                     } else {

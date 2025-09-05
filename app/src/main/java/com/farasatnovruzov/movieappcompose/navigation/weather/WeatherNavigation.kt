@@ -25,6 +25,9 @@ fun WeatherNavigation() {
         composable(WeatherScreens.SplashScreen.name) {
             WeatherSplashScreen(navController = navController)
         }
+
+
+
         val route = WeatherScreens.MainScreen.name
         composable(route = "$route/{city}", arguments = listOf(
             navArgument(name = "city") {
@@ -37,6 +40,8 @@ fun WeatherNavigation() {
                 MainScreen(navController = navController,mainViewModel = mainViewModel, settingsViewModel = settingsViewModel, city = city)
             }
         }
+
+
         composable(WeatherScreens.AboutScreen.name) {
             AboutScreen(navController = navController)
         }

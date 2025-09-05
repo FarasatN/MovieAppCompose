@@ -13,7 +13,8 @@ import com.farasatnovruzov.movieappcompose.screens.questions.QuestionsViewModel
 @Composable
 fun MovieNavigation(
 //    noteViewModel: NoteViewModel,
-    questionsViewModel: QuestionsViewModel) {
+    questionsViewModel: QuestionsViewModel
+) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,

@@ -6,8 +6,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.farasatnovruzov.movieappcompose.model.weather.local.Favorite
+import com.farasatnovruzov.movieappcompose.model.weather.local.Unit
 import kotlinx.coroutines.flow.Flow
-import com.farasatnovruzov.movieappcompose.model.Unit
 
 
 @Dao

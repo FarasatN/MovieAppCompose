@@ -1,6 +1,7 @@
 package com.farasatnovruzov.movieappcompose
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -12,8 +13,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.core.view.WindowCompat
 import com.farasatnovruzov.movieappcompose.navigation.weather.WeatherNavigation
 import com.farasatnovruzov.movieappcompose.ui.theme.WeatherAppComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,15 +42,18 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun WeatherApp(){
+fun WeatherApp() {
     WeatherAppComposeTheme {
         Surface(
             color = MaterialTheme.colorScheme.background,
             modifier = Modifier
-                .fillMaxSize()) {
+                .fillMaxSize()
+        ) {
             Column(
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally) {
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Log.d("TAGG", "WeatherApp: MainActivity")
                 WeatherNavigation()
             }
         }
@@ -61,7 +63,6 @@ fun WeatherApp(){
 }
 
 
-
 //@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 //@Composable
 //fun MyApp(content: @Composable () -> Unit) {
@@ -69,8 +70,6 @@ fun WeatherApp(){
 //        content()
 //    }
 //}
-
-
 
 
 //@Preview(showBackground = true)

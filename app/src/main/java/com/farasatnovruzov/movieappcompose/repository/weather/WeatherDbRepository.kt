@@ -4,7 +4,7 @@ import com.farasatnovruzov.movieappcompose.data.weather.WeatherDao
 import com.farasatnovruzov.movieappcompose.model.weather.local.Favorite
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
-import com.farasatnovruzov.movieappcompose.model.Unit
+import com.farasatnovruzov.movieappcompose.model.weather.local.Unit
 
 class WeatherDbRepository @Inject constructor(private val weatherDao: WeatherDao) {
 

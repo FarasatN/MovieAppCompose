@@ -33,27 +33,31 @@ fun AboutScreen(navController: NavController) {
                 navController = navController,
                 onButtonClicked = {
                     navController.popBackStack()
-                }
-            )
-        }
-    ) { paddingValues ->
-        Surface(modifier = Modifier
-            .fillMaxSize()){
+                })
+        }) { paddingValues ->
+        Surface(
+            modifier = Modifier.fillMaxSize()
+        ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .padding(paddingValues)
+                modifier = Modifier.padding(paddingValues)
             ) {
-                Text(text = stringResource(id = R.string.app_name2),
-                    style = MaterialTheme.typography.bodyLarge,
+                Text(
+                    text = stringResource(id = R.string.weather),
+                    style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.align(Alignment.CenterHorizontally))
+                    color = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
                 Spacer(modifier = Modifier.height(10.dp))
-                Text(text = stringResource(id = R.string.weather_about),
+                Text(
+                    text = stringResource(id = R.string.weather_about),
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.align(Alignment.CenterHorizontally))
+                    color = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
             }
         }
     }

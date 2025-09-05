@@ -39,8 +39,9 @@ import com.farasatnovruzov.movieappcompose.widgets.movie.MovieRow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailsScreen(navController: NavController,
-                  movieId: String?
+fun DetailsScreen(
+    navController: NavController,
+    movieId: String?
 //                  movie: Movie?
 ) {
 //    Surface(
@@ -73,7 +74,10 @@ fun DetailsScreen(navController: NavController,
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
                     }
                 })
 

@@ -15,7 +15,7 @@ import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
-class NoteViewModel @Inject constructor(private val repository: NoteRepository): ViewModel() {
+class NoteViewModel @Inject constructor(private val repository: NoteRepository) : ViewModel() {
     //private var noteList = mutableStateListOf<Note>()
 //    init {
 //        noteList.addAll(NotesDataSource().loadNotes())
@@ -32,6 +32,7 @@ class NoteViewModel @Inject constructor(private val repository: NoteRepository):
 
     private val _noteList = MutableStateFlow<List<Note>>(emptyList())
     val noteList = _noteList.asStateFlow()
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getAllNotes().distinctUntilChanged().collect { listOfNotes ->
@@ -46,13 +47,11 @@ class NoteViewModel @Inject constructor(private val repository: NoteRepository):
         }
     }
 
-     fun addNote(note: Note) = viewModelScope.launch { repository.addNote(note) }
-     fun updateNote(note: Note) = viewModelScope.launch { repository.updateNote(note) }
-     fun removeNote(note: Note) = viewModelScope.launch { repository.deleteNote(note) }
-     fun deleteAllNotes() = viewModelScope.launch { repository.deleteAllNotes() }
-     fun getNoteById(id: UUID) = viewModelScope.launch { repository.getNoteById(id) }
-
-
+    fun addNote(note: Note) = viewModelScope.launch { repository.addNote(note) }
+    fun updateNote(note: Note) = viewModelScope.launch { repository.updateNote(note) }
+    fun removeNote(note: Note) = viewModelScope.launch { repository.deleteNote(note) }
+    fun deleteAllNotes() = viewModelScope.launch { repository.deleteAllNotes() }
+    fun getNoteById(id: UUID) = viewModelScope.launch { repository.getNoteById(id) }
 
 
 }

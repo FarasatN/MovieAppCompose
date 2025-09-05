@@ -5,11 +5,12 @@ import java.util.Date
 import java.util.Locale
 
 fun formatDate(time: Long): String {
-    val date = Date(time)
+    val date = Date(time * 1000L)
     val format = SimpleDateFormat(
 //        "EEE, d MMM yyyy, hh:mm aaa",
-        "EEE, dd MMM hh:mm",
+//        "EEE, dd MMM hh:mm",
 //        "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+        "EEE, dd MMM yy, HH:mm",
         Locale.getDefault()
     )
     return format.format(date)

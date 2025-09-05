@@ -21,9 +21,11 @@ import com.farasatnovruzov.movieappcompose.screens.questions.TriviaHome
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 
-fun HomeScreen(navController: NavController,
+fun HomeScreen(
+    navController: NavController,
 //               noteViewModel:NoteViewModel,
-               questionsViewModel: QuestionsViewModel) {
+    questionsViewModel: QuestionsViewModel
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -72,7 +74,10 @@ fun MainContent(
 //        }
 
 
-        Surface(color = MaterialTheme.colorScheme.background,modifier = Modifier.padding(paddingValues)) {
+        Surface(
+            color = MaterialTheme.colorScheme.background,
+            modifier = Modifier.padding(paddingValues)
+        ) {
             //view model different options:
 //            NotesApp(noteViewModel = noteViewModel)
 
@@ -84,7 +89,6 @@ fun MainContent(
         }
     }
 }
-
 
 
 //@Composable

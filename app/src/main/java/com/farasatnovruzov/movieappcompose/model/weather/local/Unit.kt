@@ -1,4 +1,4 @@
-package com.farasatnovruzov.movieappcompose.model
+package com.farasatnovruzov.movieappcompose.model.weather.local
 
 import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
@@ -7,8 +7,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "settings_tbl")
 data class Unit(
-    @NonNull
     @PrimaryKey
-    @ColumnInfo(name = "until")
+    @ColumnInfo(name = "unit")
     val unit: String
 )

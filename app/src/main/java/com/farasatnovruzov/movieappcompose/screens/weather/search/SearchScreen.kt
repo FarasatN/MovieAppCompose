@@ -18,7 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,8 +43,7 @@ fun SearchScreen(navController: NavController) {
                 },
                 navController = navController
             )
-        }
-    ) { paddingValues ->
+        }) { paddingValues ->
         Surface(
             modifier = Modifier.padding(paddingValues)
         ) {
@@ -59,7 +57,7 @@ fun SearchScreen(navController: NavController) {
                         .fillMaxWidth()
                         .padding(16.dp)
                         .align(Alignment.CenterHorizontally)
-                ) {searchedCity->
+                ) { searchedCity ->
                     Log.d("TAG", "SearchScreen: $searchedCity")
                     navController.navigate(WeatherScreens.MainScreen.name + "/$searchedCity")
                 }
@@ -73,29 +71,26 @@ fun SearchScreen(navController: NavController) {
 
 @Composable
 fun SearchBar(
-    modifier: Modifier = Modifier,
-    onSearch: (String) -> Unit = {}
+    modifier: Modifier = Modifier, onSearch: (String) -> Unit = {}
 ) {
     val searchQueryState = rememberSaveable { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
-    val valid = remember(searchQueryState.value) {
+    val valid = rememberSaveable(searchQueryState.value) {
         searchQueryState.value.trim().isNotEmpty()
     }
 
     Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CommonTextField(
             valueState = searchQueryState,
-            placeholder = "Baku",
+            placeholder = "Search a city ",
             onAction = KeyboardActions {
                 if (!valid) return@KeyboardActions
                 onSearch(searchQueryState.value.trim())
                 searchQueryState.value = ""
                 keyboardController?.hide()
-            }
-        )
+            })
     }
 }
 
@@ -116,8 +111,7 @@ fun CommonTextField(
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
         keyboardActions = onAction,
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = SkyBlue,
-            cursorColor = SkyBlue
+            focusedBorderColor = SkyBlue, cursorColor = SkyBlue
         ),
         shape = RoundedCornerShape(15.dp),
         modifier = Modifier

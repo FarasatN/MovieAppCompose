@@ -65,7 +65,7 @@ import com.farasatnovruzov.movieappcompose.ui.theme.SkyBlue
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherAppBar(
-    title: String = "Baku",
+    title: String,
     icon: ImageVector? = null,
     isMainScreen: Boolean = true,
     elevation: Dp = 0.dp,
@@ -153,6 +153,7 @@ fun WeatherAppBar(
                         }
                     if (isAlreadyFavList.isNullOrEmpty()) {
                         Icon(
+                            tint = MaterialTheme.colorScheme.secondary,
                             imageVector = Icons.Default.FavoriteBorder,
                             contentDescription = "Favorite Icon",
                             modifier = Modifier
@@ -167,7 +168,7 @@ fun WeatherAppBar(
                                     ).run {
                                         showIt.value = true
                                     }
-                                    ShowToast(context = context, showIt = showIt)
+                                    showToast(context = context, showIt = showIt)
                                 },
                         )
                     } else {
@@ -194,7 +195,7 @@ fun WeatherAppBar(
 
 }
 
-fun ShowToast(context: Context, showIt: MutableState<Boolean>) {
+fun showToast(context: Context, showIt: MutableState<Boolean>) {
     if (showIt.value) {
         Toast.makeText(context, "City added to Favorites", Toast.LENGTH_SHORT).show()
         showIt.value = false
@@ -237,7 +238,8 @@ fun SettingsDropDownMenu2(showDialog: MutableState<Boolean>, navController: NavC
                             Spacer(modifier = Modifier.width(8.dp)) // Add a spacer for separation
                             Text(
                                 text = text,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.secondary
                             )
                         }
                     },

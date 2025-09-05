@@ -23,7 +23,7 @@ fun NoteIntputText(
     maxLine: Int = 1,
     onTextChange: (String) -> Unit,
     onImeAction: () -> Unit = {}
-){
+) {
     val keyboardController = LocalSoftwareKeyboardController.current
     TextField(
         value = text,
@@ -54,12 +54,13 @@ fun NoteButton(
     text: String,
     onClick: () -> Unit,
     enabled: Boolean = false,
-){
-    Button(onClick = onClick,
+) {
+    Button(
+        onClick = onClick,
         shape = CircleShape,
         enabled = enabled,
         modifier = modifier
-        ) {
+    ) {
         Text(text = text)
     }
 }

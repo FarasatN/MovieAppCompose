@@ -15,5 +15,4 @@ object AppColors {
     val mBlue = Color(0xFF0051E7)
 
 
-
 }

@@ -75,6 +75,8 @@ kotlin {
         // For example:
         // freeCompilerArgs.add("-Xcontext-receivers")
 
+        freeCompilerArgs.add("-Xannotation-default-target=param-property")
+
     }
 }
 tasks.withType<JavaCompile>().configureEach {
@@ -124,7 +126,7 @@ dependencies {
 //    implementation("com.google.dagger:hilt-android:2.51.1") // Or latest compatible Hilt
 //    ksp("com.google.dagger:hilt-compiler:2.51.1")     // Or latest compatible Hilt
 
-    implementation (libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.play.services)
 

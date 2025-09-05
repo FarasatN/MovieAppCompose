@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.RiceBowl
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -35,8 +34,7 @@ import com.farasatnovruzov.movieappcompose.widgets.weather.WeatherAppBar
 
 @Composable
 fun FavoritesScreen(
-    navController: NavController,
-    favoriteViewModel: FavoriteViewModel = hiltViewModel()
+    navController: NavController, favoriteViewModel: FavoriteViewModel = hiltViewModel()
 ) {
     Scaffold(
         topBar = {
@@ -73,9 +71,7 @@ fun FavoritesScreen(
 
 @Composable
 fun CityRow(
-    favorite: Favorite,
-    navController: NavController,
-    favoriteViewModel: FavoriteViewModel
+    favorite: Favorite, navController: NavController, favoriteViewModel: FavoriteViewModel
 ) {
     Surface(
         modifier = Modifier
@@ -84,9 +80,7 @@ fun CityRow(
             .height(50.dp)
             .clickable {
                 navController.navigate(WeatherScreens.MainScreen.name + "/${favorite.city}")
-            },
-        shape = CircleShape.copy(topEnd = CornerSize(6.dp)),
-        color = SkyBlue
+            }, shape = CircleShape.copy(topEnd = CornerSize(6.dp)), color = SkyBlue
     ) {
         Row(
             modifier = Modifier
@@ -97,9 +91,7 @@ fun CityRow(
         ) {
             Text(text = favorite.city, modifier = Modifier.padding(4.dp))
             Surface(
-                modifier = Modifier.padding(0.dp),
-                shape = CircleShape,
-                color = Color.White
+                modifier = Modifier.padding(0.dp), shape = CircleShape, color = Color.White
             ) {
                 Text(
                     text = favorite.country,
@@ -107,12 +99,14 @@ fun CityRow(
                     style = MaterialTheme.typography.bodySmall
                 )
             }
-            Icon(imageVector = Icons.Rounded.Delete, contentDescription = "delete",
-                modifier = Modifier
-                    .clickable{
-                        favoriteViewModel.deleteFavorite(favorite)
-                    },
-                tint = Color.Red.copy(alpha = .7f))
+            Icon(
+                imageVector = Icons.Rounded.Delete,
+                contentDescription = "delete",
+                modifier = Modifier.clickable {
+                    favoriteViewModel.deleteFavorite(favorite)
+                },
+                tint = Color.Red.copy(alpha = .7f)
+            )
         }
     }
 

@@ -287,7 +287,7 @@ fun ShowProgress(score: Int = 7, totalQuestions: Int = 10) { // Add totalQuestio
             Color(0xff8040df),
             Color(0xff4459d6),
 
-        )
+            )
     )
 
     // Calculate progressFactor as a float between 0.0f and 1.0f

@@ -2,10 +2,10 @@ package com.farasatnovruzov.movieappcompose.di
 
 import android.content.Context
 import androidx.room.Room
-import com.farasatnovruzov.movieappcompose.data.weather.WeatherDatabase
 import com.farasatnovruzov.movieappcompose.data.note.NoteDatabase
 import com.farasatnovruzov.movieappcompose.data.note.NoteDatabaseDao
 import com.farasatnovruzov.movieappcompose.data.weather.WeatherDao
+import com.farasatnovruzov.movieappcompose.data.weather.WeatherDatabase
 import com.farasatnovruzov.movieappcompose.network.question.QuestionApi
 import com.farasatnovruzov.movieappcompose.network.weather.WeatherApi
 import com.farasatnovruzov.movieappcompose.repository.question.QuestionRepository
@@ -16,8 +16,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
-import javax.inject.Singleton
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
