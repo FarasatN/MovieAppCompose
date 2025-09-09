@@ -6,5 +6,8 @@ plugins {
     alias(libs.plugins.androidx.room) apply false // Apply false here for project-level
     alias(libs.plugins.hiltAndroid) apply false
     alias(libs.plugins.kotlinAndroidKsp) apply false
+
+    //Firebase
+    id("com.google.gms.google-services") version "4.4.3" apply false
 }
 

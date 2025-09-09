@@ -1,4 +1,4 @@
-package com.farasatnovruzov.movieappcompose.screens.details
+package com.farasatnovruzov.movieappcompose.screens.movie.details
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

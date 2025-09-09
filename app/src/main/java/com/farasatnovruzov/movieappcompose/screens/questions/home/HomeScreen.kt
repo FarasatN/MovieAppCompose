@@ -1,4 +1,4 @@
-package com.farasatnovruzov.movieappcompose.screens.home
+package com.farasatnovruzov.movieappcompose.screens.questions.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues

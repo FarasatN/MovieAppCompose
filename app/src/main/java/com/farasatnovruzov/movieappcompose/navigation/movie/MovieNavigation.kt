@@ -6,8 +6,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.farasatnovruzov.movieappcompose.screens.details.DetailsScreen
-import com.farasatnovruzov.movieappcompose.screens.home.HomeScreen
+import com.farasatnovruzov.movieappcompose.screens.movie.details.DetailsScreen
+import com.farasatnovruzov.movieappcompose.screens.questions.home.HomeScreen
 import com.farasatnovruzov.movieappcompose.screens.questions.QuestionsViewModel
 
 @Composable

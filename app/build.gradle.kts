@@ -5,6 +5,10 @@ plugins {
     alias(libs.plugins.androidx.room) // Apply true here for the module
     alias(libs.plugins.kotlinAndroidKsp)
     alias(libs.plugins.hiltAndroid)
+
+    //Firebase
+//    id("com.android.application")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -146,6 +150,16 @@ dependencies {
 // Example: For basic Play Services tasks
 //    implementation("com.google.android.gms:play-services-base:18.2.0") // Use the latest version
 
-
     implementation(libs.androidx.material.icons.extended)
+
+
+
+    //Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+
+    // See https://firebase.google.com/docs/android/setup#available-libraries
+    // For example, add the dependencies for Firebase Authentication and Cloud Firestore
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
 }

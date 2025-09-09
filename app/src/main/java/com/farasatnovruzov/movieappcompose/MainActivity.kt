@@ -14,7 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.farasatnovruzov.movieappcompose.navigation.weather.WeatherNavigation
-import com.farasatnovruzov.movieappcompose.ui.theme.WeatherAppComposeTheme
+import com.farasatnovruzov.movieappcompose.ui.theme.BookSocietyAppComposeTheme
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -36,31 +37,62 @@ class MainActivity : ComponentActivity() {
 
             //---------------------------------------------------
             //Weather App
-            WeatherApp()
+//            WeatherApp()
+
+            //BookSociety
+            BookSocietyApp()
         }
     }
 }
 
 @Composable
-fun WeatherApp() {
-    WeatherAppComposeTheme {
+fun BookSocietyApp() {
+    BookSocietyAppComposeTheme {
+        val db  = FirebaseFirestore.getInstance()
+        val user: MutableMap<String, Any> = HashMap()
+        user["first"] = "Ada"
+        user["last"] = "Lovelace"
+
         Surface(
-            color = MaterialTheme.colorScheme.background,
-            modifier = Modifier
-                .fillMaxSize()
+            color = MaterialTheme.colorScheme.background, modifier = Modifier.fillMaxSize()
         ) {
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Log.d("TAGG", "WeatherApp: MainActivity")
-                WeatherNavigation()
+                Log.d("TAGG", "BookSocietyApp: MainActivity")
+                db.collection("users")
+                    .add(user)
+                    .addOnSuccessListener {
+                        Log.d("FB", "DocumentSnapshot added with ID: ${it.id}")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("FB", "Error adding document", e)
+                    }
             }
         }
     }
-
-
 }
+
+
+//@Composable
+//fun WeatherApp() {
+//    WeatherAppComposeTheme {
+//        Surface(
+//            color = MaterialTheme.colorScheme.background,
+//            modifier = Modifier
+//                .fillMaxSize()
+//        ) {
+//            Column(
+//                verticalArrangement = Arrangement.Center,
+//                horizontalAlignment = Alignment.CenterHorizontally
+//            ) {
+//                Log.d("TAGG", "WeatherApp: MainActivity")
+//                WeatherNavigation()
+//            }
+//        }
+//    }
+//}
 
 
 //@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
