@@ -4,5 +4,17 @@
     <string name="notes">Notes</string>
     <string name="trivia">Trivia</string>
     <string name="weather">Weather</string>
+    <string name="book_society">BookSociety</string>
     <string name="weather_about">v.0.1, developed by Farasat Novruzov</string>
+    <string name="create_account">"Create Account"</string>
+    <string name="login">Login</string>
+    <string name="sign_up">Sign up</string>
+    <string name="email">Email</string>
+    <string name="new_user">New User?</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="invalid_email">Please enter a valid email address (e.g., example@domain.com).</string>
+    <string name="invalid_password">Please enter a valid password that is at least 6 characters.</string>
+    <string name="app_logo">Book Society</string>
+
 </resources>

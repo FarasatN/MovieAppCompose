@@ -5,6 +5,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -44,7 +45,7 @@ fun WeatherSplashScreen(
                 OvershootInterpolator(8f).getInterpolation(it)
             })
         )
-        delay(3000L)
+        delay(2000L)
         navController.navigate(
             WeatherScreens.MainScreen.name
                     + "/$defaultCity"
@@ -55,7 +56,8 @@ fun WeatherSplashScreen(
         modifier = Modifier
             .padding(25.dp)
 //            .fillMaxSize(0.4f)
-            .size(300.dp)
+//            .size(300.dp)
+            .fillMaxSize(.6f)
             .scale(scale.value),
         shape = CircleShape,
         color = Color.Transparent,

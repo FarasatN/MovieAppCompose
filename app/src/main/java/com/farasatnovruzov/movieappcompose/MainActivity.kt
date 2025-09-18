@@ -8,11 +8,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.farasatnovruzov.movieappcompose.navigation.booksociety.BookSocietyNavigation
 import com.farasatnovruzov.movieappcompose.navigation.weather.WeatherNavigation
 import com.farasatnovruzov.movieappcompose.ui.theme.BookSocietyAppComposeTheme
 import com.google.firebase.firestore.FirebaseFirestore
@@ -60,15 +63,16 @@ fun BookSocietyApp() {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Log.d("TAGG", "BookSocietyApp: MainActivity")
-                db.collection("users")
-                    .add(user)
-                    .addOnSuccessListener {
-                        Log.d("FB", "DocumentSnapshot added with ID: ${it.id}")
-                    }
-                    .addOnFailureListener { e ->
-                        Log.w("FB", "Error adding document", e)
-                    }
+//                Log.d("TAGG", "BookSocietyApp: MainActivity")
+//                db.collection("users")
+//                    .add(user)
+//                    .addOnSuccessListener {
+//                        Log.d("FB", "DocumentSnapshot added with ID: ${it.id}")
+//                    }
+//                    .addOnFailureListener { e ->
+//                        Log.w("FB", "Error adding document", e)
+//                    }
+                BookSocietyNavigation()
             }
         }
     }

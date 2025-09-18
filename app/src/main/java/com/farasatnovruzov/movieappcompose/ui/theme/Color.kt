@@ -10,6 +10,9 @@ val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
-//Weather App
+//Weather app colors
 val SkyBlue = Color(0xffb6f7ff)
+
+//Book Society app colors
+val CustomBlue = Color.Blue.copy(alpha = 0.7f)
 
