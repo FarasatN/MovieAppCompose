@@ -9,13 +9,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,7 +49,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil3.compose.rememberAsyncImagePainter
 import com.farasatnovruzov.movieappcompose.R
+import com.farasatnovruzov.movieappcompose.components.booksociety.BookSocietyAppBar
+import com.farasatnovruzov.movieappcompose.components.booksociety.FABContent
 import com.farasatnovruzov.movieappcompose.model.booksociety.MBook
 import com.farasatnovruzov.movieappcompose.navigation.booksociety.BookSocietyScreens
 import com.farasatnovruzov.movieappcompose.ui.theme.CustomBlue
@@ -89,19 +96,23 @@ fun HomeContent(navController: NavController) {
         FirebaseAuth.getInstance().currentUser?.email?.split("@")?.get(0)
     else "N/A"
 
-    Column(modifier = Modifier.padding(2.dp),verticalArrangement = Arrangement.SpaceEvenly){
+    Column(modifier = Modifier.padding(2.dp), verticalArrangement = Arrangement.Top) {
         Row(modifier = Modifier.align(alignment = Alignment.Start)) {
             TitleSection(label = "Your reading \n activity right now...")
             Spacer(modifier = Modifier.fillMaxWidth(0.7f))
 //            Box{}
             Column {
-                Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = "Profile Icon",
-                    modifier = Modifier.clickable{
-                        navController.navigate(BookSocietyScreens.StatsScreen.name)
-                    }.size(45.dp),
+                Icon(
+                    imageVector = Icons.Filled.AccountCircle, contentDescription = "Profile Icon",
+                    modifier = Modifier
+                        .clickable {
+                            navController.navigate(BookSocietyScreens.StatsScreen.name)
+                        }
+                        .size(45.dp),
                     tint = CustomBlue,
-                    )
-                Text(text = currentUserName!!,
+                )
+                Text(
+                    text = currentUserName!!,
                     modifier = Modifier.padding(2.dp),
                     style = TextStyle(
                         color = CustomBlue,
@@ -143,100 +154,56 @@ fun TitleSection(
 }
 
 @Composable
-fun SocialArea(books: List<MBook>, navController: NavController){
+fun SocialArea(books: List<MBook>, navController: NavController) {
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
-fun BookSocietyAppBar(
-    title: String,
-    showProfile: Boolean = true,
+fun BookListCard(
+    book: MBook = MBook(
+        id = "1",
+        title = "Book Title",
+        authors = "Author Name",
+        notes = "Book Notes",
+    ),
     navController: NavController,
-    elevation: Dp = 10.dp,
-    padding: Dp = 8.dp,
+    onPressDetails: (String) -> Unit = {}
 ) {
-    val roundedShape = RoundedCornerShape(
-        topStartPercent = 10,
-        topEndPercent = 10,
-        bottomEndPercent = 10,
-        bottomStartPercent = 10
-    )
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = padding, end = padding)
-//            .padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
-            .shadow(elevation = elevation, shape = roundedShape) // Apply shadow first
-            .border(
-                width = 0.dp,
-//                color = MaterialTheme.colorScheme.secondary,
-                color = Color.Transparent,
-                shape = roundedShape
-            ) // Apply border
-            .clip(roundedShape), // Clip the content
-    ) {
-        TopAppBar(
-            title = {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    if (showProfile) {
-                        Image(
-                            painter = painterResource(id = R.drawable.book_society_logo),
-                            contentDescription = "Book Society Logo",
-                            modifier = Modifier
-//                                .clip(RoundedCornerShape(12.dp))
-                                .scale(0.8f)
-                        )
-                    }
-                    Spacer(modifier = Modifier.padding(15.dp))
-                    Text(
-                        text = title, color = CustomBlue,
-                        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                    )
-                }
+    val context = LocalContext.current
+    val resources = context.resources
+    val displayMetrics = resources.displayMetrics
+    val screenWidth = displayMetrics.widthPixels / displayMetrics.density
+    val spacing  = 10.dp
+    Card(
+        modifier = Modifier.padding(16.dp)
+            .height(200.dp)
+            .width(180.dp)
+            .clickable {
+                onPressDetails(book.id.toString())
             },
-            actions = {
-                IconButton(onClick = {
-                    FirebaseAuth.getInstance().signOut().run {
-                        navController.navigate(BookSocietyScreens.LoginScreen.name)
-                    }
-                }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.Logout,
-                        contentDescription = "Logout",
-                        tint = CustomBlue
-                    )
-                }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.Transparent
-            ),
-            scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
-            modifier = Modifier.padding(padding)
-            )
-
-    }
-
-}
-
-@Composable
-fun FABContent(onTap: () -> Unit) {
-    FloatingActionButton(
-        onClick = {
-            onTap()
-        },
-        shape = RoundedCornerShape(50.dp),
-        containerColor = CustomBlue,
-//        contentColor = Color.White
-    ) {
-        Icon(
-            imageVector = Icons.Default.Add,
-            contentDescription = "Add a Book",
-            tint = Color.White
+        shape = RoundedCornerShape(40),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 10.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
         )
+    ) {
+        Column (
+            modifier = Modifier.width(screenWidth.dp-(spacing*2)),
+            horizontalAlignment = Alignment.Start,
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                Image(painter = rememberAsyncImagePainter(
+                    model = "book image"
+                ),contentDescription = "Book Society Logo",
+                    modifier = Modifier.height(140.dp).width(100.dp).padding(4.dp))
+                Spacer(modifier = Modifier.width(50.dp))
+            }
 
+        }
     }
+
 }
