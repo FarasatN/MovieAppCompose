@@ -3,28 +3,21 @@ package com.farasatnovruzov.movieappcompose.components.booksociety
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.HideSource
-import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -109,7 +102,7 @@ fun InputField(
             value = emailState.value,
             onValueChange = {
                 emailState.value = it
-                            },
+            },
             label = { Text(text = labelId) },
             singleLine = isSingleLine,
             textStyle = MaterialTheme.typography.bodyMedium,
@@ -127,7 +120,7 @@ fun InputField(
                 cursorColor = color,
             )
         )
-       // Display the error message if it exists
+        // Display the error message if it exists
         if (!validationError.isNullOrBlank() && !emailState.value.isEmpty()) {
             Text(
                 text = validationError ?: "",
@@ -158,10 +151,10 @@ fun PasswordInput(
     // Regex for email validation
     validationError = when {
 //        passwordState.value.isEmpty() -> stringResource(R.string.invalid_password)
-        passwordState.value.length<6 -> stringResource(R.string.invalid_password)
+        passwordState.value.length < 6 -> stringResource(R.string.invalid_password)
         else -> null
     }
-    
+
     val visualTransformation =
         if (passwordVisibility.value) VisualTransformation.None else PasswordVisualTransformation()
     Column(
@@ -191,7 +184,7 @@ fun PasswordInput(
 
                 // 4. Create an IconButton to toggle the state
                 IconButton(onClick = { passwordVisibility.value = !passwordVisibility.value }) {
-                    Icon(imageVector  = image, contentDescription = "Toggle password visibility")
+                    Icon(imageVector = image, contentDescription = "Toggle password visibility")
                 }
             },
             keyboardActions = onAction,

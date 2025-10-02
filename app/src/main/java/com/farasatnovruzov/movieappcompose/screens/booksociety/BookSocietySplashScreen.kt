@@ -31,6 +31,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.farasatnovruzov.movieappcompose.R
 import com.farasatnovruzov.movieappcompose.navigation.booksociety.BookSocietyScreens
 import com.farasatnovruzov.movieappcompose.navigation.weather.WeatherScreens
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 
 
@@ -47,10 +48,21 @@ fun BookSocietySplashScreen(
                 OvershootInterpolator(8f).getInterpolation(it)
             })
         )
-        delay(5000L)
-        navController.navigate(
-            BookSocietyScreens.LoginScreen.name
-        )
+        delay(4000L)
+        if (FirebaseAuth.getInstance().currentUser?.email.isNullOrEmpty()) {
+            navController.navigate(
+                BookSocietyScreens.LoginScreen.name
+            )
+        }else{
+            navController.navigate(
+                BookSocietyScreens.HomeScreen.name
+            )
+        }
+
+//        navController.navigate(
+//            BookSocietyScreens.LoginScreen.name
+//        )
+
     })
 
     Surface(
