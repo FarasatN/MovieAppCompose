@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -201,9 +202,28 @@ fun BookListCard(
                 ),contentDescription = "Book Society Logo",
                     modifier = Modifier.height(140.dp).width(100.dp).padding(4.dp))
                 Spacer(modifier = Modifier.width(50.dp))
+                Column(
+                    modifier = Modifier.padding(25.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.FavoriteBorder,
+                        contentDescription = "Fav Icon",
+                        modifier = Modifier.padding(bottom = 1.dp),
+                        tint = CustomBlue,
+                    )
+
+                    BookRating(score = 4.5)
+                }
             }
 
         }
     }
 
+}
+
+@Composable
+fun BookRating(score: Double) {
+    
 }
