@@ -46,6 +46,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -159,7 +160,7 @@ fun SocialArea(books: List<MBook>, navController: NavController) {
 
 }
 
-
+@Preview(showBackground = true)
 @Composable
 fun BookListCard(
     book: MBook = MBook(
@@ -168,7 +169,7 @@ fun BookListCard(
         authors = "Author Name",
         notes = "Book Notes",
     ),
-    navController: NavController,
+//    navController: NavController,
     onPressDetails: (String) -> Unit = {}
 ) {
     val context = LocalContext.current
@@ -183,7 +184,7 @@ fun BookListCard(
             .clickable {
                 onPressDetails(book.id.toString())
             },
-        shape = RoundedCornerShape(40),
+        shape = RoundedCornerShape(15),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 10.dp),
         colors = CardDefaults.cardColors(
@@ -203,7 +204,7 @@ fun BookListCard(
                     modifier = Modifier.height(140.dp).width(100.dp).padding(4.dp))
                 Spacer(modifier = Modifier.width(50.dp))
                 Column(
-                    modifier = Modifier.padding(25.dp),
+                    modifier = Modifier.padding(top = 20.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
