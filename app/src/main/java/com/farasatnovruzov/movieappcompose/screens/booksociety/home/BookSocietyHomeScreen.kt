@@ -298,7 +298,6 @@ fun RoundedButton(
                     bottomEndPercent = radius,
                 )
             ),
-//        shape = RoundedCornerShape(radius.dp),
         color = color,
     ) {
         Column(
