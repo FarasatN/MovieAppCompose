@@ -49,6 +49,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -118,6 +119,7 @@ fun InputField(
     imeAction: ImeAction = ImeAction.Next,
     onAction: KeyboardActions = KeyboardActions.Default,
     color: Color = CustomBlue,
+//    hint: String = "Email",
 ) {
     var validationError by rememberSaveable { mutableStateOf<String?>(null) }
     // Regex for email validation
@@ -255,10 +257,12 @@ fun PasswordInput(
 @Composable
 fun BookSocietyAppBar(
     title: String,
+    icon: ImageVector? = null,
     showProfile: Boolean = true,
     navController: NavController,
     elevation: Dp = 10.dp,
     padding: Dp = 8.dp,
+    onBackArrowClicked: () -> Unit = {}
 ) {
     val roundedShape = RoundedCornerShape(
         topStartPercent = 10,
@@ -295,7 +299,12 @@ fun BookSocietyAppBar(
                                 .scale(0.8f)
                         )
                     }
-                    Spacer(modifier = Modifier.padding(15.dp))
+                    if (icon!=null){
+                        Icon(imageVector = icon, contentDescription = "arrow back", tint = CustomBlue, modifier = Modifier.clickable {
+                            onBackArrowClicked.invoke()
+                        })
+                    }
+                    Spacer(modifier = Modifier.padding(40.dp))
                     Text(
                         text = title, color = CustomBlue,
                         style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)
@@ -303,17 +312,20 @@ fun BookSocietyAppBar(
                 }
             },
             actions = {
-                IconButton(onClick = {
-                    FirebaseAuth.getInstance().signOut().run {
-                        navController.navigate(BookSocietyScreens.LoginScreen.name)
+                if (showProfile){
+                    IconButton(onClick = {
+                        FirebaseAuth.getInstance().signOut().run {
+                            navController.navigate(BookSocietyScreens.LoginScreen.name)
+                        }
+                    }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.Logout,
+                            contentDescription = "Logout",
+                            tint = CustomBlue
+                        )
                     }
-                }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.Logout,
-                        contentDescription = "Logout",
-                        tint = CustomBlue
-                    )
                 }
+
             },
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = Color.Transparent
