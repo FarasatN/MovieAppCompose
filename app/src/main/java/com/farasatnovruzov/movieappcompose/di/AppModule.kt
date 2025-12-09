@@ -6,6 +6,7 @@ import com.farasatnovruzov.movieappcompose.data.note.NoteDatabase
 import com.farasatnovruzov.movieappcompose.data.note.NoteDatabaseDao
 import com.farasatnovruzov.movieappcompose.data.weather.WeatherDao
 import com.farasatnovruzov.movieappcompose.data.weather.WeatherDatabase
+import com.farasatnovruzov.movieappcompose.network.booksociety.BooksApi
 import com.farasatnovruzov.movieappcompose.network.question.QuestionApi
 import com.farasatnovruzov.movieappcompose.network.weather.WeatherApi
 import com.farasatnovruzov.movieappcompose.repository.question.QuestionRepository
@@ -23,6 +24,21 @@ import javax.inject.Singleton
 @Module
 //class AppModule {
 object AppModule { //hilt best practice used with "object"
+
+    //Book Society
+    @Provides
+    @Singleton
+    fun provideBookApi(): BooksApi{
+        return Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL_BOOK_SOCIETY)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(BooksApi::class.java)
+
+    }
+
+
+
 
     //Weather
     @Provides
