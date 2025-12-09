@@ -34,10 +34,7 @@ object AppModule { //hilt best practice used with "object"
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(BooksApi::class.java)
-
     }
-
-
 
 
     //Weather

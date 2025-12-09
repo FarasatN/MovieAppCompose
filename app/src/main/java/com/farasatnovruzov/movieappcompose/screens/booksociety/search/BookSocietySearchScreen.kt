@@ -165,7 +165,7 @@ fun BookRow(book: MBook, navController: NavController) {
                     modifier = Modifier.padding(4.dp)
                 )
                 Text(
-                    text = "Author: " + book.authors.toString(),
+                    text = "Author: ${book.authors.toString()}",
                     overflow = TextOverflow.Clip,
                     style = TextStyle(
                         fontSize = 16.sp
