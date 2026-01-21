@@ -9,6 +9,7 @@ import com.farasatnovruzov.movieappcompose.data.weather.WeatherDatabase
 import com.farasatnovruzov.movieappcompose.network.booksociety.BooksApi
 import com.farasatnovruzov.movieappcompose.network.question.QuestionApi
 import com.farasatnovruzov.movieappcompose.network.weather.WeatherApi
+import com.farasatnovruzov.movieappcompose.repository.booksociety.BookSocietyRepository
 import com.farasatnovruzov.movieappcompose.repository.question.QuestionRepository
 import com.farasatnovruzov.movieappcompose.utils.Constants
 import dagger.Module
@@ -24,6 +25,11 @@ import javax.inject.Singleton
 @Module
 //class AppModule {
 object AppModule { //hilt best practice used with "object"
+
+
+    @Singleton
+    @Provides
+    fun provideBookRepository(api: BooksApi) = BookSocietyRepository(api)
 
     //Book Society
     @Provides

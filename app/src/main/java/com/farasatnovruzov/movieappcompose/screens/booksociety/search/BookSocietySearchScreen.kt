@@ -1,5 +1,6 @@
 package com.farasatnovruzov.movieappcompose.screens.booksociety.search
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,13 +16,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -35,25 +36,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
-import com.farasatnovruzov.movieappcompose.components.booksociety.BookListCard
 import com.farasatnovruzov.movieappcompose.components.booksociety.BookSocietyAppBar
-import com.farasatnovruzov.movieappcompose.model.booksociety.MBook
+import com.farasatnovruzov.movieappcompose.model.booksociety.Item
 
 @OptIn(ExperimentalComposeUiApi::class)
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
 fun BookSocietySearchScreen(
-    navController: NavController = NavController(context = LocalContext.current)
+    navController: NavController,
+    viewModel: BookSocietySearchViewModel = hiltViewModel()
 ) {
     // State to hold the submitted search query
     var searchQuery by rememberSaveable { mutableStateOf("") }
@@ -83,13 +83,18 @@ fun BookSocietySearchScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    // onSearch now updates the state and triggers logic
-                    onSearch = { query ->
-                        searchQuery = query // Update the state with the submitted query
-                        println("Searching for: $query")
-                        // TODO: Call ViewModel function to fetch data here
-                    }
-                )
+                    viewModel = viewModel,
+//                    // onSearch now updates the state and triggers logic
+//                    onSearch = { query ->
+//                        searchQuery = query // Update the state with the submitted query
+//                        println("Searching for: $query")
+//                        // TODO: Call ViewModel function to fetch data here
+//                    },
+                ) { query ->
+                    searchQuery = query // Update the state with the submitted query
+                    println("Searching for: $query")
+                    viewModel.searchBooks(query)
+                }
 
                 // The BookList should be rendered based on the submitted query state
                 Spacer(modifier = Modifier.height(13.dp))
@@ -100,7 +105,7 @@ fun BookSocietySearchScreen(
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
                     // Now calling a composable (BookList) from a composable context (Column)
-                    BookList(navController = navController)
+                    BookList(navController = navController, viewModel = viewModel)
                 }
             }
         }
@@ -108,29 +113,44 @@ fun BookSocietySearchScreen(
 }
 
 @Composable
-fun BookList(navController: NavController) {
-    // Placeholder implementation
-    val listOfBooks = listOf(
-        MBook(id = "dadfa", title = "Hello Again", authors = "All of us"),
-        MBook(id = "dadfa", title = "Hello Again", authors = "All of us"),
-        MBook(id = "dadfa", title = "Hello Again", authors = "All of us"),
-        MBook(id = "dadfa", title = "Hello Again", authors = "All of us"),
-        MBook(id = "dadfa", title = "Hello Again", authors = "All of us"),
-        MBook(id = "dadfa", title = "Hello Again", authors = "All of us"),
-    )
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp)
-    ) {
-        items(listOfBooks) { index ->
-            BookRow(book = index, navController = navController)
-            Spacer(modifier = Modifier.height(8.dp))
+fun BookList(
+    navController: NavController,
+    viewModel: BookSocietySearchViewModel = hiltViewModel(),
+    modifier: Modifier = Modifier
+) {
+    val listOfBooks = viewModel.list
+
+    if (viewModel.isLoading) {
+        Log.d("BOOK", "BookList: loading...")
+        LinearProgressIndicator(modifier = modifier.fillMaxWidth())
+    }else{
+        Log.d("BOOK", "BookList: $listOfBooks")
+        LazyColumn(
+            modifier = modifier,
+            contentPadding = PaddingValues(16.dp)
+        ) {
+            items(listOfBooks) { index ->
+                BookRow(book = index, navController = navController)
+                Spacer(modifier = Modifier.height(8.dp))
+            }
         }
     }
+
+//    // Placeholder implementation
+//    val listOfBooks = listOf(
+//        MBook(id = "dadfa", title = "Hello Again", authors = "All of us"),
+//        MBook(id = "dadfa", title = "Hello Again", authors = "All of us"),
+//        MBook(id = "dadfa", title = "Hello Again", authors = "All of us"),
+//        MBook(id = "dadfa", title = "Hello Again", authors = "All of us"),
+//        MBook(id = "dadfa", title = "Hello Again", authors = "All of us"),
+//        MBook(id = "dadfa", title = "Hello Again", authors = "All of us"),
+//    )
+
+
 }
 
 @Composable
-fun BookRow(book: MBook, navController: NavController) {
+fun BookRow(book: Item, navController: NavController) {
     Card(
         modifier = Modifier
             .clickable {
@@ -148,8 +168,11 @@ fun BookRow(book: MBook, navController: NavController) {
             modifier = Modifier.padding(5.dp),
             verticalAlignment = androidx.compose.ui.Alignment.Top
         ) {
-            val imageUrl: String =
+//            val imageUrl: String = "http://books.google.com/books/content?id=UeR4DO_HvgoC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+//            val imageUrl: String = book.volumeInfo.imageLinks.smallThumbnail
+            val imageUrl: String = book.volumeInfo.imageLinks.smallThumbnail.ifEmpty {
                 "http://books.google.com/books/content?id=UeR4DO_HvgoC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            }
             Image(
                 painter = rememberAsyncImagePainter(model = imageUrl),
                 contentDescription = "Book Image",
@@ -160,18 +183,32 @@ fun BookRow(book: MBook, navController: NavController) {
             )
             Column() {
                 Text(
-                    text = book.title.toString(),
+                    text = book.volumeInfo.title,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(4.dp)
                 )
                 Text(
-                    text = "Author: ${book.authors.toString()}",
+                    text = "Author: ${book.volumeInfo.authors}",
                     overflow = TextOverflow.Clip,
-                    style = TextStyle(
-                        fontSize = 16.sp
-                    ),
+                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+                    fontSize = 16.sp,
                     modifier = Modifier.padding(4.dp)
                 )
+                Text(
+                    text = "Author: ${book.volumeInfo.publishedDate}",
+                    overflow = TextOverflow.Clip,
+                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(4.dp)
+                )
+                Text(
+                    text = "Author: ${book.volumeInfo.categories}",
+                    overflow = TextOverflow.Clip,
+                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(4.dp)
+                )
+
 
             }
         }
@@ -184,11 +221,12 @@ fun BookRow(book: MBook, navController: NavController) {
 @ExperimentalComposeUiApi
 @Composable
 fun SearchForm(
+    viewModel: BookSocietySearchViewModel,
     modifier: Modifier = Modifier,
     loading: Boolean = false,
     hint: String = "Search",
     // FIX: Changed signature to non-Composable function type
-    onSearch: (String) -> Unit
+    onSearch: (String) -> Unit = {}
 ) {
     Column(modifier = modifier) {
         val searchQueryState = rememberSaveable { mutableStateOf("") }

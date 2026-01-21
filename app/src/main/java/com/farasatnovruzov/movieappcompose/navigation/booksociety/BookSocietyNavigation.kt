@@ -1,6 +1,7 @@
 package com.farasatnovruzov.movieappcompose.navigation.booksociety
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -9,6 +10,7 @@ import com.farasatnovruzov.movieappcompose.screens.booksociety.details.BookSocie
 import com.farasatnovruzov.movieappcompose.screens.booksociety.home.BookSocietyHomeScreen
 import com.farasatnovruzov.movieappcompose.screens.booksociety.login.BookSocietyLoginScreen
 import com.farasatnovruzov.movieappcompose.screens.booksociety.search.BookSocietySearchScreen
+import com.farasatnovruzov.movieappcompose.screens.booksociety.search.BookSocietySearchViewModel
 import com.farasatnovruzov.movieappcompose.screens.booksociety.stats.BookSocietyStatsScreen
 import com.farasatnovruzov.movieappcompose.screens.booksociety.update.BookSocietyUpdateScreen
 
@@ -31,7 +33,8 @@ fun BookSocietyNavigation() {
             BookSocietyHomeScreen(navController = navController)
         }
         composable(BookSocietyScreens.SearchScreen.name) {
-            BookSocietySearchScreen(navController = navController)
+            val searchViewModel = hiltViewModel<BookSocietySearchViewModel>()
+            BookSocietySearchScreen(navController = navController, viewModel = searchViewModel)
         }
         composable(BookSocietyScreens.StatsScreen.name) {
             BookSocietyStatsScreen(navController = navController)
