@@ -1,13 +1,11 @@
 package com.farasatnovruzov.movieappcompose.screens.booksociety.search
 
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.farasatnovruzov.movieappcompose.data.DataOrException
 import com.farasatnovruzov.movieappcompose.data.Resource
 import com.farasatnovruzov.movieappcompose.model.booksociety.Item
 import com.farasatnovruzov.movieappcompose.repository.booksociety.BookSocietyRepository
@@ -53,6 +51,7 @@ class BookSocietySearchViewModel @Inject constructor(private val repository: Boo
     init {
         loadBooks()
     }
+
     private fun loadBooks() {
         searchBooks("kotlin")
     }
@@ -67,14 +66,18 @@ class BookSocietySearchViewModel @Inject constructor(private val repository: Boo
                 when (val response = repository.getBooks(query)) {
                     is Resource.Success -> {
                         list = response.data!!
-                        if (list.isNotEmpty())isLoading = false
+                        if (list.isNotEmpty()) isLoading = false
 
                     }
+
                     is Resource.Error -> {
                         isLoading = false
                         Log.d("Network", "searchBooks: ${response.message}")
                     }
-                    else -> {isLoading = false}
+
+                    else -> {
+                        isLoading = false
+                    }
                 }
             } catch (exception: Exception) {
                 isLoading = false

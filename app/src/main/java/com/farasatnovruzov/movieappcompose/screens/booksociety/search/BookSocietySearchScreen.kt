@@ -37,7 +37,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -123,7 +122,7 @@ fun BookList(
     if (viewModel.isLoading) {
         Log.d("BOOK", "BookList: loading...")
         LinearProgressIndicator(modifier = modifier.fillMaxWidth())
-    }else{
+    } else {
         Log.d("BOOK", "BookList: $listOfBooks")
         LazyColumn(
             modifier = modifier,
