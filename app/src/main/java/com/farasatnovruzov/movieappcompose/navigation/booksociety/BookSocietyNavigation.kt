@@ -5,6 +5,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.farasatnovruzov.movieappcompose.screens.booksociety.BookSocietySplashScreen
 import com.farasatnovruzov.movieappcompose.screens.booksociety.details.BookSocietyDetailsScreen
 import com.farasatnovruzov.movieappcompose.screens.booksociety.home.BookSocietyHomeScreen
@@ -39,9 +40,16 @@ fun BookSocietyNavigation() {
         composable(BookSocietyScreens.StatsScreen.name) {
             BookSocietyStatsScreen(navController = navController)
         }
-        composable(BookSocietyScreens.DetailsScreen.name) {
-            BookSocietyDetailsScreen(navController = navController)
+
+        val detailName = BookSocietyScreens.DetailsScreen.name
+        composable(detailName + "/{bookId}", arguments = listOf(navArgument("bookId") {
+            type = androidx.navigation.NavType.StringType
+        })) { backStackEntry ->
+            backStackEntry.arguments?.getString("bookId").let {
+                BookSocietyDetailsScreen(navController = navController, bookId = it.toString())
+            }
         }
+
         composable(BookSocietyScreens.UpdateScreen.name) {
             BookSocietyUpdateScreen(navController = navController)
         }

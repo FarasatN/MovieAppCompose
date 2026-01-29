@@ -31,12 +31,40 @@ object AppModule { //hilt best practice used with "object"
     @Provides
     fun provideBookRepository(api: BooksApi) = BookSocietyRepository(api)
 
-    //Book Society
+
+//    //Book Society
+//    @Provides
+//    @Singleton
+//    fun provideBookApi(): BooksApi{
+//        return Retrofit.Builder()
+//            .baseUrl(Constants.BASE_URL_BOOK_SOCIETY)
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//            .create(BooksApi::class.java)
+//    }
+    // Book Society üçün xüsusi Api təminatçısı
     @Provides
     @Singleton
-    fun provideBookApi(): BooksApi{
+    fun provideBookApi(): BooksApi {
+        // Interceptor yaradırıq: Sorğu göndərilməmişdən dərhal əvvəl URL-ə müdaxilə edir
+        val okHttpClient = okhttp3.OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                val originalRequest = chain.request()
+                val originalUrl = originalRequest.url
+
+                // Mövcud URL-in sonuna "key" parametrini əlavə edirik
+                val newUrl = originalUrl.newBuilder()
+                    .addQueryParameter("key", Constants.API_KEY_BOOK_SOCIETY)
+                    .build()
+                // Yeni URL ilə sorğunu yenidən qururuq
+                val newRequest = originalRequest.newBuilder()
+                    .url(newUrl)
+                    .build()
+                chain.proceed(newRequest)
+            }.build()
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL_BOOK_SOCIETY)
+            .client(okHttpClient) // OkHttpClient-i bura bağlayırıq
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(BooksApi::class.java)

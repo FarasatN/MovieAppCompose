@@ -14,6 +14,14 @@ interface BooksApi {
     @GET("volumes")
     suspend fun getAllBooks(@Query("q") query: String): Book
 
+    //Interceptor oldugu ucun buna ehtiyac qalmadi
+//    @GET("volumes")
+//    suspend fun getAllBooks(
+//        @Query("q") query: String,
+//        @Query("key") apiKey: String = Constants.API_KEY_BOOK_SOCIETY // Susmaya görə açarı bura qoyuruq
+//    ): Book
+
+
 
     @GET("volumes/{bookId}")
     suspend fun getBookInfo(@Path("bookId") bookId: String): Item

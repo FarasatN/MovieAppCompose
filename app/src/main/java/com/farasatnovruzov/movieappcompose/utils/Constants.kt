@@ -3,7 +3,9 @@ package com.farasatnovruzov.movieappcompose.utils
 object Constants {
     //Book Society
     //https://www.googleapis.com/books/v1/volumes?q=kotlin
+//    "https://www.googleapis.com/books/v1/volumes?q=android&key=API_KEY_BOOK_SOCIETY"
     const val BASE_URL_BOOK_SOCIETY = "https://www.googleapis.com/books/v1/"
+    const val API_KEY_BOOK_SOCIETY = "AIzaSyAgSu9Ur18h9FNT5q7sx4J9N9XgsO6V8Dg"
 
     //Weather
     const val BASE_URL_WEATHER = "https://api.openweathermap.org/"

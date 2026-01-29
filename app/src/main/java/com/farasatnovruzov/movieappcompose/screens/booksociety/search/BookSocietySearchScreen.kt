@@ -16,14 +16,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -46,6 +49,8 @@ import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
 import com.farasatnovruzov.movieappcompose.components.booksociety.BookSocietyAppBar
 import com.farasatnovruzov.movieappcompose.model.booksociety.Item
+import com.farasatnovruzov.movieappcompose.navigation.booksociety.BookSocietyScreens
+import com.farasatnovruzov.movieappcompose.ui.theme.CustomBlue
 
 @OptIn(ExperimentalComposeUiApi::class)
 //@Preview(showBackground = true)
@@ -82,7 +87,6 @@ fun BookSocietySearchScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    viewModel = viewModel,
 //                    // onSearch now updates the state and triggers logic
 //                    onSearch = { query ->
 //                        searchQuery = query // Update the state with the submitted query
@@ -99,6 +103,8 @@ fun BookSocietySearchScreen(
                 Spacer(modifier = Modifier.height(13.dp))
                 if (searchQuery.isNotEmpty()) {
                     // Show results list only after a search has been executed
+                    println("Results for: $searchQuery")
+
                     Text(
                         text = "Results for: $searchQuery",
                         modifier = Modifier.padding(horizontal = 16.dp)
@@ -121,9 +127,13 @@ fun BookList(
 
     if (viewModel.isLoading) {
         Log.d("BOOK", "BookList: loading...")
-        LinearProgressIndicator(modifier = modifier.fillMaxWidth())
+        Row(horizontalArrangement = Arrangement.SpaceBetween){
+            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            Text(text = "Loading...")
+        }
     } else {
         Log.d("BOOK", "BookList: $listOfBooks")
+        println("BookList: $listOfBooks")
         LazyColumn(
             modifier = modifier,
             contentPadding = PaddingValues(16.dp)
@@ -148,79 +158,164 @@ fun BookList(
 
 }
 
+//@Composable
+//fun BookRow(book: Item, navController: NavController) {
+//    Card(
+//        modifier = Modifier
+//            .clickable {
+//
+//            }
+//            .fillMaxWidth()
+//            .height(100.dp)
+//            .padding(3.dp),
+//        shape = RectangleShape,
+//        elevation = CardDefaults.cardElevation(
+//            defaultElevation = 10.dp // <-- This is the shadow depth
+//        )
+//    ) {
+//        Row(
+//            modifier = Modifier.padding(5.dp),
+//            verticalAlignment = androidx.compose.ui.Alignment.Top
+//        ) {
+////            val imageUrl: String = "http://books.google.com/books/content?id=UeR4DO_HvgoC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+////            val imageUrl: String = book.volumeInfo.imageLinks.smallThumbnail
+//            val imageUrl: String = book.volumeInfo.imageLinks.smallThumbnail.ifEmpty {
+//                "http://books.google.com/books/content?id=UeR4DO_HvgoC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+//            }
+//            Image(
+//                painter = rememberAsyncImagePainter(model = imageUrl),
+//                contentDescription = "Book Image",
+//                modifier = Modifier
+//                    .width(80.dp)
+//                    .fillMaxHeight()
+//                    .padding(end = 3.dp)
+//            )
+//            Column() {
+//                Text(
+//                    text = book.volumeInfo.title,
+//                    overflow = TextOverflow.Ellipsis,
+//                    modifier = Modifier.padding(4.dp)
+//                )
+//                Text(
+//                    text = "Author: ${book.volumeInfo.authors}",
+//                    overflow = TextOverflow.Clip,
+//                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+//                    fontSize = 16.sp,
+//                    modifier = Modifier.padding(4.dp)
+//                )
+//                Text(
+//                    text = "Author: ${book.volumeInfo.publishedDate}",
+//                    overflow = TextOverflow.Clip,
+//                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+//                    fontSize = 16.sp,
+//                    modifier = Modifier.padding(4.dp)
+//                )
+//                Text(
+//                    text = "Author: ${book.volumeInfo.categories}",
+//                    overflow = TextOverflow.Clip,
+//                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+//                    fontSize = 16.sp,
+//                    modifier = Modifier.padding(4.dp)
+//                )
+//
+//
+//            }
+//        }
+//    }
+//}
+
 @Composable
 fun BookRow(book: Item, navController: NavController) {
+    // Mətn hissəsinin skrolu üçün state
+    val scrollState = rememberScrollState()
+
     Card(
         modifier = Modifier
-            .clickable {
-
+            .clickable { /* Detal səhifəsinə keçid məntiqi */
+                navController.navigate(BookSocietyScreens.DetailsScreen.name + "/${book.id}")
             }
             .fillMaxWidth()
-            .height(100.dp)
-            .padding(3.dp),
+            .height(130.dp) // Hündürlüyü bir az artırdıq ki, məlumatlar sığsın
+            .padding(4.dp),
         shape = RectangleShape,
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 10.dp // <-- This is the shadow depth
-        )
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Row(
-            modifier = Modifier.padding(5.dp),
-            verticalAlignment = androidx.compose.ui.Alignment.Top
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
         ) {
-//            val imageUrl: String = "http://books.google.com/books/content?id=UeR4DO_HvgoC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
-//            val imageUrl: String = book.volumeInfo.imageLinks.smallThumbnail
-            val imageUrl: String = book.volumeInfo.imageLinks.smallThumbnail.ifEmpty {
-                "http://books.google.com/books/content?id=UeR4DO_HvgoC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            // 1. Şəkil Hissəsi
+            val imageUrl = book.volumeInfo.imageLinks.smallThumbnail.ifEmpty {
+                "https://books.google.com/books/content?id=UeR4DO_HvgoC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
             }
+
             Image(
                 painter = rememberAsyncImagePainter(model = imageUrl),
                 contentDescription = "Book Image",
                 modifier = Modifier
-                    .width(80.dp)
+                    .width(90.dp)
                     .fillMaxHeight()
-                    .padding(end = 3.dp)
+                    .padding(end = 8.dp)
             )
-            Column() {
+
+            // 2. Mətn Məlumatları Hissəsi
+            // Şəklin yanındakı bütün mətnləri bu Column daxilində yerləşdiririk
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f) // Qalan bütün sahəni mətndən ötrü ayırır
+                    .verticalScroll(scrollState), // Əgər mətn çoxdursa, daxildə skrol olacaq
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                // Başlıq
+
                 Text(
                     text = book.volumeInfo.title,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(4.dp)
-                )
-                Text(
-                    text = "Author: ${book.volumeInfo.authors}",
-                    overflow = TextOverflow.Clip,
-                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(4.dp)
-                )
-                Text(
-                    text = "Author: ${book.volumeInfo.publishedDate}",
-                    overflow = TextOverflow.Clip,
-                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(4.dp)
-                )
-                Text(
-                    text = "Author: ${book.volumeInfo.categories}",
-                    overflow = TextOverflow.Clip,
-                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(4.dp)
+                    style = androidx.compose.ui.text.TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                    ),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
 
+                // Müəlliflər
+                val authors = book.volumeInfo.authors?.joinToString(", ") ?: "Unknown Author"
+                Text(
+                    text = "Authors: $authors",
+                    fontSize = 14.sp,
+                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+                    color = androidx.compose.ui.graphics.Color.Gray
+                )
+
+                // Nəşr tarixi
+                Text(
+                    text = "Published: ${book.volumeInfo.publishedDate ?: "N/A"}",
+                    fontSize = 13.sp
+                )
+
+                // Kateqoriyalar
+                val categories = book.volumeInfo.categories?.joinToString(", ") ?: "General"
+                Text(
+                    text = "Categories: $categories",
+                    fontSize = 13.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
 
             }
         }
     }
-
-
 }
+
+
 
 
 @ExperimentalComposeUiApi
 @Composable
 fun SearchForm(
-    viewModel: BookSocietySearchViewModel,
     modifier: Modifier = Modifier,
     loading: Boolean = false,
     hint: String = "Search",
@@ -236,6 +331,10 @@ fun SearchForm(
         }
 
         OutlinedTextField(
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = CustomBlue,
+                cursorColor = CustomBlue
+            ),
             value = searchQueryState.value,
             onValueChange = { searchQueryState.value = it },
             label = { Text(text = hint) },

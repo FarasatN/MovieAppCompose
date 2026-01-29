@@ -73,16 +73,22 @@ class BookSocietySearchViewModel @Inject constructor(private val repository: Boo
                     is Resource.Error -> {
                         isLoading = false
                         Log.d("Network", "searchBooks: ${response.message}")
+                        println("searchBooks: ${response.message}")
                     }
 
                     else -> {
                         isLoading = false
+                        Log.d("Network", "searchBooks: ${response.message}")
+                        println("searchBooks: ${response.message}")
                     }
                 }
             } catch (exception: Exception) {
                 isLoading = false
                 Log.d(
                     "Network",
+                    "searchBooks: ${exception.message.toString()}: Failed getting books"
+                )
+                println(
                     "searchBooks: ${exception.message.toString()}: Failed getting books"
                 )
 
