@@ -1,5 +1,7 @@
 package com.farasatnovruzov.movieappcompose.screens.booksociety.details
 
+import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -19,22 +22,26 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.text.HtmlCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
 import com.farasatnovruzov.movieappcompose.components.booksociety.BookSocietyAppBar
+import com.farasatnovruzov.movieappcompose.components.booksociety.RoundedButton
 import com.farasatnovruzov.movieappcompose.data.Resource
 import com.farasatnovruzov.movieappcompose.model.booksociety.Item
+import com.farasatnovruzov.movieappcompose.model.booksociety.MBook
 import com.farasatnovruzov.movieappcompose.navigation.booksociety.BookSocietyScreens
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 @Composable
@@ -126,5 +133,113 @@ fun ShowBookDetails(bookInfo: Resource<Item>, navController: NavController) {
         modifier = Modifier
             .height(5.dp)
     )
+    val cleanDescription = HtmlCompat.fromHtml(
+        bookData?.description ?: "",
+        HtmlCompat.FROM_HTML_MODE_LEGACY
+    ).toString()
+
+    val localDims = LocalContext.current.resources.displayMetrics
+
+    Surface(
+        modifier = Modifier
+            .height(localDims.heightPixels.dp.times(0.09f))
+            .padding(4.dp),
+        shape = RectangleShape,
+        border = BorderStroke(1.dp, Color.DarkGray)
+
+    ) {
+
+        LazyColumn(
+            modifier = Modifier.padding(3.dp)
+        ) {
+            item {
+                Text(text = cleanDescription)
+            }
+
+        }
+    }
+
+
+    //Buttons
+    Row(
+//        modifier = Modifier.padding(top = 6.dp),
+//        horizontalArrangement = Arrangement.SpaceAround
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                top = 20.dp,
+                start = 30.dp,
+                end = 30.dp
+            ), // Yanlardan boşluq düymələri daraldır
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        RoundedButton(
+            label = "Save",
+            modifier = Modifier
+                .weight(1f)
+                .height(48.dp)
+        ) {
+            //Save this book to the database
+            val book = MBook(
+                title = bookData?.title,
+                authors = bookData?.authors.toString(),
+                description = bookData?.description,
+                categories = bookData?.categories.toString(),
+                notes = "",
+                photoUrl = bookData?.imageLinks?.thumbnail,
+                publishedDate = bookData?.publishedDate,
+                pageCount = bookData?.pageCount.toString(),
+                rating = 0.0,
+                googleBookId = googleBookId,
+                userId = FirebaseAuth.getInstance().currentUser?.uid.toString()
+            )
+            saveToFireBase(book, navController = navController)
+
+            //navController.popBackStack()
+            //            navController.navigate(BookSocietyScreens.SearchScreen.name)
+        }
+        Spacer(modifier = Modifier.width(10.dp))
+        RoundedButton(
+            label = "Save",
+            modifier = Modifier
+                .weight(1f)
+                .height(48.dp)
+        ) {
+            navController.popBackStack()
+        }
+    }
+
+
+}
+
+
+//@Composable
+fun saveToFireBase(book: MBook, navController: NavController) {
+    val db = FirebaseFirestore.getInstance()
+    val dbCollection = db.collection("books")
+    if (book.id.isNullOrEmpty()) {
+        book.id = db.collection("books").document().id
+        dbCollection.add(book)
+            .addOnSuccessListener { documentRef ->
+                val docId = documentRef.id
+                dbCollection.document(docId)
+                    .update(hashMapOf("id" to docId) as Map<String, Any>)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            println("Successfully updated document with ID: $docId")
+                            navController.popBackStack()
+//                            navController.navigate(BookSocietyScreens.SearchScreen.name)
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("Error", "saveToFireBase: Error updating document", e)
+                        println("Error updating document: $e")
+                    }
+            }
+
+    } else {
+        dbCollection.document(book.id.toString())
+    }
 
 }

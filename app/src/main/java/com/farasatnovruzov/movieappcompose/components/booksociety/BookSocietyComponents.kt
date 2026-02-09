@@ -299,10 +299,14 @@ fun BookSocietyAppBar(
                                 .scale(0.8f)
                         )
                     }
-                    if (icon!=null){
-                        Icon(imageVector = icon, contentDescription = "arrow back", tint = CustomBlue, modifier = Modifier.clickable {
-                            onBackArrowClicked.invoke()
-                        })
+                    if (icon != null) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = "arrow back",
+                            tint = CustomBlue,
+                            modifier = Modifier.clickable {
+                                onBackArrowClicked.invoke()
+                            })
                     }
                     Spacer(modifier = Modifier.padding(40.dp))
                     Text(
@@ -312,7 +316,7 @@ fun BookSocietyAppBar(
                 }
             },
             actions = {
-                if (showProfile){
+                if (showProfile) {
                     IconButton(onClick = {
                         FirebaseAuth.getInstance().signOut().run {
                             navController.navigate(BookSocietyScreens.LoginScreen.name)
@@ -359,7 +363,6 @@ fun FABContent(onTap: () -> Unit) {
 }
 
 
-
 @Composable
 fun BookRating(score: Double = 4.5) {
     Surface(
@@ -389,7 +392,6 @@ fun BookRating(score: Double = 4.5) {
 }
 
 
-
 @Composable
 fun TitleSection(
     modifier: Modifier = Modifier, label: String
@@ -406,7 +408,6 @@ fun TitleSection(
         }
     }
 }
-
 
 
 //@Preview(showBackground = true)
@@ -522,10 +523,14 @@ fun BookListCard(
 //@Preview(showBackground = true)
 @Composable
 fun RoundedButton(
-    label: String = "Reading", radius: Int = 50, color: Color = CustomBlue, onPress: () -> Unit = {}
+    label: String = "Reading",
+    modifier: Modifier = Modifier,
+    radius: Int = 50,
+    color: Color = CustomBlue,
+    onPress: () -> Unit = {},
 ) {
     Surface(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .fillMaxHeight(1f)
 //            .padding(20.dp)
