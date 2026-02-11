@@ -167,7 +167,7 @@ fun HorizontalScrollableComponent(
     ) {
         for (book in listOfBooks) {
             BookListCard(book, navController) {
-                onCardPressed(it)
+                onCardPressed(book.googleBookId.toString())
             }
         }
 

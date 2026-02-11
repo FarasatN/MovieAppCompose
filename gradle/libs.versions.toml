@@ -31,6 +31,7 @@ roomPaging = "2.7.2"
 roomRuntime = "2.7.2"
 kspVersion = "2.2.0-2.0.2"
 hiltVersion = "2.56.2"
+material3 = "1.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -76,6 +77,7 @@ lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "
 lottie-dotlottie = { module = "com.airbnb.android:lottie-dotlottie", version.ref = "lottieDotlottie" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 
 
 [plugins]
