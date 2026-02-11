@@ -19,6 +19,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.farasatnovruzov.movieappcompose.components.booksociety.BookListCard
 import com.farasatnovruzov.movieappcompose.components.booksociety.BookSocietyAppBar
@@ -41,7 +43,8 @@ import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun BookSocietyHomeScreen(
-    navController: NavController = NavController(context = LocalContext.current)
+    navController: NavController = NavController(context = LocalContext.current),
+    viewModel: BookSocietyHomeScreenViewModel = hiltViewModel()
 ) {
 
     Scaffold(topBar = {
@@ -58,23 +61,32 @@ fun BookSocietyHomeScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            HomeContent(navController = navController)
+            HomeContent(navController = navController, viewModel = viewModel)
         }
-
     }
-
 }
 
 @Composable
-fun HomeContent(navController: NavController) {
-    val listOfBooks = listOf(
-        MBook(id = "dadfa", title = "Hello Again", authors = "All of us"),
-        MBook(id = "dadfa", title = "Hello Again", authors = "All of us"),
-        MBook(id = "dadfa", title = "Hello Again", authors = "All of us"),
-        MBook(id = "dadfa", title = "Hello Again", authors = "All of us"),
-        MBook(id = "dadfa", title = "Hello Again", authors = "All of us"),
-        MBook(id = "dadfa", title = "Hello Again", authors = "All of us"),
-    )
+fun HomeContent(navController: NavController, viewModel: BookSocietyHomeScreenViewModel) {
+//    val listOfBooks = listOf(
+//        MBook(id = "dadfa", title = "Hello Again", authors = "All of us"),
+//        MBook(id = "dadfa", title = "Hello Again", authors = "All of us"),
+//        MBook(id = "dadfa", title = "Hello Again", authors = "All of us"),
+//        MBook(id = "dadfa", title = "Hello Again", authors = "All of us"),
+//        MBook(id = "dadfa", title = "Hello Again", authors = "All of us"),
+//        MBook(id = "dadfa", title = "Hello Again", authors = "All of us"),
+//    )
+    var listOfBooks = viewModel.data.value.data?.toMutableStateList()
+    val currentUser = FirebaseAuth.getInstance().currentUser
+    if (!viewModel.data.value.data.isNullOrEmpty()) {
+        listOfBooks = viewModel.data.value.data?.toMutableStateList()?.filter { mBook ->
+            mBook.userId == currentUser?.uid.toString()
+        }?.toMutableStateList()
+        println("Current User Id: ${currentUser?.uid.toString()}")
+        println("Current User lists: ${listOfBooks.toString()}")
+    }
+
+
     val currentUserName =
         if (!FirebaseAuth.getInstance().currentUser?.email.isNullOrEmpty()) FirebaseAuth.getInstance().currentUser?.email?.split(
             "@"
@@ -114,13 +126,14 @@ fun HomeContent(navController: NavController) {
 
 
         SocialArea(
-            books = listOf(
-                MBook(
-                    id = "dadfa",
-                    title = "Hello Again",
-                    authors = ""
-                )
-            ), navController = navController
+            books = listOfBooks!!.toList()
+//                listOf(
+//                MBook(
+//                    id = "dadfa",
+//                    title = "Hello Again",
+//                    authors = ""
+//                ))
+            , navController = navController
         )
 
         TitleSection(label = "Reading List")
@@ -132,20 +145,26 @@ fun HomeContent(navController: NavController) {
 
 @Composable
 fun BookListArea(listOfBooks: List<MBook>, navController: NavController) {
-    HorizontalScrollableComponent(listOfBooks,navController = navController ) {
+    HorizontalScrollableComponent(listOfBooks, navController = navController) {
         //on card clicked to go to details screen
-        navController.navigate(BookSocietyScreens.UpdateScreen.name)
+        navController.navigate(BookSocietyScreens.UpdateScreen.name+"/$it")
 
     }
 }
 
 @Composable
-fun HorizontalScrollableComponent(listOfBooks: List<MBook>,navController: NavController, onCardPressed: (String) -> Unit) {
+fun HorizontalScrollableComponent(
+    listOfBooks: List<MBook>,
+    navController: NavController,
+    onCardPressed: (String) -> Unit
+) {
     val scrollState = androidx.compose.foundation.rememberScrollState()
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .heightIn(280.dp)
-        .horizontalScroll(scrollState)) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(280.dp)
+            .horizontalScroll(scrollState)
+    ) {
         for (book in listOfBooks) {
             BookListCard(book, navController) {
                 onCardPressed(it)
@@ -157,5 +176,5 @@ fun HorizontalScrollableComponent(listOfBooks: List<MBook>,navController: NavCon
 
 @Composable
 fun SocialArea(books: List<MBook>, navController: NavController) {
-    BookListCard(book = books[0], navController = navController)
+    BookListCard(book = if (books.isNotEmpty()) books[0] else MBook(), navController = navController)
 }

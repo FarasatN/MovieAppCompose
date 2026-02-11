@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import com.farasatnovruzov.movieappcompose.screens.booksociety.BookSocietySplashScreen
 import com.farasatnovruzov.movieappcompose.screens.booksociety.details.BookSocietyDetailsScreen
 import com.farasatnovruzov.movieappcompose.screens.booksociety.home.BookSocietyHomeScreen
+import com.farasatnovruzov.movieappcompose.screens.booksociety.home.BookSocietyHomeScreenViewModel
 import com.farasatnovruzov.movieappcompose.screens.booksociety.login.BookSocietyLoginScreen
 import com.farasatnovruzov.movieappcompose.screens.booksociety.search.BookSocietySearchScreen
 import com.farasatnovruzov.movieappcompose.screens.booksociety.search.BookSocietySearchViewModel
@@ -31,7 +32,8 @@ fun BookSocietyNavigation() {
             BookSocietyLoginScreen(navController = navController)
         }
         composable(BookSocietyScreens.HomeScreen.name) {
-            BookSocietyHomeScreen(navController = navController)
+            val homeViewModel = hiltViewModel<BookSocietyHomeScreenViewModel>()
+            BookSocietyHomeScreen(navController = navController, viewModel = homeViewModel)
         }
         composable(BookSocietyScreens.SearchScreen.name) {
             val searchViewModel = hiltViewModel<BookSocietySearchViewModel>()
@@ -50,8 +52,13 @@ fun BookSocietyNavigation() {
             }
         }
 
-        composable(BookSocietyScreens.UpdateScreen.name) {
-            BookSocietyUpdateScreen(navController = navController)
+        val updateName = BookSocietyScreens.UpdateScreen.name
+        composable("$updateName/{bookItemId}", arguments = listOf(navArgument("bookItemId") {
+            type = androidx.navigation.NavType.StringType
+        })) {navbackStackEntry ->
+            navbackStackEntry.arguments?.getString("bookItemId").let {
+                BookSocietyUpdateScreen(navController = navController, bookItemId = it.toString())
+            }
         }
 
 

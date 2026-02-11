@@ -201,7 +201,7 @@ fun ShowBookDetails(bookInfo: Resource<Item>, navController: NavController) {
         }
         Spacer(modifier = Modifier.width(10.dp))
         RoundedButton(
-            label = "Save",
+            label = "Cancel",
             modifier = Modifier
                 .weight(1f)
                 .height(48.dp)

@@ -413,12 +413,13 @@ fun TitleSection(
 //@Preview(showBackground = true)
 @Composable
 fun BookListCard(
-    book: MBook = MBook(
-        id = "1",
-        title = "Book Title",
-        authors = "Author Name",
-        notes = "Book Notes",
-    ),
+    book: MBook,
+//    MBook(
+//        id = "1",
+//        title = "Book Title",
+//        authors = "Author Name",
+//        notes = "Book Notes",
+//    ),
     navController: NavController,
     onPressDetails: (String) -> Unit = {}
 ) {
@@ -450,7 +451,8 @@ fun BookListCard(
             ) {
                 Image(
                     painter = rememberAsyncImagePainter(
-                        model = "http://books.google.com/books/content?id=UeR4DO_HvgoC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+                        model = book.photoUrl.toString()
+//                            "http://books.google.com/books/content?id=UeR4DO_HvgoC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
                     ),
                     contentDescription = "Book Society Logo",
                     modifier = Modifier
