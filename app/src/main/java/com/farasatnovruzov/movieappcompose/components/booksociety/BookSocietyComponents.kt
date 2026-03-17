@@ -1,5 +1,9 @@
 package com.farasatnovruzov.movieappcompose.components.booksociety
 
+import android.view.MotionEvent
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -28,6 +32,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -50,6 +55,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -72,6 +78,53 @@ import com.farasatnovruzov.movieappcompose.model.booksociety.MBook
 import com.farasatnovruzov.movieappcompose.navigation.booksociety.BookSocietyScreens
 import com.farasatnovruzov.movieappcompose.ui.theme.CustomBlue
 import com.google.firebase.auth.FirebaseAuth
+
+
+@Composable
+fun RatingBar(
+    modifier: Modifier = Modifier,
+    rating: Int,
+    onPressRating: (Int) -> Unit
+) {
+    var ratingState by rememberSaveable { mutableStateOf(rating) }
+    var selected by rememberSaveable { mutableStateOf(false) }
+    val size by animateDpAsState(
+        targetValue = if (selected) 24.dp else 20.dp,
+        spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+//            stiffness = Spring.StiffnessLow
+        ))
+    Row(
+        modifier = modifier.width(280.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        for (i in 1..5) {
+            Icon(
+                painter = painterResource(id = R.drawable.baseline_star_24),
+                contentDescription = "star",
+                modifier = modifier
+                    .width(size)
+                    .height(size)
+                    .pointerInteropFilter{
+                        when (it.action) {
+                            MotionEvent.ACTION_DOWN -> {
+                                selected = true
+                                onPressRating(ratingState)
+                                ratingState = i
+                            }
+                            MotionEvent.ACTION_UP -> {
+                                selected = false
+                            }
+                        }
+                        true
+                    },
+                tint = if (i <= ratingState) Color.Yellow else Color.LightGray
+            )
+        }
+    }
+}
+
 
 @Composable
 fun ReaderLogo(modifier: Modifier = Modifier, color: Color = CustomBlue) {
@@ -351,14 +404,17 @@ fun FABContent(onTap: () -> Unit) {
         },
         shape = RoundedCornerShape(50.dp),
         containerColor = CustomBlue,
-//        contentColor = Color.White
+        contentColor = Color.White,
+        elevation = FloatingActionButtonDefaults.elevation(
+            defaultElevation = 8.dp, // Kölgəni bir az artırırıq ki, şəffaflıq hissi itsin
+            pressedElevation = 12.dp
+        )
     ) {
         Icon(
             imageVector = Icons.Default.Add,
             contentDescription = "Add a Book",
             tint = Color.White
         )
-
     }
 }
 

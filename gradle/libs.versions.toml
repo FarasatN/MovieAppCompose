@@ -32,6 +32,7 @@ roomRuntime = "2.7.2"
 kspVersion = "2.2.0-2.0.2"
 hiltVersion = "2.56.2"
 material3 = "1.4.0"
+animationCore = "1.10.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -78,6 +79,7 @@ lottie-dotlottie = { module = "com.airbnb.android:lottie-dotlottie", version.ref
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+androidx-compose-animation-core = { group = "androidx.compose.animation", name = "animation-core", version.ref = "animationCore" }
 
 
 [plugins]

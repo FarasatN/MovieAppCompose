@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -47,7 +48,9 @@ fun BookSocietyHomeScreen(
     viewModel: BookSocietyHomeScreenViewModel = hiltViewModel()
 ) {
 
-    Scaffold(topBar = {
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        topBar = {
         BookSocietyAppBar(
             title = "Book Society", showProfile = true, navController = navController
         )
@@ -59,7 +62,8 @@ fun BookSocietyHomeScreen(
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(paddingValues),
+            color = MaterialTheme.colorScheme.background
         ) {
             HomeContent(navController = navController, viewModel = viewModel)
         }

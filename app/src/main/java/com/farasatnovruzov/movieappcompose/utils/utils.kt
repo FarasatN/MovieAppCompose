@@ -1,5 +1,7 @@
 package com.farasatnovruzov.movieappcompose.utils
 
+import android.icu.text.DateFormat
+import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -20,3 +22,13 @@ fun formatDate(time: Long): String {
 fun fahrenheitToCelsius(fahrenheit: Double): String {
     return ((fahrenheit - 32) * 5 / 9).toInt().toString()
 }
+
+fun formatDateTimestamp(timestamp: Timestamp): String{
+    val date = DateFormat.getDateInstance()
+        .format(timestamp.toDate())
+        .toString().split(",")[0]
+
+    return date
+}
+
+
