@@ -1,6 +1,8 @@
 package com.farasatnovruzov.movieappcompose.screens.booksociety.update
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,7 +14,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -20,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LinearProgressIndicator
@@ -29,6 +31,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -38,7 +41,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -52,8 +57,6 @@ import com.farasatnovruzov.movieappcompose.components.booksociety.RoundedButton
 import com.farasatnovruzov.movieappcompose.data.DataOrException
 import com.farasatnovruzov.movieappcompose.model.booksociety.MBook
 import com.farasatnovruzov.movieappcompose.screens.booksociety.home.BookSocietyHomeScreenViewModel
-import com.farasatnovruzov.movieappcompose.utils.formatDate
-import com.farasatnovruzov.movieappcompose.utils.formatDateTimestamp
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -118,7 +121,7 @@ fun BookSocietyUpdateScreen(
                     }
 
                     Spacer(modifier = Modifier.height(10.dp))
-                    ShowSimpleForm(book = bookInfo.data!!.first { mBook ->
+                    ShowSimpleForm(book = bookInfo.data!!.firstOrNull { mBook ->
                         mBook.googleBookId == bookItemId
                     }, navController = navController)
 
@@ -130,9 +133,11 @@ fun BookSocietyUpdateScreen(
 
 @Composable
 fun ShowSimpleForm(
-    book: MBook,
+    book: MBook?,
     navController: NavController
 ) {
+    val context = LocalContext.current
+
     val notesText = remember {
         mutableStateOf("")
     }
@@ -147,7 +152,7 @@ fun ShowSimpleForm(
     }
 
     SimpleForm(
-        defaultValue = book.notes.toString().ifEmpty { "No thoughts available." }
+        defaultValue = book?.notes.toString().ifEmpty { "No thoughts available." }
     ) { note ->
         notesText.value = note
     }
@@ -161,9 +166,9 @@ fun ShowSimpleForm(
             onClick = {
                 isStartedReading.value = true
             },
-            enabled = book.startReading == null
+            enabled = book?.startReading == null
         ) {
-            if (book.startReading == null) {
+            if (book?.startReading == null) {
                 if (!isStartedReading.value) {
                     Text(text = "Started Reading")
                 } else {
@@ -174,15 +179,20 @@ fun ShowSimpleForm(
                     )
                 }
             } else {
-                Text("Started on: ${formatDateTimestamp(book.startReading)}")//Todo: format data
+                Text(
+                    "Started on: " +
+//                        "${formatDateTimestamp(book.startReading!!)}"
+                            "${(book.startReading!!)}"
+
+                )//Todo: format data
             }
         }
         Spacer(modifier = Modifier.height(4.dp))
         TextButton(
             onClick = { isFinishedReading.value == true },
-            enabled = book.finishedReading == null
+            enabled = book?.finishedReading == null
         ) {
-            if (book.finishedReading == null) {
+            if (book?.finishedReading == null) {
                 if (!isFinishedReading.value) {
                     Text(text = "Mark as Read")
                 } else {
@@ -196,7 +206,7 @@ fun ShowSimpleForm(
     }
 
     Text(text = "Rating", modifier = Modifier.padding(4.dp))
-    book.rating?.toInt().let {
+    book?.rating?.toInt().let {
         if (it != null) {
             RatingBar(rating = it) { rating ->
                 ratingVal.value = rating
@@ -207,11 +217,11 @@ fun ShowSimpleForm(
 
     Spacer(modifier = Modifier.padding(bottom = 15.dp))
     Row {
-        val changedNotes = book.notes != notesText.value
-        val changedRating = book.rating?.toInt() != ratingVal.value
+        val changedNotes = book?.notes != notesText.value
+        val changedRating = book?.rating?.toInt() != ratingVal.value
         val isFinishedTimeStamp =
-            if (isFinishedReading.value) Timestamp.now() else book.finishedReading
-        val isStartedTimeStamp = if (isStartedReading.value) Timestamp.now() else book.startReading
+            if (isFinishedReading.value) Timestamp.now() else book?.finishedReading
+        val isStartedTimeStamp = if (isStartedReading.value) Timestamp.now() else book?.startReading
         val bookUpdate =
             changedNotes || changedRating || isStartedReading.value || isFinishedReading.value
         val bookToUpdate = hashMapOf(
@@ -224,26 +234,100 @@ fun ShowSimpleForm(
             if (bookUpdate) {
                 FirebaseFirestore.getInstance()
                     .collection("books")
-                    .document(book.id!!)
+                    .document(book?.id ?: "")
                     .update(bookToUpdate)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
+                            showToast(context = context, "Book Updated")
                             Log.d("BookUpdate", "BookUpdate: Successfully updated document")
-                            navController.popBackStack()
+//                            navController.popBackStack()
+                            navController.navigate(com.farasatnovruzov.movieappcompose.navigation.booksociety.BookSocietyScreens.HomeScreen.name)
+                        } else {
+                            showToast(context = context, "Book Update Failed")
                         }
                     }.addOnFailureListener {
                         Log.w("ErrorUpdate", "BookUpdate: Error updating document", it)
                     }
             }
-            navController.popBackStack()
+//            navController.popBackStack()
 
         }
         Spacer(modifier = Modifier.width(100.dp))
-        RoundedButton(label = "Delete")
+        val openDialog = remember {
+            mutableStateOf(false)
+        }
+        if (openDialog.value) {
+            ShowAlertDialog(
+                message = stringResource(id = com.farasatnovruzov.movieappcompose.R.string.sure) + "\n" +
+                        stringResource(id = com.farasatnovruzov.movieappcompose.R.string.action),
+                openDialog = openDialog
+            ) {
+                FirebaseFirestore.getInstance()
+                    .collection("books")
+                    .document(book?.id ?: "")
+                    .delete()
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            openDialog.value = false
+                            showToast(context = context, "Book Deleted")
+                            //navController.popBackStack() //don't popbackstack if we want the immediate recomposition of the MainScreen UI, instead navigate to main Screen
+                            Log.d("BookDelete", "BookDelete: Successfully deleted document")
+                            navController.navigate(com.farasatnovruzov.movieappcompose.navigation.booksociety.BookSocietyScreens.HomeScreen.name)
+                        } else {
+                            showToast(context = context, "Book Deletion Failed")
+                        }
+                    }
+            }
+
+        }
+
+        RoundedButton(label = "Delete"){
+            openDialog.value = true
+        }
 
     }
 
+}
 
+@Composable
+fun ShowAlertDialog(
+    message: String,
+    openDialog: MutableState<Boolean>,
+    onYesPressed: () -> Unit
+) {
+    if (openDialog.value) {
+        AlertDialog(
+            onDismissRequest = {
+                // It's usually better to allow dismissing when clicking outside
+                openDialog.value = false
+            },
+            title = {
+                Text(text = "Delete Book")
+            },
+            text = {
+                Text(text = message)
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    onYesPressed.invoke()
+                    openDialog.value = false // Close dialog after action
+                }) {
+                    Text(text = "Yes")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    openDialog.value = false
+                }) {
+                    Text(text = "No")
+                }
+            }
+        )
+    }
+}
+
+fun showToast(context: Context, string: String) {
+    Toast.makeText(context, string, Toast.LENGTH_LONG).show()
 }
 
 @Composable
@@ -297,7 +381,7 @@ fun ShowBookUpdate(
         Spacer(modifier = Modifier.width(43.dp))
         if (bookInfo.data != null) {
             Column(modifier = Modifier.padding(4.dp), verticalArrangement = Arrangement.Center) {
-                CardListItem(book = bookInfo.data!!.first { mBook ->
+                CardListItem(book = bookInfo.data!!.firstOrNull { mBook ->
                     mBook.googleBookId == bookItemId
                 }, onPressDetails = {})
             }
@@ -306,7 +390,7 @@ fun ShowBookUpdate(
 }
 
 @Composable
-fun CardListItem(book: MBook, onPressDetails: () -> Unit) {
+fun CardListItem(book: MBook?, onPressDetails: () -> Unit) {
     Card(
         modifier = Modifier
             .padding(
@@ -325,7 +409,7 @@ fun CardListItem(book: MBook, onPressDetails: () -> Unit) {
     ) {
         Row(horizontalArrangement = Arrangement.Start) {
             Image(
-                painter = rememberAsyncImagePainter(model = book.photoUrl.toString()),
+                painter = rememberAsyncImagePainter(model = book?.photoUrl.toString()),
                 contentDescription = null,
                 modifier = Modifier
                     .height(100.dp)
@@ -342,7 +426,7 @@ fun CardListItem(book: MBook, onPressDetails: () -> Unit) {
             )
             Column {
                 Text(
-                    text = book.title.toString(),
+                    text = book?.title.toString(),
                     style = MaterialTheme.typography.headlineSmall,
                     modifier = Modifier
                         .padding(start = 8.dp, end = 8.dp)
@@ -352,7 +436,7 @@ fun CardListItem(book: MBook, onPressDetails: () -> Unit) {
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = book.authors.toString(),
+                    text = book?.authors.toString(),
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(
                         start = 8.dp,
@@ -360,7 +444,7 @@ fun CardListItem(book: MBook, onPressDetails: () -> Unit) {
                     )
                 )
                 Text(
-                    text = book.publishedDate.toString(),
+                    text = book?.publishedDate.toString(),
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(
                         start = 8.dp,

@@ -46,6 +46,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -557,6 +558,10 @@ fun BookListCard(
                         style = MaterialTheme.typography.labelSmall
                     )
                 }
+                var isStartedReading = remember {
+                    mutableStateOf(false)
+                }
+
 
                 // Sağ Sütun: RoundedButton (Hizalama yapıldı)
                 Column(
@@ -566,9 +571,10 @@ fun BookListCard(
                     verticalArrangement = Arrangement.Bottom, // Dikeyde en alta hizala
                     horizontalAlignment = Alignment.End // Yatayda en sağa hizala
                 ) {
+                    isStartedReading.value = book.startedReading != null
 
                     RoundedButton(
-                        label = "Read", radius = 55
+                        label = if (isStartedReading.value) "Reading" else "Not Yet", radius = 55
                     )
                 }
             }

@@ -1,5 +1,6 @@
 package com.farasatnovruzov.movieappcompose.screens.booksociety.home
 
+import android.R
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -51,14 +53,14 @@ fun BookSocietyHomeScreen(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-        BookSocietyAppBar(
-            title = "Book Society", showProfile = true, navController = navController
-        )
-    }, floatingActionButton = {
-        FABContent {
-            navController.navigate(BookSocietyScreens.SearchScreen.name)
-        }
-    }) { paddingValues ->
+            BookSocietyAppBar(
+                title = "Book Society", showProfile = true, navController = navController
+            )
+        }, floatingActionButton = {
+            FABContent {
+                navController.navigate(BookSocietyScreens.SearchScreen.name)
+            }
+        }) { paddingValues ->
         Surface(
             modifier = Modifier
                 .fillMaxSize()
@@ -149,9 +151,12 @@ fun HomeContent(navController: NavController, viewModel: BookSocietyHomeScreenVi
 
 @Composable
 fun BookListArea(listOfBooks: List<MBook>, navController: NavController) {
-    HorizontalScrollableComponent(listOfBooks, navController = navController) {
+    val currentReadingBooks = listOfBooks.filter { mBook ->
+        mBook.startedReading != null && mBook.finishedReading == null
+    }
+    HorizontalScrollableComponent(currentReadingBooks, navController = navController) {
         //on card clicked to go to details screen
-        navController.navigate(BookSocietyScreens.UpdateScreen.name+"/$it")
+        navController.navigate(BookSocietyScreens.UpdateScreen.name + "/$it")
 
     }
 }
@@ -159,6 +164,7 @@ fun BookListArea(listOfBooks: List<MBook>, navController: NavController) {
 @Composable
 fun HorizontalScrollableComponent(
     listOfBooks: List<MBook>,
+    viewModel: BookSocietyHomeScreenViewModel = hiltViewModel(),
     navController: NavController,
     onCardPressed: (String) -> Unit
 ) {
@@ -169,9 +175,28 @@ fun HorizontalScrollableComponent(
             .heightIn(280.dp)
             .horizontalScroll(scrollState)
     ) {
-        for (book in listOfBooks) {
-            BookListCard(book, navController) {
-                onCardPressed(book.googleBookId.toString())
+        if (viewModel.data.value.loading == true) {
+            LinearProgressIndicator()
+        } else {
+            if (listOfBooks.isNullOrEmpty()) {
+                Surface(modifier = Modifier.padding(23.dp)) {
+                    Text(
+                        text = "No books found. Add a book",
+                        style = TextStyle(
+                            color = CustomBlue,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 15.sp,
+                        ),
+                        maxLines = 1, overflow = TextOverflow.Clip, textAlign = TextAlign.Left,
+                    )
+                }
+            }else{
+                for (book in listOfBooks) {
+                    BookListCard(book, navController) {
+                        onCardPressed(book.googleBookId.toString())
+                    }
+                }
+
             }
         }
 
@@ -180,5 +205,8 @@ fun HorizontalScrollableComponent(
 
 @Composable
 fun SocialArea(books: List<MBook>, navController: NavController) {
-    BookListCard(book = if (books.isNotEmpty()) books[0] else MBook(), navController = navController)
+    BookListCard(
+        book = if (books.isNotEmpty()) books[0] else MBook(),
+        navController = navController
+    )
 }

@@ -23,7 +23,9 @@ fun fahrenheitToCelsius(fahrenheit: Double): String {
     return ((fahrenheit - 32) * 5 / 9).toInt().toString()
 }
 
-fun formatDateTimestamp(timestamp: Timestamp): String{
+fun formatDateTimestamp(
+    timestamp: Timestamp
+): String{
     val date = DateFormat.getDateInstance()
         .format(timestamp.toDate())
         .toString().split(",")[0]

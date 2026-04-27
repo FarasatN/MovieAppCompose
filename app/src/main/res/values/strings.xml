@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">MovieAppCompose</string>
     <string name="app_name2">Weather App</string>
+    <string name="sure">Are you sure you want to delete this book?</string>
+    <string name="action">This action is not reversible</string>
     <string name="notes">Notes</string>
     <string name="trivia">Trivia</string>
     <string name="weather">Weather</string>

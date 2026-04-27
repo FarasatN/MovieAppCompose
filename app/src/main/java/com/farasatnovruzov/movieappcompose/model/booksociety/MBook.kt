@@ -1,5 +1,6 @@
 package com.farasatnovruzov.movieappcompose.model.booksociety
 
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.PropertyName
 
@@ -25,6 +26,8 @@ data class MBook(
 //    var isFavorite: Boolean = false,
 //    var isReading: Boolean = false,
     var startReading: String? = null,
+//    var startReading: Timestamp? = null,
+    var startedReading: String? = null,
     var finishedReading: String? = null,
     var userId: String? = null,
     var googleBookId: String? = null,

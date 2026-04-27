@@ -40,7 +40,8 @@ fun BookSocietyNavigation() {
             BookSocietySearchScreen(navController = navController, viewModel = searchViewModel)
         }
         composable(BookSocietyScreens.StatsScreen.name) {
-            BookSocietyStatsScreen(navController = navController)
+            val homeViewModel = hiltViewModel<BookSocietyHomeScreenViewModel>()
+            BookSocietyStatsScreen(navController = navController, viewModel = homeViewModel)
         }
 
         val detailName = BookSocietyScreens.DetailsScreen.name
