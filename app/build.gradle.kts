@@ -164,4 +164,9 @@ dependencies {
     // For example, add the dependencies for Firebase Authentication and Cloud Firestore
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
+
+    //system UI Controller
+    implementation(libs.accompanist.systemuicontroller)
+    //extended Icons
+    implementation(libs.androidx.compose.material.icons.extended)
 }
