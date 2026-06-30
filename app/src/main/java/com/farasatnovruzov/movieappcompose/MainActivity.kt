@@ -1,5 +1,6 @@
 package com.farasatnovruzov.movieappcompose
 
+import FinanceSection
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
