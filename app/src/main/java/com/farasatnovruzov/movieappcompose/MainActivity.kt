@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.farasatnovruzov.movieappcompose.components.bankingui.CardSection
+import com.farasatnovruzov.movieappcompose.components.bankingui.CurrenciesSection
 import com.farasatnovruzov.movieappcompose.components.bankingui.WalletSection
 import com.farasatnovruzov.movieappcompose.navigation.bankingui.BottomNavigationBar
 import com.farasatnovruzov.movieappcompose.navigation.booksociety.BookSocietyNavigation
@@ -82,7 +83,7 @@ fun HomeScreen(){
             CardSection()
             Spacer(modifier = Modifier.height(16.dp))
             FinanceSection()
-            //CurrenciesSection()
+            CurrenciesSection()
         }
     }
 }
