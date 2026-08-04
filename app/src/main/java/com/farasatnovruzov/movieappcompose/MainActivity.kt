@@ -1,55 +1,27 @@
 package com.farasatnovruzov.movieappcompose
 
-import FinanceSection
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.StarHalf
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.StarOutline
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import com.farasatnovruzov.movieappcompose.components.bankingui.CardSection
-import com.farasatnovruzov.movieappcompose.components.bankingui.CurrenciesSection
-import com.farasatnovruzov.movieappcompose.components.bankingui.WalletSection
-import com.farasatnovruzov.movieappcompose.navigation.bankingui.BottomNavigationBar
-import com.farasatnovruzov.movieappcompose.navigation.booksociety.BookSocietyNavigation
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import com.farasatnovruzov.movieappcompose.screens.walletui.TopBar
 import com.farasatnovruzov.movieappcompose.ui.theme.BookSocietyAppComposeTheme
-import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -79,9 +51,16 @@ class MainActivity : ComponentActivity() {
 //                RatingScreen()
 //                HalfRatingScreen()
 
+                val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
+                    state = rememberTopAppBarState()
+                )
                 Scaffold(
+                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                     topBar = {
-
+                        TopBar(
+                            scrollBehavior = scrollBehavior,
+                            modifier = Modifier.fillMaxWidth()
+                        )
                     },
                     bottomBar = {
                     },
@@ -90,11 +69,16 @@ class MainActivity : ComponentActivity() {
                     }
 
                 ){paddingValues ->
-
+                    MainScreen(modifier = Modifier.fillMaxSize().padding(paddingValues))
                 }
                 
             }
         }
+    }
+
+    @Composable
+    fun MainScreen(modifier: Modifier = Modifier){
+
     }
 }
 
