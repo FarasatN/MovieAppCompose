@@ -169,4 +169,6 @@ dependencies {
     implementation(libs.accompanist.systemuicontroller)
     //extended Icons
     implementation(libs.androidx.compose.material.icons.extended)
+
+    implementation(libs.compose.charts)
 }

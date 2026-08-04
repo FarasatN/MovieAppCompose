@@ -35,8 +35,10 @@ kspVersion = "2.2.0-2.0.2"
 hiltVersion = "2.56.2"
 material3 = "1.4.0"
 animationCore = "1.10.3"
+composeCharts = "0.2.1"
 
 [libraries]
+compose-charts = { module = "io.github.bytebeats:compose-charts", version.ref = "composeCharts" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
