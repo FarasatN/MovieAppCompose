@@ -88,11 +88,12 @@ class MainActivity : ComponentActivity() {
             CardSection(
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             ActionSection(
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(40.dp))
+            SpendingSection(modifier = Modifier.fillMaxWidth())
 
         }
     }

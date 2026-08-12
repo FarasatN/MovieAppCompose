@@ -68,24 +68,29 @@ fun ActionItem(
     ) {
         Box(
             modifier = Modifier
-                .size(70.dp)
+                .size(90.dp)
                 .clip(CircleShape)
                 .background(color = color),
             contentAlignment = Alignment.Center
         ){
-            Icon(
-                imageVector = icon,
-                contentDescription = text,
-                tint = Color.Black,
-                modifier = Modifier.size(28.dp)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = text,
-                fontFamily = Font(R.font.play_regular).toFontFamily(),
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = 16.sp
-            )
+            Column(
+                verticalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = text,
+                    tint = Color.Black,
+                    modifier = Modifier.size(28.dp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = text,
+                    fontFamily = Font(R.font.play_regular).toFontFamily(),
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = 12.sp
+                )
+            }
+
         }
     }
 }
