@@ -94,6 +94,11 @@ class MainActivity : ComponentActivity() {
             )
             Spacer(modifier = Modifier.height(40.dp))
             SpendingSection(modifier = Modifier.fillMaxWidth())
+            Spacer(modifier = Modifier.height(40.dp))
+            SpendingGraph(
+                modifier = Modifier.fillMaxWidth().height(200.dp).padding(horizontal = 22.dp)
+            )
+            Spacer(modifier = Modifier.height(100.dp))
 
         }
     }
