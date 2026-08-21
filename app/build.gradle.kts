@@ -171,4 +171,11 @@ dependencies {
     implementation(libs.androidx.compose.material.icons.extended)
 
     implementation(libs.compose.charts)
+
+
+    // Core Haze layout and modifier functionality
+    implementation("dev.chrisbanes.haze:haze:1.7.2")
+    // Optional: Pre-built glass and blur materials
+    implementation("dev.chrisbanes.haze:haze-materials:1.7.2")
+
 }

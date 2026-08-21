@@ -4,24 +4,20 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color
 import com.farasatnovruzov.movieappcompose.ui.theme.BookSocietyAppComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.haze
+import dev.chrisbanes.haze.hazeSource
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -31,6 +27,32 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            BookSocietyAppComposeTheme {
+                val hazeState = remember {
+                    HazeState()
+                }
+                val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
+                    state = rememberTopAppBarState()
+                )
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    containerColor = Color.Transparent,
+                    topBar = {
+                        TopBar(
+                            modifier = Modifier.hazeSource(state = hazeState),
+                            scrollBehavior = scrollBehavior
+                        )
+                    },
+                )
+                { innerPadding ->
+
+                }
+            }
+        }
+    }
+
+
+//))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
 //            MyApp { ->
 ////            val noteViewModel = viewModel<NoteViewModel>()
 ////                val noteViewModel: NoteViewModel by viewModels()
@@ -41,67 +63,67 @@ class MainActivity : ComponentActivity() {
 //
 //            }
 
-            //---------------------------------------------------
-            //Weather App
+    //---------------------------------------------------
+    //Weather App
 //            WeatherApp()
 
-            //BookSociety
+    //BookSociety
 //            BookSocietyApp()
 
 //====================================================================================================
-            //Banking UI
-            BookSocietyAppComposeTheme {
-//                HomeScreen()
+//            //Banking UI
+//            BookSocietyAppComposeTheme {
+////                HomeScreen()
+////                RatingScreen()
+////                HalfRatingScreen()
+//
+//                val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
+//                    state = rememberTopAppBarState()
+//                )
+//                Scaffold(
+//                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+//                    topBar = {
+//                        TopBar(
+//                            scrollBehavior = scrollBehavior,
+//                            modifier = Modifier.fillMaxWidth()
+//                        )
+//                    },
+//                    bottomBar = {
+//                    },
+//                    floatingActionButton = {
+//
+//                    }
+//
+//                ){paddingValues ->
+//                    MainScreen(modifier = Modifier.fillMaxSize().padding(paddingValues))
+//                }
+//
+//            }
+//        }
+//    }
+//
+//    @Composable
+//    fun MainScreen(modifier: Modifier = Modifier){
+//        Column(modifier = modifier.verticalScroll(rememberScrollState())){
+//            Spacer(modifier = Modifier.height(30.dp))
+//            CardSection(
+//                modifier = Modifier.fillMaxWidth()
+//            )
+//            Spacer(modifier = Modifier.height(20.dp))
+//            ActionSection(
+//                modifier = Modifier.fillMaxWidth()
+//            )
+//            Spacer(modifier = Modifier.height(40.dp))
+//            SpendingSection(modifier = Modifier.fillMaxWidth())
+//            Spacer(modifier = Modifier.height(40.dp))
+//            SpendingGraph(
+//                modifier = Modifier.fillMaxWidth().height(300.dp).padding(horizontal = 22.dp)
+//            )
+//            Spacer(modifier = Modifier.height(100.dp))
+//
+//        }
+//    }
 
-//                RatingScreen()
-//                HalfRatingScreen()
-
-                val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
-                    state = rememberTopAppBarState()
-                )
-                Scaffold(
-                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-                    topBar = {
-                        TopBar(
-                            scrollBehavior = scrollBehavior,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    },
-                    bottomBar = {
-                    },
-                    floatingActionButton = {
-
-                    }
-
-                ){paddingValues ->
-                    MainScreen(modifier = Modifier.fillMaxSize().padding(paddingValues))
-                }
-                
-            }
-        }
-    }
-
-    @Composable
-    fun MainScreen(modifier: Modifier = Modifier){
-        Column(modifier = modifier.verticalScroll(rememberScrollState())){
-            Spacer(modifier = Modifier.height(30.dp))
-            CardSection(
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            ActionSection(
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(40.dp))
-            SpendingSection(modifier = Modifier.fillMaxWidth())
-            Spacer(modifier = Modifier.height(40.dp))
-            SpendingGraph(
-                modifier = Modifier.fillMaxWidth().height(200.dp).padding(horizontal = 22.dp)
-            )
-            Spacer(modifier = Modifier.height(100.dp))
-
-        }
-    }
 }
 
 
@@ -286,10 +308,7 @@ class MainActivity : ComponentActivity() {
 //}
 
 
-
-
 //===========================================================
-
 
 
 //

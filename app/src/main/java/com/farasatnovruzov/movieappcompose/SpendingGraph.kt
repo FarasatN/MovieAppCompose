@@ -18,7 +18,7 @@ import me.bytebeats.views.charts.bar.render.xaxis.SimpleXAxisDrawer
 import me.bytebeats.views.charts.bar.render.yaxis.SimpleYAxisDrawer
 
 @Composable
-fun SpendingGraph(modifier: Modifier) {
+fun SpendingGraph(modifier: Modifier = Modifier) {
     Text(
         text = "Spending Statistics",
         fontFamily = PlayFontFamily,
@@ -41,7 +41,7 @@ fun Chart(modifier: Modifier = Modifier) {
             axisLineColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f)
         ),
         yAxisDrawer = SimpleYAxisDrawer(
-            labelValueFormatter = {"$ ${it.toInt()}"},
+            labelValueFormatter = { "$ ${it.toInt()}" },
             axisLineThickness = 2.dp,
             axisLineColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f)
         ),
@@ -49,7 +49,7 @@ fun Chart(modifier: Modifier = Modifier) {
             drawLocation = SimpleLabelDrawer.DrawLocation.Outside,
             labelTextSize = 15.sp,
 
-        ),
+            ),
         barDrawer = SimpleBarDrawer()
     )
 }
@@ -64,6 +64,5 @@ val spendingByDay = listOf(
     ),
     BarChartData.Bar(
         label = "Dec 3", value = 335f, color = randomColor()
-    ),
-
     )
+)
