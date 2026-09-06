@@ -3,12 +3,11 @@ package com.farasatnovruzov.movieappcompose.data.rentalcar
 import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Color
 import com.farasatnovruzov.movieappcompose.R
-import com.google.android.gms.common.util.CollectionUtils.listOf
 
 data class Car(
     val name: String,
     @DrawableRes val image: Int,
-    val color: String,
+    val color: Color,
     @DrawableRes val logo : Int,
     val recommendation: Int,
     val recommendationRate: Float,
@@ -22,37 +21,37 @@ val luxuriousCars = listOf(
     Car(
         name = "Tesla Model S",
         image = R.drawable.tesla_black,
-        color = "Black",
+        color = Color.Black,
         logo = R.drawable.baseline_star_24,
-        recommendation = 1240,
+        recommendation = 98,
         recommendationRate = 4.8f,
         rentalDays = 7,
         price = 450,
         recommenders = listOf(R.drawable.baseline_person_2_24, R.drawable.baseline_person_2_24, R.drawable.baseline_person_2_24),
-        bgColor = Color(0xFF1E1E1E)
+        bgColor = Color.LightGray
     ),
     Car(
         name = "BMW M2 Competition",
         image = R.drawable.bmw_white,
-        color = "White",
+        color = Color.White,
         logo = R.drawable.baseline_star_24,
-        recommendation = 1240,
+        recommendation = 94,
         recommendationRate = 4.8f,
         rentalDays = 7,
         price = 450,
         recommenders = listOf(R.drawable.baseline_person_2_24, R.drawable.baseline_person_2_24, R.drawable.baseline_person_2_24),
-        bgColor = Color(0xFF1E1E1E)
+        bgColor = Color.LightGray
     ),
     Car(
-        name = "TMitsubishi ASX / Outlander Sport",
+        name = "TMitsubishi ASX",
         image = R.drawable.mitsubishi_red,
-        color = "Red",
+        color = Color.Red,
         logo = R.drawable.baseline_star_24,
-        recommendation = 1240,
+        recommendation = 87,
         recommendationRate = 4.8f,
         rentalDays = 7,
         price = 450,
         recommenders = listOf(R.drawable.baseline_person_2_24, R.drawable.baseline_person_2_24, R.drawable.baseline_person_2_24),
-        bgColor = Color(0xFF1E1E1E)
+        bgColor = Color.LightGray
     )
 )

@@ -4,19 +4,37 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.dp
+import com.farasatnovruzov.movieappcompose.components.rentalcar.BottomBar
+import com.farasatnovruzov.movieappcompose.components.rentalcar.CarList
+import com.farasatnovruzov.movieappcompose.components.rentalcar.Pager
+import com.farasatnovruzov.movieappcompose.components.rentalcar.TopBar
 import com.farasatnovruzov.movieappcompose.ui.theme.BookSocietyAppComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.haze
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.hazeChild
+import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 
 @AndroidEntryPoint
@@ -35,21 +53,91 @@ class MainActivity : ComponentActivity() {
                     state = rememberTopAppBarState()
                 )
                 Scaffold(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+//                        .background(Color.Gray)
+                        .background(Color(0xFF1E1E1E)) // Açıq fon əvəzinə tünd fon
+                        .nestedScroll(scrollBehavior.nestedScrollConnection),
                     containerColor = Color.Transparent,
                     topBar = {
-                        TopBar(
-                            modifier = Modifier.hazeSource(state = hazeState),
-                            scrollBehavior = scrollBehavior
-                        )
+                        Column {
+                            TopBar(
+                                modifier = Modifier.hazeEffect(
+                                    state = hazeState,
+                                    style = HazeStyle.Unspecified,
+                                    block = null
+                                ),
+                                scrollBehavior = scrollBehavior
+                            )
+                            Pager(
+                                modifier = Modifier
+                                    .fillMaxWidth().hazeEffect(
+                                        state = hazeState,
+                                        style = HazeStyle.Unspecified,
+                                        block = null
+                                    ),
+                            )
+                        }
                     },
                 )
                 { innerPadding ->
-
+                    HomeScreen(
+                        modifier = Modifier.fillMaxSize()
+//                            .padding(innerPadding)
+                        ,
+                        hazeState = hazeState,
+                        innerPadding
+                    )
                 }
             }
         }
     }
+}
+
+@Composable
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    hazeState: HazeState,
+    paddingValues: PaddingValues
+) {
+    Box(
+        modifier = modifier
+        //        .background(MaterialTheme.colorScheme.background)
+    ) {
+        CarList(
+            modifier = Modifier
+                .fillMaxSize()
+                //                .haze(
+//                    state = hazeState,
+//                    style = HazeStyle(
+//                        blurRadius = 13.dp,
+//                        tints = listOf(HazeTint(Color.White))
+//                    )
+//                )
+                .hazeSource(state = hazeState),
+            paddingValues = paddingValues
+        )
+
+        BottomBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 26.dp) // Kənarlardan boşluq (ki, eni tam yapışmasın və oval görünsün)
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 26.dp)
+                // 1. ƏVVƏLCƏ oval formada kəsirik
+                .clip(RoundedCornerShape(26.dp))
+                // 2. SONRA haze (blur) effekti tətbiq edirik
+                .hazeEffect(
+                    state = hazeState,
+                    style = HazeStyle.Unspecified
+                )
+        )
+    }
+}
+
+
+
+
 
 
 //))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
@@ -63,11 +151,11 @@ class MainActivity : ComponentActivity() {
 //
 //            }
 
-    //---------------------------------------------------
-    //Weather App
+//---------------------------------------------------
+//Weather App
 //            WeatherApp()
 
-    //BookSociety
+//BookSociety
 //            BookSocietyApp()
 
 //====================================================================================================
@@ -124,7 +212,7 @@ class MainActivity : ComponentActivity() {
 //        }
 //    }
 
-}
+//
 
 
 //**************************************************************************************

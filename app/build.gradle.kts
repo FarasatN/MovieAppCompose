@@ -38,8 +38,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 //    kotlinOptions {
 //        jvmTarget = "1.8"
@@ -74,7 +74,7 @@ android {
 // ADD or MODIFY this block
 kotlin {
     compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
         // You can add other Kotlin compiler options here if needed
         // For example:
         // freeCompilerArgs.add("-Xcontext-receivers")
@@ -174,7 +174,8 @@ dependencies {
 
 
     // Core Haze layout and modifier functionality
-    implementation("dev.chrisbanes.haze:haze:1.7.2")
+//    implementation("dev.chrisbanes.haze:haze:1.7.2")
+    implementation("dev.chrisbanes.haze:haze:1.2.1")
     // Optional: Pre-built glass and blur materials
     implementation("dev.chrisbanes.haze:haze-materials:1.7.2")
 
