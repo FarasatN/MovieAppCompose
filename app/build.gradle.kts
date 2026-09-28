@@ -1,10 +1,11 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.androidx.room) // Apply true here for the module
     alias(libs.plugins.kotlinAndroidKsp)
     alias(libs.plugins.hiltAndroid)
+    alias(libs.plugins.kotlin.serialization)
 
     //Firebase
 //    id("com.android.application")
@@ -13,7 +14,7 @@ plugins {
 
 android {
     namespace = "com.farasatnovruzov.movieappcompose"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.farasatnovruzov.movieappcompose"
@@ -41,21 +42,19 @@ android {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
-//    kotlinOptions {
-//        jvmTarget = "1.8"
-//    }
 
+    //for spendingtracker
     buildFeatures {
         compose = true
     }
-//    composeOptions {
-//        kotlinCompilerExtensionVersion = "1.5.1"
-//    }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    //for spendingtracker
     room { // This block is for the Room Gradle Plugin
         schemaDirectory("$projectDir/schemas")
     }
@@ -168,15 +167,29 @@ dependencies {
     //system UI Controller
     implementation(libs.accompanist.systemuicontroller)
     //extended Icons
-    implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.androidx.material.icons.extended)
 
     implementation(libs.compose.charts)
 
 
     // Core Haze layout and modifier functionality
 //    implementation("dev.chrisbanes.haze:haze:1.7.2")
-    implementation("dev.chrisbanes.haze:haze:1.2.1")
+    implementation(libs.haze)
     // Optional: Pre-built glass and blur materials
-    implementation("dev.chrisbanes.haze:haze-materials:1.7.2")
+    implementation(libs.haze.materials)
+
+
+    // Core Jetpack Compose Navigation
+    implementation(libs.androidx.navigation.compose)
+    // JSON Serialization for parsing object arguments
+    implementation(libs.kotlinx.serialization.json)
+
+
+    //for spendingtracker
+    implementation(libs.bundles.koin)
+    implementation(libs.androidx.datastore.preferences)
+
+    //MediaPipe LLM Inference API
+    implementation("com.google.mediapipe:tasks-genai:0.10.35")
 
 }

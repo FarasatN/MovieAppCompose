@@ -2,4 +2,5 @@
 <resources>
 
     <style name="Theme.MovieAppCompose" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.SpendingTrackerAppComposeTheme" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>

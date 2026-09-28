@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.INTERNET"/>
-    <!--        android:name=".NoteApplication"-->
-    <!--        android:name=".TriviaApplication"-->
     <queries>
         <package android:name="com.google.android.gms" />
 
@@ -14,7 +12,7 @@
         </intent>
     </queries>
     <application
-        android:name=".BookSocietyApplication"
+        android:name="com.farasatnovruzov.spendingtracker.App"
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -24,11 +22,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MovieAppCompose"
-        tools:targetApi="31">
+        android:largeHeap="true"
+        tools:targetApi="35">
         <activity
-            android:name=".MainActivity"
+            android:name="com.farasatnovruzov.spendingtracker.core.presentation.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.MovieAppCompose">
+            android:theme="@style/Theme.SpendingTrackerAppComposeTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
