@@ -41,6 +41,29 @@ class SpendingOverviewViewModel(
                 pickedDate = allDates.lastOrNull() ?: ZonedDateTime.now(),
                 datesList = allDates.reversed()
             )
+
+            val dummyDates = listOf(
+                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+
+
+            )
+
+            state = state.copy(
+                datesList = dummyDates
+            )
         }
     }
 
