@@ -15,59 +15,140 @@ import java.time.ZonedDateTime
 class SpendingOverviewViewModel(
     private val spendingDataSource: LocalSpendingDataSource,
     private val coreRepository: CoreRepository
-): ViewModel() {
+) : ViewModel() {
 
     var state by mutableStateOf(SpendingOverviewState())
         private set
 
-    fun onAction(action: SpendingOverviewAction){
-        when(action){
-            SpendingOverviewAction.LoadSpendingOverviewBalance->{
+    fun onAction(action: SpendingOverviewAction) {
+        when (action) {
+            SpendingOverviewAction.LoadSpendingOverviewBalance -> {
                 loadSpendingListAndBalance()
             }
-            is SpendingOverviewAction.OnDateChange -> TODO()
-            is SpendingOverviewAction.OnDeleteSpending -> TODO()
+
+            is SpendingOverviewAction.OnDateChange -> {
+                val newDate = state.datesList[action.newDate]
+                viewModelScope.launch {
+                    state = state.copy(
+                        pickedDate = newDate,
+                        spendingList = getSpendingListByDate(newDate)
+                    )
+                }
+            }
+
+            is SpendingOverviewAction.OnDeleteSpending -> {
+                viewModelScope.launch {
+                    spendingDataSource.deleteSpending(action.spendingId)
+                    state = state.copy(
+                        spendingList = getSpendingListByDate(state.pickedDate),
+                        datesList = spendingDataSource.getAllDates(),
+                        balance = coreRepository.getBalance() - (spendingDataSource.getSpendBalance()
+                            ?: 0.0)
+                    )
+                }
+
+            }
         }
     }
 
-    private fun loadSpendingListAndBalance(){
+    private fun loadSpendingListAndBalance() {
         viewModelScope.launch {
             val allDates = spendingDataSource.getAllDates()
             state = state.copy(
                 spendingList = getSpendingListByDate(
                     allDates.lastOrNull() ?: ZonedDateTime.now()
                 ),
-                balance = coreRepository.getBalance() - (spendingDataSource.getSpendBalance() ?: 0.0),
+                balance = coreRepository.getBalance() - (spendingDataSource.getSpendBalance()
+                    ?: 0.0),
                 pickedDate = allDates.lastOrNull() ?: ZonedDateTime.now(),
                 datesList = allDates.reversed()
             )
 
-            val dummyDates = listOf(
-                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+//            val dummyDates = listOf(
+//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
+//                )
+//            state = state.copy(
+//                datesList = dummyDates
+//            )
 
+            val dummy = listOf<Spending>(
 
+                Spending(
+                    price = 23.3,
+                    name = "name",
+                    kilograms = 24.4,
+                    dateTimeUtc = ZonedDateTime.now(),
+                    color = randomColor(),
+                    quantity = 23.4,
+                    spendingId = 1
+                ),
+                Spending(
+                    price = 23.3,
+                    name = "name",
+                    kilograms = 24.4,
+                    dateTimeUtc = ZonedDateTime.now(),
+                    color = randomColor(),
+                    quantity = 23.4,
+                    spendingId = 1
+                ),
+                Spending(
+                    price = 23.3,
+                    name = "name",
+                    kilograms = 24.4,
+                    dateTimeUtc = ZonedDateTime.now(),
+                    color = randomColor(),
+                    quantity = 23.4,
+                    spendingId = 1
+                ),
+                Spending(
+                    price = 23.3,
+                    name = "name",
+                    kilograms = 24.4,
+                    dateTimeUtc = ZonedDateTime.now(),
+                    color = randomColor(),
+                    quantity = 23.4,
+                    spendingId = 1
+                ),
+                Spending(
+                    price = 23.3,
+                    name = "name",
+                    kilograms = 24.4,
+                    dateTimeUtc = ZonedDateTime.now(),
+                    color = randomColor(),
+                    quantity = 23.4,
+                    spendingId = 1
+                ),
+                Spending(
+                    price = 23.3,
+                    name = "name",
+                    kilograms = 24.4,
+                    dateTimeUtc = ZonedDateTime.now(),
+                    color = randomColor(),
+                    quantity = 23.4,
+                    spendingId = 1
+                ),
             )
-
             state = state.copy(
-                datesList = dummyDates
+                spendingList = dummy
             )
+
         }
     }
 
-    private suspend fun getSpendingListByDate(date: ZonedDateTime): List<Spending>{
+    private suspend fun getSpendingListByDate(date: ZonedDateTime): List<Spending> {
         return spendingDataSource
             .getAllSpendingsByDate(date)
             .reversed()
@@ -75,7 +156,6 @@ class SpendingOverviewViewModel(
                 it.copy(color = randomColor())
             }
     }
-
 
 
 }

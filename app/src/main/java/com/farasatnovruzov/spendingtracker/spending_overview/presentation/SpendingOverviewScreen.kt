@@ -3,22 +3,31 @@ package com.farasatnovruzov.spendingtracker.spending_overview.presentation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
-import androidx.compose.material3.DatePicker
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -49,6 +58,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.room.util.TableInfo
+import com.farasatnovruzov.spendingtracker.core.domain.Spending
 import com.farasatnovruzov.spendingtracker.core.presentation.ui.theme.SpendingTrackerAppComposeTheme
 import com.farasatnovruzov.spendingtracker.core.presentation.util.Background
 import com.farasatnovruzov.spendingtracker.spending_overview.presentation.util.formatDate
@@ -104,7 +115,7 @@ private fun SpendingOverviewScreen(
                     onItemClick = { index ->
                         onAction(SpendingOverviewAction.OnDateChange(index))
                     },
-                    modifier = Modifier.padding(24.dp),
+                    modifier = Modifier.padding(horizontal = 24.dp).padding(bottom = 8.dp),
                 )
             }
         },
@@ -123,13 +134,144 @@ private fun SpendingOverviewScreen(
         }
     ) { paddingValues ->
         Background()
-        Column(
-            modifier = Modifier.padding(paddingValues)
-        ) {
+        SpendingList(
+            state = state,
+            modifier = Modifier.padding(paddingValues),
+            onDeleteSpendingClick = onDeleteSpendingClick
+        )
+    }
+}
 
+@Composable
+fun SpendingItem(
+    modifier: Modifier = Modifier,
+    spending: Spending,
+    onDeleteSpendingClick: () -> Unit
+) {
+    var isDeleteShowing by rememberSaveable { mutableStateOf(false) }
+    Box {
+        ElevatedCard(
+            modifier = modifier
+                .height(150.dp)
+                .padding(horizontal = 16.dp)
+                .combinedClickable(
+                    onClick = {},
+                    onLongClick = {
+                        isDeleteShowing = !isDeleteShowing
+
+                    }
+                ),
+            shape = RoundedCornerShape(22.dp),
+            elevation = CardDefaults.elevatedCardElevation(
+                defaultElevation = 4.dp
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth()
+                    .background(Color(spending.color))
+                    .padding(horizontal = 18.dp, vertical = 12.dp),
+                verticalArrangement = Arrangement.SpaceAround
+            ) {
+                Text(
+                    text = spending.name,
+                    maxLines = 1,
+                    fontWeight = FontWeight.Medium,
+                    overflow = TextOverflow.Ellipsis,
+                    fontSize = 23.sp,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+                Spacer(
+                    modifier = Modifier
+                        .height(1.dp)
+                )
+
+                SpendingInfo(
+                    name = "Price",
+                    value = "$${spending.price}"
+                )
+                SpendingInfo(
+                    name = "Kilograms",
+                    value = "${spending.kilograms}"
+                )
+                SpendingInfo(
+                    name = "Quantity",
+                    value = "$${spending.quantity}"
+                )
+
+            }
+
+            DropdownMenu(
+                expanded = isDeleteShowing,
+                onDismissRequest = { isDeleteShowing = false },
+                offset = DpOffset(10.dp, 0.dp),
+            ) {
+                DropdownMenuItem(
+
+                    text = { Text("Delete Spending",
+                        fontFamily = FontFamily.Monospace,) },
+                    onClick = {
+                        isDeleteShowing = false
+                        onDeleteSpendingClick()
+
+                    }
+                )
+            }
         }
     }
 }
+
+@Composable
+fun SpendingInfo(
+    modifier: Modifier = Modifier,
+    name: String,
+    value: String
+) {
+    Row() {
+        Text(
+            text = "$name : ",
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            fontWeight = FontWeight.Normal,
+            fontSize = 16.sp,
+            color = MaterialTheme.colorScheme.onBackground.copy(0.8f),
+        )
+        Text(
+            text = "$name : ",
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            fontWeight = FontWeight.Normal,
+            fontSize = 18.sp,
+            color = MaterialTheme.colorScheme.onBackground.copy(0.8f),
+        )
+    }
+}
+
+@Composable
+fun SpendingList(
+    modifier: Modifier = Modifier,
+    state: SpendingOverviewState,
+    onDeleteSpendingClick: (Int) -> Unit,
+) {
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(
+            top = 16.dp,
+            bottom = 80.dp
+        )
+    ) {
+        itemsIndexed(state.spendingList) { index, spending ->
+            SpendingItem(
+                spending = spending,
+                onDeleteSpendingClick = { onDeleteSpendingClick(index) })
+
+            Spacer (modifier = Modifier.height(16.dp))
+        }
+
+    }
+}
+
 
 @Composable
 fun DatePickerDropDownMenu(
@@ -144,25 +286,27 @@ fun DatePickerDropDownMenu(
                 elevation = 0.5.dp,
                 shape = RoundedCornerShape(16.dp)
             )
-    ){
+    ) {
         DropdownMenu(
             expanded = isExpanded,
 //            expanded = true,
             onDismissRequest = { isExpanded = false },
-            offset = DpOffset(10.dp,0.dp),
+            offset = DpOffset(10.dp, 0.dp),
             modifier = Modifier.heightIn(max = 440.dp),
 
-        ) {
+            ) {
             state.datesList.forEachIndexed { index, time ->
-                if (index == 0){
+                if (index == 0) {
                     HorizontalDivider()
                 }
                 Text(
                     text = time.formatDate(),
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    fontWeight = FontWeight.Normal,
                     modifier = Modifier
+                        .padding(16.dp)
                         .align(Alignment.CenterHorizontally)
-                        .clickable{
+                        .clickable {
                             isExpanded = false
                             onItemClick(index)
                         }
@@ -173,7 +317,7 @@ fun DatePickerDropDownMenu(
             modifier = Modifier
                 .clip(RoundedCornerShape(16.dp))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
-                .clickable{isExpanded = true}
+                .clickable { isExpanded = true }
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
             Text(
