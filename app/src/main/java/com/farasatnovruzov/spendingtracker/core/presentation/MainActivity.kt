@@ -17,6 +17,7 @@ import com.farasatnovruzov.spendingtracker.balance.presentation.BalanceScreenCor
 import com.farasatnovruzov.spendingtracker.core.presentation.ui.theme.SpendingTrackerAppComposeTheme
 import com.farasatnovruzov.spendingtracker.core.presentation.util.Background
 import com.farasatnovruzov.spendingtracker.core.presentation.util.Screen
+import com.farasatnovruzov.spendingtracker.spending_details.presentation.SpendingDetailsScreenCore
 import com.farasatnovruzov.spendingtracker.spending_overview.presentation.SpendingOverviewScreenCore
 
 //@AndroidEntryPoint
@@ -61,6 +62,12 @@ class MainActivity : ComponentActivity() {
 //                ){
 //                    Text(text = "Spending Details")
 //                }
+
+                SpendingDetailsScreenCore(
+                    onSaveSpending = {
+                        navController.popBackStack()
+                    }
+                )
             }
             composable<Screen.Balance>{
 //                Box(

@@ -84,66 +84,66 @@ class SpendingOverviewViewModel(
 //                datesList = dummyDates
 //            )
 
-            val dummy = listOf<Spending>(
-
-                Spending(
-                    price = 23.3,
-                    name = "name",
-                    kilograms = 24.4,
-                    dateTimeUtc = ZonedDateTime.now(),
-                    color = randomColor(),
-                    quantity = 23.4,
-                    spendingId = 1
-                ),
-                Spending(
-                    price = 23.3,
-                    name = "name",
-                    kilograms = 24.4,
-                    dateTimeUtc = ZonedDateTime.now(),
-                    color = randomColor(),
-                    quantity = 23.4,
-                    spendingId = 1
-                ),
-                Spending(
-                    price = 23.3,
-                    name = "name",
-                    kilograms = 24.4,
-                    dateTimeUtc = ZonedDateTime.now(),
-                    color = randomColor(),
-                    quantity = 23.4,
-                    spendingId = 1
-                ),
-                Spending(
-                    price = 23.3,
-                    name = "name",
-                    kilograms = 24.4,
-                    dateTimeUtc = ZonedDateTime.now(),
-                    color = randomColor(),
-                    quantity = 23.4,
-                    spendingId = 1
-                ),
-                Spending(
-                    price = 23.3,
-                    name = "name",
-                    kilograms = 24.4,
-                    dateTimeUtc = ZonedDateTime.now(),
-                    color = randomColor(),
-                    quantity = 23.4,
-                    spendingId = 1
-                ),
-                Spending(
-                    price = 23.3,
-                    name = "name",
-                    kilograms = 24.4,
-                    dateTimeUtc = ZonedDateTime.now(),
-                    color = randomColor(),
-                    quantity = 23.4,
-                    spendingId = 1
-                ),
-            )
-            state = state.copy(
-                spendingList = dummy
-            )
+//            val dummy = listOf<Spending>(
+//
+//                Spending(
+//                    price = 23.3,
+//                    name = "name",
+//                    kilograms = 24.4,
+//                    dateTimeUtc = ZonedDateTime.now(),
+//                    color = randomColor(),
+//                    quantity = 23.4,
+//                    spendingId = 1
+//                ),
+//                Spending(
+//                    price = 23.3,
+//                    name = "name",
+//                    kilograms = 24.4,
+//                    dateTimeUtc = ZonedDateTime.now(),
+//                    color = randomColor(),
+//                    quantity = 23.4,
+//                    spendingId = 1
+//                ),
+//                Spending(
+//                    price = 23.3,
+//                    name = "name",
+//                    kilograms = 24.4,
+//                    dateTimeUtc = ZonedDateTime.now(),
+//                    color = randomColor(),
+//                    quantity = 23.4,
+//                    spendingId = 1
+//                ),
+//                Spending(
+//                    price = 23.3,
+//                    name = "name",
+//                    kilograms = 24.4,
+//                    dateTimeUtc = ZonedDateTime.now(),
+//                    color = randomColor(),
+//                    quantity = 23.4,
+//                    spendingId = 1
+//                ),
+//                Spending(
+//                    price = 23.3,
+//                    name = "name",
+//                    kilograms = 24.4,
+//                    dateTimeUtc = ZonedDateTime.now(),
+//                    color = randomColor(),
+//                    quantity = 23.4,
+//                    spendingId = 1
+//                ),
+//                Spending(
+//                    price = 23.3,
+//                    name = "name",
+//                    kilograms = 24.4,
+//                    dateTimeUtc = ZonedDateTime.now(),
+//                    color = randomColor(),
+//                    quantity = 23.4,
+//                    spendingId = 1
+//                ),
+//            )
+//            state = state.copy(
+//                spendingList = dummy
+//            )
 
         }
     }

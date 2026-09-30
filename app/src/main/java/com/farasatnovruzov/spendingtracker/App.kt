@@ -3,6 +3,7 @@ package com.farasatnovruzov.spendingtracker
 import android.app.Application
 import com.farasatnovruzov.spendingtracker.balance.di.balanceModule
 import com.farasatnovruzov.spendingtracker.core.di.coreModule
+import com.farasatnovruzov.spendingtracker.spending_details.di.spendingDetailsModule
 import com.farasatnovruzov.spendingtracker.spending_overview.di.spendingOverviewModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -20,7 +21,9 @@ class App: Application() {
                 // appModule, viewModelModule, repositoryModule
                 coreModule,
                 balanceModule,
-                spendingOverviewModule
+                spendingOverviewModule,
+                spendingDetailsModule
+
             )
         }
     }

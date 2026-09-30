@@ -4,6 +4,7 @@ import com.farasatnovruzov.spendingtracker.core.data.local.SpendingDao
 import com.farasatnovruzov.spendingtracker.core.domain.LocalSpendingDataSource
 import com.farasatnovruzov.spendingtracker.core.domain.Spending
 import java.time.Instant
+import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
@@ -24,11 +25,11 @@ class RoomSpendingDataSource(
     }
 
     override suspend fun getAllDates(): List<ZonedDateTime> {
-        val uniqueDates = mutableSetOf<ZonedDateTime>()
+        val uniqueDates = mutableSetOf<LocalDate>()
         return dao.getAllDates().map {
             Instant.parse(it).atZone(ZoneId.of("UTC"))
         }.filter {
-            uniqueDates.add(it)
+            uniqueDates.add(it.toLocalDate())
         }
     }
 
