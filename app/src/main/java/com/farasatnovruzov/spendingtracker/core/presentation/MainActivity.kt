@@ -43,8 +43,8 @@ class MainActivity : ComponentActivity() {
             modifier = modifier,
             navController = navController,
             startDestination = Screen.SpendingOverview,
-        ){
-            composable<Screen.SpendingOverview>{
+        ) {
+            composable<Screen.SpendingOverview> {
                 SpendingOverviewScreenCore(
                     onBalanceClick = {
                         navController.navigate(Screen.Balance)
@@ -54,28 +54,14 @@ class MainActivity : ComponentActivity() {
                     }
                 )
             }
-            composable<Screen.SpendingDetails>{
-
-//                Box(
-//                    modifier = Modifier.fillMaxSize(),
-//                    contentAlignment = androidx.compose.ui.Alignment.Center
-//                ){
-//                    Text(text = "Spending Details")
-//                }
-
+            composable<Screen.SpendingDetails> {
                 SpendingDetailsScreenCore(
                     onSaveSpending = {
                         navController.popBackStack()
                     }
                 )
             }
-            composable<Screen.Balance>{
-//                Box(
-//                    modifier = Modifier.fillMaxSize(),
-//                    contentAlignment = androidx.compose.ui.Alignment.Center
-//                ){
-//                    Text(text = "Balance")
-//                }
+            composable<Screen.Balance> {
                 BalanceScreenCore(
                     onSaveClick = {
                         navController.popBackStack()

@@ -27,7 +27,7 @@ class SpendingOverviewViewModel(
             }
 
             is SpendingOverviewAction.OnDateChange -> {
-                val newDate = state.datesList[action.newDate]
+                val newDate = state.datesList.getOrNull(action.newDate) ?: return
                 viewModelScope.launch {
                     state = state.copy(
                         pickedDate = newDate,
@@ -39,14 +39,17 @@ class SpendingOverviewViewModel(
             is SpendingOverviewAction.OnDeleteSpending -> {
                 viewModelScope.launch {
                     spendingDataSource.deleteSpending(action.spendingId)
+
+                    val updatedDates = spendingDataSource.getAllDates()
+                    val updatedSpendings = getSpendingListByDate(state.pickedDate)
+                    val updatedBalance = calculateRemainingBalance()
+
                     state = state.copy(
-                        spendingList = getSpendingListByDate(state.pickedDate),
-                        datesList = spendingDataSource.getAllDates(),
-                        balance = coreRepository.getBalance() - (spendingDataSource.getSpendBalance()
-                            ?: 0.0)
+                        spendingList = updatedSpendings,
+                        datesList = updatedDates.reversed(),
+                        balance = updatedBalance
                     )
                 }
-
             }
         }
     }
@@ -54,108 +57,29 @@ class SpendingOverviewViewModel(
     private fun loadSpendingListAndBalance() {
         viewModelScope.launch {
             val allDates = spendingDataSource.getAllDates()
+            val targetDate = allDates.lastOrNull() ?: ZonedDateTime.now()
+
             state = state.copy(
-                spendingList = getSpendingListByDate(
-                    allDates.lastOrNull() ?: ZonedDateTime.now()
-                ),
-                balance = coreRepository.getBalance() - (spendingDataSource.getSpendBalance()
-                    ?: 0.0),
-                pickedDate = allDates.lastOrNull() ?: ZonedDateTime.now(),
+                spendingList = getSpendingListByDate(targetDate),
+                balance = calculateRemainingBalance(),
+                pickedDate = targetDate,
                 datesList = allDates.reversed()
             )
-
-//            val dummyDates = listOf(
-//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-//                ZonedDateTime.parse("2026-09-01T10:15:30+01:00"),
-//                )
-//            state = state.copy(
-//                datesList = dummyDates
-//            )
-
-//            val dummy = listOf<Spending>(
-//
-//                Spending(
-//                    price = 23.3,
-//                    name = "name",
-//                    kilograms = 24.4,
-//                    dateTimeUtc = ZonedDateTime.now(),
-//                    color = randomColor(),
-//                    quantity = 23.4,
-//                    spendingId = 1
-//                ),
-//                Spending(
-//                    price = 23.3,
-//                    name = "name",
-//                    kilograms = 24.4,
-//                    dateTimeUtc = ZonedDateTime.now(),
-//                    color = randomColor(),
-//                    quantity = 23.4,
-//                    spendingId = 1
-//                ),
-//                Spending(
-//                    price = 23.3,
-//                    name = "name",
-//                    kilograms = 24.4,
-//                    dateTimeUtc = ZonedDateTime.now(),
-//                    color = randomColor(),
-//                    quantity = 23.4,
-//                    spendingId = 1
-//                ),
-//                Spending(
-//                    price = 23.3,
-//                    name = "name",
-//                    kilograms = 24.4,
-//                    dateTimeUtc = ZonedDateTime.now(),
-//                    color = randomColor(),
-//                    quantity = 23.4,
-//                    spendingId = 1
-//                ),
-//                Spending(
-//                    price = 23.3,
-//                    name = "name",
-//                    kilograms = 24.4,
-//                    dateTimeUtc = ZonedDateTime.now(),
-//                    color = randomColor(),
-//                    quantity = 23.4,
-//                    spendingId = 1
-//                ),
-//                Spending(
-//                    price = 23.3,
-//                    name = "name",
-//                    kilograms = 24.4,
-//                    dateTimeUtc = ZonedDateTime.now(),
-//                    color = randomColor(),
-//                    quantity = 23.4,
-//                    spendingId = 1
-//                ),
-//            )
-//            state = state.copy(
-//                spendingList = dummy
-//            )
-
         }
+    }
+
+    private suspend fun calculateRemainingBalance(): Double {
+        val currentBalance = coreRepository.getBalance()
+        val totalSpent = spendingDataSource.getSpendBalance() ?: 0.0
+        return currentBalance - totalSpent
     }
 
     private suspend fun getSpendingListByDate(date: ZonedDateTime): List<Spending> {
         return spendingDataSource
             .getAllSpendingsByDate(date)
             .reversed()
-            .map {
-                it.copy(color = randomColor())
+            .map { spending ->
+                spending.copy(color = randomColor())
             }
     }
-
-
 }
