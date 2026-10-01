@@ -47,9 +47,7 @@ fun SpendingDetailsScreenCore(
     onSaveSpending: () -> Unit,
 ) {
     LaunchedEffect(key1 = spendingId) {
-        if (spendingId != null && spendingId != -1) {
-            viewModel.loadSpending(spendingId)
-        }
+        viewModel.loadSpending(spendingId)
     }
 
     val context = LocalContext.current

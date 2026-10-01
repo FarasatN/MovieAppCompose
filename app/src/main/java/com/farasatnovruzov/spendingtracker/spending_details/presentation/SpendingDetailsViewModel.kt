@@ -25,17 +25,21 @@ class SpendingDetailsViewModel(
 
     val event = _eventChannel.receiveAsFlow()
 
-    fun loadSpending(spendingId: Int) {
-        viewModelScope.launch {
-            localSpendingDataSource.getSpending(spendingId)?.let { spending ->
-                state = state.copy(
-                    spendingId = spending.spendingId,
-                    name = spending.name,
-                    price = spending.price,
-                    kilograms = spending.kilograms,
-                    quantity = spending.quantity,
-                    dateTimeUtc = spending.dateTimeUtc
-                )
+    fun loadSpending(spendingId: Int?) {
+        if (spendingId == null || spendingId == -1) {
+            state = SpendingDetailsState()
+        } else {
+            viewModelScope.launch {
+                localSpendingDataSource.getSpending(spendingId)?.let { spending ->
+                    state = state.copy(
+                        spendingId = spending.spendingId,
+                        name = spending.name,
+                        price = spending.price,
+                        kilograms = spending.kilograms,
+                        quantity = spending.quantity,
+                        dateTimeUtc = spending.dateTimeUtc
+                    )
+                }
             }
         }
     }
