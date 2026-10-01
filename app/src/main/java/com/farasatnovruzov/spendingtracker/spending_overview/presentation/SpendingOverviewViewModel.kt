@@ -46,7 +46,7 @@ class SpendingOverviewViewModel(
 
                     state = state.copy(
                         spendingList = updatedSpendings,
-                        datesList = updatedDates.reversed(),
+                        datesList = updatedDates,
                         balance = updatedBalance
                     )
                 }
@@ -57,13 +57,13 @@ class SpendingOverviewViewModel(
     private fun loadSpendingListAndBalance() {
         viewModelScope.launch {
             val allDates = spendingDataSource.getAllDates()
-            val targetDate = allDates.lastOrNull() ?: ZonedDateTime.now()
+            val targetDate = allDates.firstOrNull() ?: ZonedDateTime.now()
 
             state = state.copy(
                 spendingList = getSpendingListByDate(targetDate),
                 balance = calculateRemainingBalance(),
                 pickedDate = targetDate,
-                datesList = allDates.reversed()
+                datesList = allDates
             )
         }
     }
@@ -77,9 +77,9 @@ class SpendingOverviewViewModel(
     private suspend fun getSpendingListByDate(date: ZonedDateTime): List<Spending> {
         return spendingDataSource
             .getAllSpendingsByDate(date)
-            .reversed()
             .map { spending ->
-                spending.copy(color = randomColor())
+                val seed = spending.spendingId?.takeIf { it != 0 } ?: spending.name.hashCode()
+                spending.copy(color = randomColor(seed = seed))
             }
     }
 }

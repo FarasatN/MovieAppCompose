@@ -1,10 +1,13 @@
 package com.farasatnovruzov.spendingtracker.core.data.local
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity
-data class SpendingEntity (
+@Entity(
+    indices = [Index(value = ["dateTimeUtc"])]
+)
+data class SpendingEntity(
     @PrimaryKey(autoGenerate = true)
     val spendingId: Int? = null,
     val name: String,

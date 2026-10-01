@@ -19,7 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -58,7 +58,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.room.util.TableInfo
 import com.farasatnovruzov.spendingtracker.core.domain.Spending
 import com.farasatnovruzov.spendingtracker.core.presentation.ui.theme.SpendingTrackerAppComposeTheme
 import com.farasatnovruzov.spendingtracker.core.presentation.util.Background
@@ -70,7 +69,7 @@ fun SpendingOverviewScreenCore(
     viewModel: SpendingOverviewViewModel = koinViewModel(),
     onBalanceClick: () -> Unit,
     onAddSpendingClick: () -> Unit,
-//    onDeleteSpendingClick: (Int) -> Unit,
+    onSpendingClick: (Int) -> Unit,
 ) {
     LaunchedEffect(key1 = true) {
         viewModel.onAction(SpendingOverviewAction.LoadSpendingOverviewBalance)
@@ -80,6 +79,7 @@ fun SpendingOverviewScreenCore(
         onAction = viewModel::onAction,
         onBalanceClick = onBalanceClick,
         onAddSpendingClick = onAddSpendingClick,
+        onSpendingClick = onSpendingClick,
         onDeleteSpendingClick = {
             viewModel.onAction(SpendingOverviewAction.OnDeleteSpending(it))
         }
@@ -94,6 +94,7 @@ private fun SpendingOverviewScreen(
     onAction: (SpendingOverviewAction) -> Unit,
     onBalanceClick: () -> Unit,
     onAddSpendingClick: () -> Unit,
+    onSpendingClick: (Int) -> Unit,
     onDeleteSpendingClick: (Int) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
@@ -137,6 +138,7 @@ private fun SpendingOverviewScreen(
         SpendingList(
             state = state,
             modifier = Modifier.padding(paddingValues),
+            onSpendingClick = onSpendingClick,
             onDeleteSpendingClick = onDeleteSpendingClick
         )
     }
@@ -146,7 +148,8 @@ private fun SpendingOverviewScreen(
 fun SpendingItem(
     modifier: Modifier = Modifier,
     spending: Spending,
-    onDeleteSpendingClick: () -> Unit
+    onSpendingClick: () -> Unit,
+    onDeleteSpendingClick: () -> Unit,
 ) {
     var isDeleteShowing by rememberSaveable { mutableStateOf(false) }
     Box {
@@ -155,7 +158,7 @@ fun SpendingItem(
                 .height(150.dp)
                 .padding(horizontal = 16.dp)
                 .combinedClickable(
-                    onClick = {},
+                    onClick = { onSpendingClick() },
                     onLongClick = {
                         isDeleteShowing = !isDeleteShowing
 
@@ -228,7 +231,7 @@ fun SpendingInfo(
     name: String,
     value: String
 ) {
-    Row() {
+    Row(modifier = modifier) {
         Text(
             text = "$name: ",
             maxLines = 1,
@@ -252,6 +255,7 @@ fun SpendingInfo(
 fun SpendingList(
     modifier: Modifier = Modifier,
     state: SpendingOverviewState,
+    onSpendingClick: (Int) -> Unit,
     onDeleteSpendingClick: (Int) -> Unit,
 ) {
     LazyColumn(
@@ -261,14 +265,20 @@ fun SpendingList(
             bottom = 80.dp
         )
     ) {
-        itemsIndexed(state.spendingList) { index, spending ->
+        items(
+            items = state.spendingList,
+            key = { spending -> spending.spendingId ?: spending.hashCode() }
+        ) { spending ->
             SpendingItem(
                 spending = spending,
-                onDeleteSpendingClick = { onDeleteSpendingClick(spending.spendingId ?: -1) })
+                onSpendingClick = {
+                    spending.spendingId?.let { id -> onSpendingClick(id) }
+                },
+                onDeleteSpendingClick = { onDeleteSpendingClick(spending.spendingId ?: -1) }
+            )
 
-            Spacer (modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
         }
-
     }
 }
 
@@ -372,7 +382,7 @@ fun SpendingOverviewTopBar(
                     )
                     .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f))
                     .clickable { onBalanceClick() },
-                contentAlignment = androidx.compose.ui.Alignment.Center,
+                contentAlignment = Alignment.Center,
             ) {
                 Text(
                     text = "$",
@@ -397,6 +407,7 @@ private fun ScreenPreview() {
             onAction = {},
             onBalanceClick = {},
             onAddSpendingClick = {},
+            onSpendingClick = {},
             onDeleteSpendingClick = {},
         )
     }

@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.farasatnovruzov.spendingtracker.core.domain.LocalSpendingDataSource
 import com.farasatnovruzov.spendingtracker.core.domain.Spending
 import com.farasatnovruzov.spendingtracker.spending_details.domain.UpsertSpendingUseCase
 import kotlinx.coroutines.channels.Channel
@@ -13,7 +14,8 @@ import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
 
 class SpendingDetailsViewModel(
-    private val upsertSpendingUseCase: UpsertSpendingUseCase
+    private val upsertSpendingUseCase: UpsertSpendingUseCase,
+    private val localSpendingDataSource: LocalSpendingDataSource,
 ) : ViewModel() {
 
     var state by mutableStateOf(SpendingDetailsState())
@@ -22,6 +24,21 @@ class SpendingDetailsViewModel(
     private val _eventChannel = Channel<SpendingDetailsEvent>()
 
     val event = _eventChannel.receiveAsFlow()
+
+    fun loadSpending(spendingId: Int) {
+        viewModelScope.launch {
+            localSpendingDataSource.getSpending(spendingId)?.let { spending ->
+                state = state.copy(
+                    spendingId = spending.spendingId,
+                    name = spending.name,
+                    price = spending.price,
+                    kilograms = spending.kilograms,
+                    quantity = spending.quantity,
+                    dateTimeUtc = spending.dateTimeUtc
+                )
+            }
+        }
+    }
 
     fun onAction(action: SpendingDetailsAction) {
         when (action) {
@@ -57,12 +74,12 @@ class SpendingDetailsViewModel(
 
     private suspend fun saveSpending(): Boolean {
         val spending = Spending(
-            spendingId = null,
+            spendingId = state.spendingId,
             name = state.name,
             price = state.price,
             kilograms = state.kilograms,
             quantity = state.quantity,
-            dateTimeUtc = ZonedDateTime.now()
+            dateTimeUtc = state.dateTimeUtc ?: ZonedDateTime.now()
         )
         return upsertSpendingUseCase(spending)
     }

@@ -4,15 +4,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.farasatnovruzov.spendingtracker.balance.presentation.BalanceScreenCore
 import com.farasatnovruzov.spendingtracker.core.presentation.ui.theme.SpendingTrackerAppComposeTheme
 import com.farasatnovruzov.spendingtracker.core.presentation.util.Background
@@ -50,12 +49,17 @@ class MainActivity : ComponentActivity() {
                         navController.navigate(Screen.Balance)
                     },
                     onAddSpendingClick = {
-                        navController.navigate(Screen.SpendingDetails)
+                        navController.navigate(Screen.SpendingDetails())
+                    },
+                    onSpendingClick = { spendingId ->
+                        navController.navigate(Screen.SpendingDetails(spendingId))
                     }
                 )
             }
-            composable<Screen.SpendingDetails> {
+            composable<Screen.SpendingDetails> { backStackEntry ->
+                val spendingDetailsRoute = backStackEntry.toRoute<Screen.SpendingDetails>()
                 SpendingDetailsScreenCore(
+                    spendingId = spendingDetailsRoute.spendingId,
                     onSaveSpending = {
                         navController.popBackStack()
                     }

@@ -32,7 +32,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontFamily.Companion.Monospace
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -43,9 +42,15 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SpendingDetailsScreenCore(
+    spendingId: Int? = -1,
     viewModel: SpendingDetailsViewModel = koinViewModel(),
     onSaveSpending: () -> Unit,
 ) {
+    LaunchedEffect(key1 = spendingId) {
+        if (spendingId != null && spendingId != -1) {
+            viewModel.loadSpending(spendingId)
+        }
+    }
 
     val context = LocalContext.current
     LaunchedEffect(key1 = true) {
@@ -66,6 +71,7 @@ fun SpendingDetailsScreenCore(
     SpendingDetailsScreen(
         state = viewModel.state,
         onAction = viewModel::onAction,
+        isEditing = spendingId != null && spendingId != -1
     )
 }
 
@@ -75,6 +81,7 @@ fun SpendingDetailsScreen(
     state: SpendingDetailsState,
     onAction: (SpendingDetailsAction) -> Unit,
     modifier: Modifier = Modifier,
+    isEditing: Boolean = false,
 ) {
 
     Scaffold(
@@ -87,10 +94,10 @@ fun SpendingDetailsScreen(
                 ),
                 title = {
                     Text(
-                        text = "Add Spending",
-                        fontFamily = FontFamily.Monospace,
+                        text = if (isEditing) "Edit Spending" else "Add Spending",
+                        fontFamily = Monospace,
                         fontSize = 25.sp,
-                        color = androidx.compose.material3.MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.primary
                     )
                 },
                 actions = {
@@ -140,7 +147,7 @@ fun SpendingDetailsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
-                value = state.price.toString(),
+                value = if (state.price == 0.0) "" else state.price.toString(),
                 onValueChange = { onAction(SpendingDetailsAction.UpdatePrice(it.toDoubleOrNull() ?: 0.0)) },
                 label = { Text(text = "Price", fontWeight = FontWeight.Medium) },
                 textStyle = TextStyle(
@@ -160,7 +167,7 @@ fun SpendingDetailsScreen(
                     .padding(horizontal = 16.dp)
             ) {
                 OutlinedTextField(
-                    value = state.kilograms.toString(),
+                    value = if (state.kilograms == 0.0) "" else state.kilograms.toString(),
                     onValueChange = {
                         onAction(
                             SpendingDetailsAction.UpdateKilograms(
@@ -180,7 +187,7 @@ fun SpendingDetailsScreen(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 OutlinedTextField(
-                    value = state.quantity.toString(),
+                    value = if (state.quantity == 0.0) "" else state.quantity.toString(),
                     onValueChange = {
                         onAction(
                             SpendingDetailsAction.UpdateQuantity(

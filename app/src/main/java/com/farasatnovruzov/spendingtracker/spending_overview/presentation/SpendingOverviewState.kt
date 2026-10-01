@@ -1,8 +1,10 @@
 package com.farasatnovruzov.spendingtracker.spending_overview.presentation
 
+import androidx.compose.runtime.Immutable
 import com.farasatnovruzov.spendingtracker.core.domain.Spending
 import java.time.ZonedDateTime
 
+@Immutable
 data class SpendingOverviewState(
     val spendingList: List<Spending> = emptyList(),
     val datesList: List<ZonedDateTime> = emptyList(),
