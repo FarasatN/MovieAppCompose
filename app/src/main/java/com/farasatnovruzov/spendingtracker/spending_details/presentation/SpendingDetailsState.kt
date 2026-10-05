@@ -7,8 +7,9 @@ import java.time.ZonedDateTime
 data class SpendingDetailsState(
     val spendingId: Int? = null,
     val name: String = "",
-    val price: Double = 0.0,
-    val kilograms: Double = 0.0,
-    val quantity: Double = 0.0,
+    // Rəqəm sahələri MƏTN kimi saxlanır: "1." və ya "0.0" yazarkən istifadəçini pozmur
+    val price: String = "",
+    val kilograms: String = "",
+    val quantity: String = "",
     val dateTimeUtc: ZonedDateTime? = null,
 )

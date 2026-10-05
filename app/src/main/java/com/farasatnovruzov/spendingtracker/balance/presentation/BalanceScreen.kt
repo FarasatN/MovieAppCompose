@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,13 +41,19 @@ fun BalanceScreenCore(
     viewModel: BalanceViewModel = koinViewModel(),
     onSaveClick: () -> Unit,
 ) {
+    // Geri qayıtmaq qərarı ViewModel-dən gələn "Saved" hadisəsinə bağlıdır
+    LaunchedEffect(key1 = true) {
+        viewModel.events.collect { event ->
+            when (event) {
+                BalanceEvent.Saved -> onSaveClick()
+            }
+        }
+    }
+
     BalanceScreenCoreScreen(
         state = viewModel.state,
         onAction = viewModel::onAction,
-        onSaveClick = {
-            viewModel.onAction(BalanceAction.OnBalanceSaved)
-            onSaveClick()
-        }
+        onSaveClick = { viewModel.onAction(BalanceAction.OnBalanceSaved) }
     )
 }
 
@@ -83,17 +90,15 @@ private fun BalanceScreenCoreScreen(
         ) {
             Spacer(modifier = Modifier.height(24.dp))
             Text(
-                text = "$${state.balance}",
+                text = "$${state.balanceText.ifEmpty { "0" }}",
                 fontSize = 40.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.height(38.dp))
             OutlinedTextField(
-                value = if (state.balance == 0.0) "" else state.balance.toString(),
-                onValueChange = {
-                    onAction(BalanceAction.OnBalanceChanged(it.toDoubleOrNull() ?: 0.0))
-                },
+                value = state.balanceText,
+                onValueChange = { onAction(BalanceAction.OnBalanceChanged(it)) },
                 label = {
                     Text(text = "Balance")
                 },
@@ -102,7 +107,7 @@ private fun BalanceScreenCoreScreen(
                 ),
                 maxLines = 1,
                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number
+                    keyboardType = KeyboardType.Decimal
                 ),
                 modifier = Modifier.fillMaxWidth()
             )

@@ -40,9 +40,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -61,7 +61,10 @@ import androidx.compose.ui.unit.sp
 import com.farasatnovruzov.spendingtracker.core.domain.Spending
 import com.farasatnovruzov.spendingtracker.core.presentation.ui.theme.SpendingTrackerAppComposeTheme
 import com.farasatnovruzov.spendingtracker.core.presentation.util.Background
+import com.farasatnovruzov.spendingtracker.core.presentation.util.toMoney
+import com.farasatnovruzov.spendingtracker.core.presentation.util.toPlainText
 import com.farasatnovruzov.spendingtracker.spending_overview.presentation.util.formatDate
+import com.farasatnovruzov.spendingtracker.spending_overview.presentation.util.randomColor
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -71,9 +74,6 @@ fun SpendingOverviewScreenCore(
     onAddSpendingClick: () -> Unit,
     onSpendingClick: (Int) -> Unit,
 ) {
-    LaunchedEffect(key1 = true) {
-        viewModel.onAction(SpendingOverviewAction.LoadSpendingOverviewBalance)
-    }
     SpendingOverviewScreen(
         state = viewModel.state,
         onAction = viewModel::onAction,
@@ -152,6 +152,12 @@ fun SpendingItem(
     onDeleteSpendingClick: () -> Unit,
 ) {
     var isDeleteShowing by rememberSaveable { mutableStateOf(false) }
+    // Rəng UI məsələsidir: domain modelində yox, burada hesablanır.
+    // Eyni seed -> həmişə eyni rəng, remember isə yenidən hesablamanın qarşısını alır.
+    val cardColor = remember(spending.spendingId, spending.name) {
+        val seed = spending.spendingId?.takeIf { it != 0 } ?: spending.name.hashCode()
+        Color(randomColor(seed = seed))
+    }
     Box {
         ElevatedCard(
             modifier = modifier
@@ -173,7 +179,7 @@ fun SpendingItem(
                 modifier = Modifier
                     .fillMaxHeight()
                     .fillMaxWidth()
-                    .background(Color(spending.color))
+                    .background(cardColor)
                     .padding(horizontal = 18.dp, vertical = 12.dp),
                 verticalArrangement = Arrangement.SpaceAround
             ) {
@@ -192,15 +198,15 @@ fun SpendingItem(
 
                 SpendingInfo(
                     name = "Price",
-                    value = "$${spending.price}"
+                    value = "$${spending.price.toMoney()}"
                 )
                 SpendingInfo(
                     name = "Kilograms",
-                    value = "${spending.kilograms}"
+                    value = spending.kilograms.toPlainText()
                 )
                 SpendingInfo(
                     name = "Quantity",
-                    value = "$${spending.quantity}"
+                    value = spending.quantity.toPlainText()
                 )
 
             }
@@ -362,7 +368,7 @@ fun SpendingOverviewTopBar(
         scrollBehavior = scrollBehavior,
         title = {
             Text(
-                text = "$${balance}",
+                text = "$${balance.toMoney()}",
                 fontSize = 35.sp,
                 maxLines = 1,
                 fontFamily = FontFamily.Monospace,

@@ -7,10 +7,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.farasatnovruzov.spendingtracker.core.domain.LocalSpendingDataSource
 import com.farasatnovruzov.spendingtracker.core.domain.Spending
+import com.farasatnovruzov.spendingtracker.core.presentation.util.filterDecimalInput
+import com.farasatnovruzov.spendingtracker.core.presentation.util.toAmountOrNull
+import com.farasatnovruzov.spendingtracker.core.presentation.util.toInputText
 import com.farasatnovruzov.spendingtracker.spending_details.domain.UpsertSpendingUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
 class SpendingDetailsViewModel(
@@ -25,21 +29,33 @@ class SpendingDetailsViewModel(
 
     val event = _eventChannel.receiveAsFlow()
 
+    // ViewModel ekran fırlananda sağ qalır, bu bayraq da onunla qalır.
+    // Beləliklə LaunchedEffect yenidən işləsə belə yazılan mətn silinmir.
+    private var hasLoaded = false
+
     fun loadSpending(spendingId: Int?) {
-        if (spendingId == null || spendingId == -1) {
-            state = SpendingDetailsState()
-        } else {
-            viewModelScope.launch {
-                localSpendingDataSource.getSpending(spendingId)?.let { spending ->
-                    state = state.copy(
-                        spendingId = spending.spendingId,
-                        name = spending.name,
-                        price = spending.price,
-                        kilograms = spending.kilograms,
-                        quantity = spending.quantity,
-                        dateTimeUtc = spending.dateTimeUtc
-                    )
+        if (hasLoaded) return
+        hasLoaded = true
+
+        // Yeni xərc: state artıq boşdur, yükləməyə ehtiyac yoxdur
+        if (spendingId == null || spendingId == -1) return
+
+        viewModelScope.launch {
+            localSpendingDataSource.getSpending(spendingId)?.let { spending ->
+                val divisor = when {
+                    spending.quantity > 1 -> spending.quantity
+                    spending.kilograms > 0 -> spending.kilograms
+                    else -> 1.0
                 }
+                val unitPrice = spending.price / divisor
+                state = state.copy(
+                    spendingId = spending.spendingId,
+                    name = spending.name,
+                    price = unitPrice.toInputText(),
+                    kilograms = spending.kilograms.toInputText(),
+                    quantity = spending.quantity.toInputText(),
+                    dateTimeUtc = spending.dateTimeUtc
+                )
             }
         }
     }
@@ -51,39 +67,42 @@ class SpendingDetailsViewModel(
             }
 
             is SpendingDetailsAction.UpdatePrice -> {
-                state = state.copy(price = action.newPrice)
+                filterDecimalInput(action.newPrice)?.let { state = state.copy(price = it) }
             }
 
             is SpendingDetailsAction.UpdateKilograms -> {
-                state = state.copy(kilograms = action.newKilograms)
+                filterDecimalInput(action.newKilograms)?.let { state = state.copy(kilograms = it) }
             }
 
             is SpendingDetailsAction.UpdateQuantity -> {
-                state = state.copy(quantity = action.newQuantity)
+                filterDecimalInput(action.newQuantity)?.let { state = state.copy(quantity = it) }
             }
 
             SpendingDetailsAction.SaveSpending -> {
                 viewModelScope.launch {
-
                     if (saveSpending()) {
                         _eventChannel.send(SpendingDetailsEvent.SaveSuccess)
                     } else {
                         _eventChannel.send(SpendingDetailsEvent.SaveFailed)
                     }
-
                 }
             }
         }
     }
 
     private suspend fun saveSpending(): Boolean {
+        // Mətn -> rəqəm: "." kimi yanlış mətn olsa null qayıdır və saxlama uğursuz sayılır
+        val price = state.price.toAmountOrNull() ?: return false
+        val kilograms = state.kilograms.toAmountOrNull() ?: return false
+        val quantity = state.quantity.toAmountOrNull() ?: return false
+
         val spending = Spending(
             spendingId = state.spendingId,
             name = state.name,
-            price = state.price,
-            kilograms = state.kilograms,
-            quantity = state.quantity,
-            dateTimeUtc = state.dateTimeUtc ?: ZonedDateTime.now()
+            price = price,
+            kilograms = kilograms,
+            quantity = quantity,
+            dateTimeUtc = state.dateTimeUtc ?: ZonedDateTime.now(ZoneOffset.UTC)
         )
         return upsertSpendingUseCase(spending)
     }

@@ -4,5 +4,6 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 data class BalanceState(
-    val balance: Double = 0.0
+    // Mətn kimi saxlanır (yazarkən "1." kimi aralıq halları pozulmasın)
+    val balanceText: String = ""
 )

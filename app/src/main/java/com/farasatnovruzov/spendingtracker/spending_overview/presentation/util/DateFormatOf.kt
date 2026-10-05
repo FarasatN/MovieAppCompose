@@ -1,8 +1,8 @@
 package com.farasatnovruzov.spendingtracker.spending_overview.presentation.util
 
-import java.time.ZonedDateTime
+import java.time.LocalDate
 
 
-fun ZonedDateTime.formatDate(): String{
+fun LocalDate.formatDate(): String {
     return "$dayOfMonth-$monthValue-$year"
 }

@@ -10,6 +10,5 @@ data class Spending(
     val price: Double,
     val kilograms: Double,
     val quantity: Double,
-    val dateTimeUtc: ZonedDateTime,
-    val color: Int = 0
+    val dateTimeUtc: ZonedDateTime
 )

@@ -7,10 +7,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.farasatnovruzov.spendingtracker.core.domain.CoreRepository
 import com.farasatnovruzov.spendingtracker.core.domain.LocalSpendingDataSource
-import com.farasatnovruzov.spendingtracker.core.domain.Spending
-import com.farasatnovruzov.spendingtracker.spending_overview.presentation.util.randomColor
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import java.time.ZonedDateTime
+import java.time.LocalDate
+import java.time.ZoneId
 
 class SpendingOverviewViewModel(
     private val spendingDataSource: LocalSpendingDataSource,
@@ -20,66 +23,53 @@ class SpendingOverviewViewModel(
     var state by mutableStateOf(SpendingOverviewState())
         private set
 
+    // İstifadəçinin menyudan seçdiyi gün (null = hələ seçməyib)
+    private val userPickedDate = MutableStateFlow<LocalDate?>(null)
+
+    init {
+        observeOverview()
+    }
+
     fun onAction(action: SpendingOverviewAction) {
         when (action) {
-            SpendingOverviewAction.LoadSpendingOverviewBalance -> {
-                loadSpendingListAndBalance()
-            }
-
             is SpendingOverviewAction.OnDateChange -> {
-                val newDate = state.datesList.getOrNull(action.newDate) ?: return
-                viewModelScope.launch {
-                    state = state.copy(
-                        pickedDate = newDate,
-                        spendingList = getSpendingListByDate(newDate)
-                    )
-                }
+                state.datesList.getOrNull(action.newDate)?.let { userPickedDate.value = it }
             }
 
             is SpendingOverviewAction.OnDeleteSpending -> {
+                // Yeniləməni özümüz etmirik: Room Flow-u dəyişikliyi görüb yeni state göndərəcək
                 viewModelScope.launch {
                     spendingDataSource.deleteSpending(action.spendingId)
-
-                    val updatedDates = spendingDataSource.getAllDates()
-                    val updatedSpendings = getSpendingListByDate(state.pickedDate)
-                    val updatedBalance = calculateRemainingBalance()
-
-                    state = state.copy(
-                        spendingList = updatedSpendings,
-                        datesList = updatedDates,
-                        balance = updatedBalance
-                    )
                 }
             }
         }
     }
 
-    private fun loadSpendingListAndBalance() {
-        viewModelScope.launch {
-            val allDates = spendingDataSource.getAllDates()
-            val targetDate = allDates.firstOrNull() ?: ZonedDateTime.now()
+    private fun observeOverview() {
+        combine(
+            spendingDataSource.observeAllSpendings(),
+            spendingDataSource.observeTotalSpent(),
+            coreRepository.observeBalance(),
+            userPickedDate
+        ) { allSpendings, totalSpent, budget, pickedDate ->
+            // Günləri UTC-yə görə yox, cihazın yerli qurşağına görə qruplaşdırırıq
+            val zone = ZoneId.systemDefault()
+            val spendingsByDate = allSpendings.groupBy {
+                it.dateTimeUtc.withZoneSameInstant(zone).toLocalDate()
+            }
+            val dates = spendingsByDate.keys.sortedDescending()
+            val date = pickedDate?.takeIf { it in spendingsByDate }
+                ?: dates.firstOrNull()
+                ?: LocalDate.now()
 
-            state = state.copy(
-                spendingList = getSpendingListByDate(targetDate),
-                balance = calculateRemainingBalance(),
-                pickedDate = targetDate,
-                datesList = allDates
+            SpendingOverviewState(
+                spendingList = spendingsByDate[date].orEmpty(),
+                datesList = dates,
+                balance = budget - totalSpent,
+                pickedDate = date
             )
         }
-    }
-
-    private suspend fun calculateRemainingBalance(): Double {
-        val currentBalance = coreRepository.getBalance()
-        val totalSpent = spendingDataSource.getSpendBalance() ?: 0.0
-        return currentBalance - totalSpent
-    }
-
-    private suspend fun getSpendingListByDate(date: ZonedDateTime): List<Spending> {
-        return spendingDataSource
-            .getAllSpendingsByDate(date)
-            .map { spending ->
-                val seed = spending.spendingId?.takeIf { it != 0 } ?: spending.name.hashCode()
-                spending.copy(color = randomColor(seed = seed))
-            }
+            .onEach { newState -> state = newState }
+            .launchIn(viewModelScope)
     }
 }

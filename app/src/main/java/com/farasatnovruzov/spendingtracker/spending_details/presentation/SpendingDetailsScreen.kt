@@ -145,8 +145,8 @@ fun SpendingDetailsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
-                value = if (state.price == 0.0) "" else state.price.toString(),
-                onValueChange = { onAction(SpendingDetailsAction.UpdatePrice(it.toDoubleOrNull() ?: 0.0)) },
+                value = state.price,
+                onValueChange = { onAction(SpendingDetailsAction.UpdatePrice(it)) },
                 label = { Text(text = "Price", fontWeight = FontWeight.Medium) },
                 textStyle = TextStyle(
                     fontFamily = Monospace,
@@ -165,14 +165,8 @@ fun SpendingDetailsScreen(
                     .padding(horizontal = 16.dp)
             ) {
                 OutlinedTextField(
-                    value = if (state.kilograms == 0.0) "" else state.kilograms.toString(),
-                    onValueChange = {
-                        onAction(
-                            SpendingDetailsAction.UpdateKilograms(
-                                it.toDoubleOrNull() ?: 0.0
-                            )
-                        )
-                    },
+                    value = state.kilograms,
+                    onValueChange = { onAction(SpendingDetailsAction.UpdateKilograms(it)) },
                     label = { Text(text = "Kilograms", fontWeight = FontWeight.Medium) },
                     textStyle = TextStyle(
                         fontFamily = Monospace,
@@ -185,14 +179,8 @@ fun SpendingDetailsScreen(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 OutlinedTextField(
-                    value = if (state.quantity == 0.0) "" else state.quantity.toString(),
-                    onValueChange = {
-                        onAction(
-                            SpendingDetailsAction.UpdateQuantity(
-                                it.toDoubleOrNull() ?: 0.0
-                            )
-                        )
-                    },
+                    value = state.quantity,
+                    onValueChange = { onAction(SpendingDetailsAction.UpdateQuantity(it)) },
                     label = { Text(text = "Quantity", fontWeight = FontWeight.Medium) },
                     textStyle = TextStyle(
                         fontFamily = Monospace,
