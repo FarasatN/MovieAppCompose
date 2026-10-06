@@ -54,11 +54,6 @@ android {
         }
     }
 
-    //for spendingtracker
-    room { // This block is for the Room Gradle Plugin
-        schemaDirectory("$projectDir/schemas")
-    }
-
 //    android {
 //        compileOptions {
 //            sourceCompatibility JavaVersion.VERSION_17
@@ -69,6 +64,11 @@ android {
 //            jvmTarget = '17'
 //        }
 //    }
+}
+
+// Room Gradle Plugin configuration
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 // ADD or MODIFY this block
 kotlin {
@@ -106,90 +106,72 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation(libs.androidx.navigation.compose)
-
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp) // Only available on Android/JVM.
 //    implementation(libs.coil.network.ktor2)
 //    implementation(libs.coil.network.ktor3)
-
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation(libs.androidx.room.ktx)
     // optional - Paging 3 Integration
     implementation(libs.androidx.room.paging)
-
-
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     // For ViewModels
     implementation(libs.androidx.hilt.navigation.compose) // If using Compose Navigation
-
 //    implementation("com.google.dagger:hilt-android:2.51.1") // Or latest compatible Hilt
 //    ksp("com.google.dagger:hilt-compiler:2.51.1")     // Or latest compatible Hilt
-
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.play.services)
-
     implementation(libs.okhttp)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.gson)
-
     implementation(libs.lottie.compose)
 //    implementation(libs.lottie.dotlottie)
     implementation(libs.dotlottie.android)
 // Replace VERSION_NUMBER with the latest stable version
-
 //    Example: For Google Mobile Ads (AdMob)
 //    implementation("com.google.android.gms:play-services-ads:22.6.0") // Use the latest version
-
 // Example: For basic Play Services tasks
 //    implementation("com.google.android.gms:play-services-base:18.2.0") // Use the latest version
-
-    implementation(libs.androidx.material.icons.extended)
-
-
-
     //Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
-
     // See https://firebase.google.com/docs/android/setup#available-libraries
     // For example, add the dependencies for Firebase Authentication and Cloud Firestore
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
-
     //system UI Controller
     implementation(libs.accompanist.systemuicontroller)
     //extended Icons
     implementation(libs.androidx.material.icons.extended)
-
     implementation(libs.compose.charts)
-
-
     // Core Haze layout and modifier functionality
 //    implementation("dev.chrisbanes.haze:haze:1.7.2")
     implementation(libs.haze)
     // Optional: Pre-built glass and blur materials
     implementation(libs.haze.materials)
-
-
     // Core Jetpack Compose Navigation
     implementation(libs.androidx.navigation.compose)
     // JSON Serialization for parsing object arguments
     implementation(libs.kotlinx.serialization.json)
-
-
     //for spendingtracker
     implementation(libs.bundles.koin)
     implementation(libs.androidx.datastore.preferences)
-
     //MediaPipe LLM Inference API
-    implementation("com.google.mediapipe:tasks-genai:0.10.35")
+    implementation(libs.tasks.genai)
+    // Ktor Client
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.cio) // və ya libs.ktor.client.okhttp
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.ktor.client.logging)
+    // Kotlinx Serialization JSON
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.bundles.room)
 
 }
