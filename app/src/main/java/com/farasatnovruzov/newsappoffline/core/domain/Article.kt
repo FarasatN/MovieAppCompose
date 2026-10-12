@@ -1,9 +1,6 @@
-package com.farasatnovruzov.newsappoffline.core.data.remote
+package com.farasatnovruzov.newsappoffline.core.domain
 
-import kotlinx.serialization.Serializable
-
-@Serializable
-data class NewsDto(
+data class Article(
     val ai_org: String?,
     val ai_region: String?,
     val ai_summary: String?,

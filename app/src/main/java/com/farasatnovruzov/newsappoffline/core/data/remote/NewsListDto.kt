@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class NewsListDto(
     val nextPage: String?,
-    val results: List<NewsDto?>?,
+    val results: List<ArticleDto?>?,
     val status: String?,
     val totalResults: Int?
 )

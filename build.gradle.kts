@@ -9,6 +9,6 @@ plugins {
      alias(libs.plugins.kotlin.serialization) apply false
 
     //Firebase
-    id("com.google.gms.google-services") version "4.4.3" apply false
+    id("com.google.gms.google-services") version "4.5.0" apply false
 }
 
