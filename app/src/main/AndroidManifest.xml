@@ -12,7 +12,7 @@
         </intent>
     </queries>
     <application
-        android:name="com.farasatnovruzov.spendingtracker.App"
+        android:name="com.farasatnovruzov.newsappoffline.App"
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -25,7 +25,7 @@
         android:largeHeap="true"
         tools:targetApi="35">
         <activity
-            android:name="com.farasatnovruzov.spendingtracker.core.presentation.MainActivity"
+            android:name="com.farasatnovruzov.newsappoffline.core.presentation.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.SpendingTrackerAppComposeTheme">
             <intent-filter>
