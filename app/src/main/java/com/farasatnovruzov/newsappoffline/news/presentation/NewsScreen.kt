@@ -33,12 +33,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.farasatnovruzov.newsappoffline.core.domain.Article
-import com.farasatnovruzov.newsappoffline.core.presentation.ui.theme.NewsAppOfflineComposeTheme
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import org.koin.androidx.compose.koinViewModel
@@ -223,14 +221,14 @@ fun ArticleItem(
     )
 }
 
-@Preview
-@Composable
-private fun NewsScreenPreview() {
-    NewsAppOfflineComposeTheme {
-        NewsScreen(
-            state = NewsState(),
-            onAction = {},
-            onArticleClick = {}
-        )
-    }
-}
+//@Preview
+//@Composable
+//private fun NewsScreenPreview() {
+//    NewsAppOfflineComposeTheme {
+//        NewsScreen(
+//            state = NewsState(),
+//            onAction = {},
+//            onArticleClick = {}
+//        )
+//    }
+//}
