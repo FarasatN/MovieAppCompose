@@ -41,7 +41,7 @@ class ArticleViewModel(
                     }
                     is NewsResult.Success -> {
                         state = state.copy(
-                            articles = articleResult.data,
+                            article = articleResult.data,
                             isError = false
                         )
                     }

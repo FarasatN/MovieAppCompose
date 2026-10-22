@@ -2,90 +2,91 @@ package com.farasatnovruzov.newsappoffline.core.data.remote
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
 @Serializable
 data class ArticleDto(
     @SerialName("ai_org")
-    val aiOrg: String?,
+    val aiOrg: JsonElement? = null,
 
     @SerialName("ai_region")
-    val aiRegion: String?,
+    val aiRegion: JsonElement? = null,
 
     @SerialName("ai_summary")
-    val aiSummary: String?,
+    val aiSummary: JsonElement? = null,
 
     @SerialName("ai_tag")
-    val aiTag: String?,
+    val aiTag: JsonElement? = null,
 
     @SerialName("article_id")
-    val articleId: String?,
+    val articleId: String? = null,
 
     @SerialName("category")
-    val category: List<String?>?,
+    val category: List<String?>? = null,
 
     @SerialName("content")
-    val content: String?,
+    val content: String? = null,
 
     @SerialName("country")
-    val country: List<String?>?,
+    val country: List<String?>? = null,
 
     @SerialName("creator")
-    val creator: List<String?>?,
+    val creator: List<String?>? = null,
 
     @SerialName("datatype")
-    val datatype: String?,
+    val datatype: String? = null,
 
     @SerialName("description")
-    val description: String?,
+    val description: String? = null,
 
     @SerialName("duplicate")
-    val duplicate: Boolean?,
+    val duplicate: Boolean? = null,
 
     @SerialName("fetched_at")
-    val fetchedAt: String?,
+    val fetchedAt: String? = null,
 
     @SerialName("image_url")
-    val imageUrl: String?,
+    val imageUrl: String? = null,
 
     @SerialName("keywords")
-    val keywords: List<String?>?,
+    val keywords: List<String?>? = null,
 
     @SerialName("language")
-    val language: String?,
+    val language: String? = null,
 
     @SerialName("link")
-    val link: String?,
+    val link: String? = null,
 
     @SerialName("pubDate")
-    val pubDate: String?,
+    val pubDate: String? = null,
 
     @SerialName("pubDateTZ")
-    val pubDateTZ: String?,
+    val pubDateTZ: String? = null,
 
     @SerialName("sentiment")
-    val sentiment: String?,
+    val sentiment: String? = null,
 
     @SerialName("sentiment_stats")
-    val sentimentStats: String?,
+    val sentimentStats: JsonElement? = null,
 
     @SerialName("source_icon")
-    val sourceIcon: String?,
+    val sourceIcon: String? = null,
 
     @SerialName("source_id")
-    val sourceId: String?,
+    val sourceId: String? = null,
 
     @SerialName("source_name")
-    val sourceName: String?,
+    val sourceName: String? = null,
 
     @SerialName("source_priority")
-    val sourcePriority: Int?,
+    val sourcePriority: Int? = null,
 
     @SerialName("source_url")
-    val sourceUrl: String?,
+    val sourceUrl: String? = null,
 
     @SerialName("title")
-    val title: String?,
+    val title: String? = null,
 
     @SerialName("video_url")
-    val videoUrl: String?
+    val videoUrl: String? = null
 )

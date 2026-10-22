@@ -5,6 +5,17 @@ import com.farasatnovruzov.newsappoffline.core.data.remote.ArticleDto
 import com.farasatnovruzov.newsappoffline.core.data.remote.NewsListDto
 import com.farasatnovruzov.newsappoffline.core.domain.Article
 import com.farasatnovruzov.newsappoffline.core.domain.NewsList
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonPrimitive
+
+fun JsonElement?.toFlexibleString(): String? {
+    return when (this) {
+        null, JsonNull -> null
+        is JsonPrimitive -> if (isString) content else toString()
+        else -> toString()
+    }
+}
 
 fun NewsListDto.toNewsList(): NewsList {
     return NewsList(
@@ -17,13 +28,13 @@ fun NewsListDto.toNewsList(): NewsList {
 
 fun ArticleDto.toArticle(): Article {
     return Article(
-        aiOrg = aiOrg,
-        aiRegion = aiRegion,
-        aiSummary = aiSummary,
-        aiTag = aiTag,
+        aiOrg = aiOrg.toFlexibleString(),
+        aiRegion = aiRegion.toFlexibleString(),
+        aiSummary = aiSummary.toFlexibleString(),
+        aiTag = aiTag.toFlexibleString(),
         articleId = articleId,
         category = category,
-        content = "$articleId: $content",
+        content = content,
         country = country,
         creator = creator,
         datatype = datatype,
@@ -37,7 +48,7 @@ fun ArticleDto.toArticle(): Article {
         pubDate = pubDate,
         pubDateTZ = pubDateTZ,
         sentiment = sentiment,
-        sentimentStats = sentimentStats,
+        sentimentStats = sentimentStats.toFlexibleString(),
         sourceIcon = sourceIcon,
         sourceId = sourceId,
         sourceName = sourceName,
@@ -56,7 +67,7 @@ fun ArticleEntity.toArticle(): Article {
         aiTag = aiTag,
         articleId = articleId,
         category = category,
-        content = "$articleId: $content",
+        content = content,
         country = country,
         creator = creator,
         datatype = datatype,
@@ -87,9 +98,9 @@ fun Article.toArticleEntity(): ArticleEntity {
         aiRegion = aiRegion,
         aiSummary = aiSummary,
         aiTag = aiTag,
-        articleId = articleId,
+        articleId = articleId ?: "",
         category = category,
-        content = "$articleId: $content",
+        content = content,
         country = country,
         creator = creator,
         datatype = datatype,
@@ -112,5 +123,4 @@ fun Article.toArticleEntity(): ArticleEntity {
         title = title,
         videoUrl = videoUrl
     )
-
 }

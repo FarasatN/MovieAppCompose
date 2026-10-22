@@ -4,7 +4,7 @@ import com.farasatnovruzov.newsappoffline.core.domain.Article
 
 data class ArticleState(
     val isLoading: Boolean = false,
-    val articles: Article? = null,
+    val article: Article? = null,
     val isError: Boolean = false
 //    val searchQuery: String = "",
 

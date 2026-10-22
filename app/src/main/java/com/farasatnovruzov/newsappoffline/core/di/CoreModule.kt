@@ -1,7 +1,9 @@
 package com.farasatnovruzov.newsappoffline.core.di
 
 import androidx.room.Room
+import com.farasatnovruzov.newsappoffline.core.data.NewsRepositoryImpl
 import com.farasatnovruzov.newsappoffline.core.data.local.room.ArticleDatabase
+import com.farasatnovruzov.newsappoffline.core.domain.NewsRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.engine.cio.endpoint
@@ -65,5 +67,12 @@ val coreModule = module{
                 level = LogLevel.ALL
             }
         }
+    }
+
+    single<NewsRepository> {
+        NewsRepositoryImpl(
+            httpClient = get(),
+            dao = get()
+        )
     }
 }

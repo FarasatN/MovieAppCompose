@@ -11,7 +11,7 @@ data class ArticleEntity(
     val aiTag: String?,
 
     @PrimaryKey(autoGenerate = false)
-    val articleId: String?,
+    val articleId: String,
 
     val category: List<String?>?,
     val content: String?,

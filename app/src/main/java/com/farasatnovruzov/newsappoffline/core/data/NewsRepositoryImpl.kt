@@ -52,6 +52,7 @@ class NewsRepositoryImpl(
             val remoteNewsList = try {
                 getRemoteNews(null)
             } catch (e: Exception) {
+                if (e is CancellationException) throw e
                 e.printStackTrace()
                 println(tag + " getNews remote exception " + e.message)
                 null
@@ -80,6 +81,7 @@ class NewsRepositoryImpl(
             val remoteNewsList = try {
                 getRemoteNews(nextPage)
             } catch (e: Exception) {
+                if (e is CancellationException) throw e
                 e.printStackTrace()
                 println(tag + " getNews remote exception " + e.message)
                 null
