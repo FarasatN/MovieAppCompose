@@ -11,6 +11,7 @@ import com.farasatnovruzov.newsappoffline.core.domain.NewsResult
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 class NewsViewModel(
     private val newsRepository: NewsRepository
@@ -129,7 +130,7 @@ class NewsViewModel(
         }
 
         searchJob = viewModelScope.launch {
-            delay(300L) // Debounce typing
+            delay(300.milliseconds) // Debounce typing
             executeSearch(query)
         }
     }
