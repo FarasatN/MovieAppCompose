@@ -8,6 +8,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.engine.cio.endpoint
 import io.ktor.client.plugins.DefaultRequest
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
@@ -38,6 +39,7 @@ val coreModule = module{
     single {
         HttpClient(CIO){
             expectSuccess = true
+            install(HttpTimeout) { requestTimeoutMillis = 15_000 }
             engine {
                 endpoint{
                     keepAliveTime = 5000

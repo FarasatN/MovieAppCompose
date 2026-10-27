@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 class ArticleViewModel(
     private val repository: NewsRepository,
-) : ViewModel(){
+) : ViewModel() {
 
     var state by mutableStateOf(ArticleState())
         private set
@@ -19,36 +19,44 @@ class ArticleViewModel(
     fun onAction(action: ArticleAction) {
         when (action) {
             is ArticleAction.LoadArticle -> {
-                state = state.copy(isLoading = true)
                 loadArticle(action.articleId)
             }
         }
     }
 
     private fun loadArticle(articleId: String) {
-        if (articleId.isBlank()){
-            state = state.copy(isError = true)
+        if (articleId.isBlank()) {
+            state = state.copy(
+                isError = true,
+                errorMessage = "Keçərsiz məqalə ID"
+            )
             return
         }
         viewModelScope.launch {
-            state = state.copy(isLoading = true)
+            state = state.copy(
+                isLoading = true,
+                isError = false,
+                errorMessage = null
+            )
             repository.getArticle(articleId).collect { articleResult ->
-                when (articleResult) {
+                state = when (articleResult) {
                     is NewsResult.Error -> {
-                        state = state.copy(
+                        state.copy(
                             isError = true,
+                            errorMessage = articleResult.error ?: "Məqalə tapılmadı"
                         )
                     }
+
                     is NewsResult.Success -> {
-                        state = state.copy(
+                        state.copy(
                             article = articleResult.data,
-                            isError = false
+                            isError = false,
+                            errorMessage = null
                         )
                     }
                 }
             }
             state = state.copy(isLoading = false)
-
         }
     }
 }

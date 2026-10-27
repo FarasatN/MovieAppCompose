@@ -19,50 +19,42 @@ class NewsRepositoryImpl(
     private val dao: ArticlesDao
 ) : NewsRepository {
 
-    //https://newsdata.io/api/1/latest?apikey=pub_afa06c3d3e9f4d75a0fde98a6fe00010&language=az
-    private val tag = "NewsRepository"
     private val baseUrl = "https://newsdata.io/api/1/latest"
     private val apiKey = "pub_afa06c3d3e9f4d75a0fde98a6fe00010"
 
     private suspend fun getLocalNews(nextPage: String?): NewsList {
         val localNews = dao.getArticleList()
-        println(tag + " getLocalNews " + localNews.size + " nextPage: " + nextPage)
-        val newsList = NewsList(
+        return NewsList(
             nextPage = nextPage,
             status = "ok",
             totalResults = localNews.size,
             articles = localNews.map { it.toArticle() }
         )
-        return newsList
     }
 
-    private suspend fun getRemoteNews(nextPage: String?): NewsList {
+    private suspend fun getRemoteNews(nextPage: String?, languageCode: String): NewsList {
         val newsListDto: NewsListDto = httpClient.get(baseUrl) {
             parameter("apikey", apiKey)
-            parameter("language", "az")
+            parameter("language", languageCode)
             if (nextPage != null) parameter("page", nextPage)
         }.body()
-        println(tag + " getRemoteNews " + newsListDto.results?.size + " nextPage: " + nextPage)
         return newsListDto.toNewsList()
     }
 
-
-    override suspend fun getNews(): Flow<NewsResult<NewsList>> {
+    override suspend fun getNews(languageCode: String): Flow<NewsResult<NewsList>> {
         return flow {
             val remoteNewsList = try {
-                getRemoteNews(null)
+                getRemoteNews(null, languageCode)
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
-                e.printStackTrace()
-                println(tag + " getNews remote exception " + e.message)
                 null
             }
 
-            remoteNewsList?.let {
+            remoteNewsList?.let { newsList ->
                 dao.clearDatabase()
-                dao.upsertArticleList(remoteNewsList.articles?.map { it!!.toArticleEntity() }
-                    ?: emptyList())
-                emit(NewsResult.Success(getLocalNews(remoteNewsList.nextPage)))
+                val entities = newsList.articles?.mapNotNull { it?.toArticleEntity() } ?: emptyList()
+                dao.upsertArticleList(entities)
+                emit(NewsResult.Success(getLocalNews(newsList.nextPage)))
                 return@flow
             }
 
@@ -72,39 +64,64 @@ class NewsRepositoryImpl(
                 return@flow
             }
 
-            emit(NewsResult.Error("No data"))
+            emit(NewsResult.Error("Məlumat tapılmadı"))
         }
     }
 
-    override suspend fun paginate(nextPage: String): Flow<NewsResult<NewsList>> {
+    override suspend fun paginate(nextPage: String, languageCode: String): Flow<NewsResult<NewsList>> {
         return flow {
             val remoteNewsList = try {
-                getRemoteNews(nextPage)
+                getRemoteNews(nextPage, languageCode)
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
-                e.printStackTrace()
-                println(tag + " getNews remote exception " + e.message)
                 null
             }
 
-            remoteNewsList?.let {
-//                dao.clearDatabase()
-                dao.upsertArticleList(remoteNewsList.articles?.map { it!!.toArticleEntity() }
-                    ?: emptyList())
-//                emit(NewsResult.Success(getLocalNews(remoteNewsList.nextPage))) //can give duplicated error
-
-                emit(NewsResult.Success(remoteNewsList))
+            remoteNewsList?.let { newsList ->
+                val entities = newsList.articles?.mapNotNull { it?.toArticleEntity() } ?: emptyList()
+                dao.upsertArticleList(entities)
+                emit(NewsResult.Success(newsList))
                 return@flow
             }
 
-            emit(NewsResult.Error("No data"))
+            emit(NewsResult.Error("Səhifələmə xətası"))
+        }
+    }
+
+    override suspend fun searchNews(query: String, languageCode: String): Flow<NewsResult<List<Article>>> {
+        return flow {
+            val localResults = dao.searchArticle(query).map { it.toArticle() }
+            if (localResults.isNotEmpty()) {
+                emit(NewsResult.Success(localResults))
+            }
+
+            try {
+                val remoteNewsListDto: NewsListDto = httpClient.get(baseUrl) {
+                    parameter("apikey", apiKey)
+                    parameter("q", query)
+                    parameter("language", languageCode)
+                }.body()
+
+                val remoteArticles = remoteNewsListDto.results?.mapNotNull { it?.toArticle() } ?: emptyList()
+                if (remoteArticles.isNotEmpty()) {
+                    dao.upsertArticleList(remoteArticles.map { it.toArticleEntity() })
+                    val updatedLocalResults = dao.searchArticle(query).map { it.toArticle() }
+                    emit(NewsResult.Success(updatedLocalResults))
+                } else if (localResults.isEmpty()) {
+                    emit(NewsResult.Success(emptyList()))
+                }
+            } catch (e: Exception) {
+                if (e is CancellationException) throw e
+                if (localResults.isEmpty()) {
+                    emit(NewsResult.Error(e.localizedMessage ?: "Axtarış xətası baş verdi"))
+                }
+            }
         }
     }
 
     override suspend fun getArticle(articleId: String): Flow<NewsResult<Article>> {
         return flow {
             dao.getArticle(articleId)?.let { article ->
-                println(tag + " get local article data" + article.title)
                 emit(NewsResult.Success(article.toArticle()))
                 return@flow
             }
@@ -112,25 +129,20 @@ class NewsRepositoryImpl(
             try {
                 val remoteArticle: NewsListDto = httpClient.get(baseUrl) {
                     parameter("apikey", apiKey)
-//                    parameter("language", "az")
                     parameter("article_id", articleId)
                 }.body()
-                println(tag + " get article remote " + remoteArticle.results?.size)
-                if (remoteArticle.results?.isNotEmpty() == true) {
-                    emit(NewsResult.Success(remoteArticle.results[0]?.toArticle()))
-                }else{
-                    emit(NewsResult.Error("Can't load article"))
-                }
 
-            }catch (e: Exception){
-                e.printStackTrace()
+                val firstArticle = remoteArticle.results?.firstOrNull()?.toArticle()
+                if (firstArticle != null) {
+                    dao.upsertArticleList(listOf(firstArticle.toArticleEntity()))
+                    emit(NewsResult.Success(firstArticle))
+                } else {
+                    emit(NewsResult.Error("Məqalə tapılmadı"))
+                }
+            } catch (e: Exception) {
                 if (e is CancellationException) throw e
-                println(tag + " get article remote exception " + e.message)
-                emit(NewsResult.Error("Can't load article"))
-                return@flow
+                emit(NewsResult.Error(e.localizedMessage ?: "Məqaləni yükləmək mümkün olmadı"))
             }
         }
     }
-
-
 }

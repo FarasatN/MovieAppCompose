@@ -20,7 +20,7 @@ interface ArticlesDao {
     @Query("DELETE FROM article_entity")
     suspend fun clearDatabase()
 
-    @Query("SELECT * FROM article_entity WHERE title LIKE '%' || :query || '%'")
+    @Query("SELECT * FROM article_entity WHERE title LIKE '%' || :query || '%' OR description LIKE '%' || :query || '%'")
     suspend fun searchArticle(query: String): List<ArticleEntity>
 
 
