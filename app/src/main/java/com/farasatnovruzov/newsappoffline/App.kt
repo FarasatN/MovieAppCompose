@@ -6,16 +6,19 @@ import com.farasatnovruzov.newsappoffline.core.di.coreModule
 import com.farasatnovruzov.newsappoffline.news.di.newsModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
-import org.koin.core.context.GlobalContext.startKoin
+import org.koin.core.context.GlobalContext
+import org.koin.core.logger.Level
 
-class App: Application() {
+class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        startKoin {
-            androidLogger()
-            androidContext(this@App)
-            modules(coreModule, newsModule, articleModule)
+        if (GlobalContext.getOrNull() == null) {
+            GlobalContext.startKoin {
+                androidLogger(Level.ERROR)
+                androidContext(this@App)
+                modules(coreModule, newsModule, articleModule)
+            }
         }
     }
 }

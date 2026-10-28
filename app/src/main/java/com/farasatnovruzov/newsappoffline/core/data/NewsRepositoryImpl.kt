@@ -32,20 +32,21 @@ class NewsRepositoryImpl(
         )
     }
 
-    private suspend fun getRemoteNews(nextPage: String?, languageCode: String): NewsList {
+    private suspend fun getRemoteNews(nextPage: String?, languageCode: String, category: String?): NewsList {
         val newsListDto: NewsListDto = httpClient.get(baseUrl) {
             parameter("apikey", apiKey)
             parameter("language", languageCode)
+            if (!category.isNullOrBlank()) parameter("category", category)
             if (nextPage != null) parameter("page", nextPage)
         }.body()
         return newsListDto.toNewsList()
     }
 
-    override suspend fun getNews(languageCode: String): Flow<NewsResult<NewsList>> {
+    override suspend fun getNews(languageCode: String, category: String?): Flow<NewsResult<NewsList>> {
         return flow {
             val remoteNewsList = try {
-                getRemoteNews(null, languageCode)
-            } catch (e: Exception) {
+                getRemoteNews(null, languageCode, category)
+            } catch (e: Throwable) {
                 if (e is CancellationException) throw e
                 null
             }
@@ -68,11 +69,11 @@ class NewsRepositoryImpl(
         }
     }
 
-    override suspend fun paginate(nextPage: String, languageCode: String): Flow<NewsResult<NewsList>> {
+    override suspend fun paginate(nextPage: String, languageCode: String, category: String?): Flow<NewsResult<NewsList>> {
         return flow {
             val remoteNewsList = try {
-                getRemoteNews(nextPage, languageCode)
-            } catch (e: Exception) {
+                getRemoteNews(nextPage, languageCode, category)
+            } catch (e: Throwable) {
                 if (e is CancellationException) throw e
                 null
             }
@@ -88,7 +89,7 @@ class NewsRepositoryImpl(
         }
     }
 
-    override suspend fun searchNews(query: String, languageCode: String): Flow<NewsResult<List<Article>>> {
+    override suspend fun searchNews(query: String, languageCode: String, category: String?): Flow<NewsResult<List<Article>>> {
         return flow {
             val localResults = dao.searchArticle(query).map { it.toArticle() }
             if (localResults.isNotEmpty()) {
@@ -100,6 +101,7 @@ class NewsRepositoryImpl(
                     parameter("apikey", apiKey)
                     parameter("q", query)
                     parameter("language", languageCode)
+                    if (!category.isNullOrBlank()) parameter("category", category)
                 }.body()
 
                 val remoteArticles = remoteNewsListDto.results?.mapNotNull { it?.toArticle() } ?: emptyList()
@@ -110,7 +112,7 @@ class NewsRepositoryImpl(
                 } else if (localResults.isEmpty()) {
                     emit(NewsResult.Success(emptyList()))
                 }
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 if (e is CancellationException) throw e
                 if (localResults.isEmpty()) {
                     emit(NewsResult.Error(e.localizedMessage ?: "Axtarış xətası baş verdi"))
@@ -139,7 +141,7 @@ class NewsRepositoryImpl(
                 } else {
                     emit(NewsResult.Error("Məqalə tapılmadı"))
                 }
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 if (e is CancellationException) throw e
                 emit(NewsResult.Error(e.localizedMessage ?: "Məqaləni yükləmək mümkün olmadı"))
             }

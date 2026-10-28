@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.farasatnovruzov.newsappoffline.core.domain.NewsCategory
 import com.farasatnovruzov.newsappoffline.core.domain.NewsLanguage
 import com.farasatnovruzov.newsappoffline.core.domain.NewsRepository
 import com.farasatnovruzov.newsappoffline.core.domain.NewsResult
@@ -31,6 +32,7 @@ class NewsViewModel(
             is NewsAction.Paginate -> paginate()
             is NewsAction.OnSearchQueryChange -> onSearchQueryChange(action.query)
             is NewsAction.OnLanguageSelect -> onLanguageSelect(action.language)
+            is NewsAction.OnCategorySelect -> onCategorySelect(action.category)
             is NewsAction.ClearSearch -> clearSearch()
             is NewsAction.Refresh -> loadNews()
         }
@@ -44,7 +46,10 @@ class NewsViewModel(
                 errorMessage = null
             )
 
-            newsRepository.getNews(state.selectedLanguage.code).collect { result ->
+            newsRepository.getNews(
+                languageCode = state.selectedLanguage.code,
+                category = state.selectedCategory.code
+            ).collect { result ->
                 state = when (result) {
                     is NewsResult.Error -> {
                         state.copy(
@@ -76,7 +81,11 @@ class NewsViewModel(
         viewModelScope.launch {
             state = state.copy(isLoading = true)
 
-            newsRepository.paginate(nextPage, state.selectedLanguage.code).collect { result ->
+            newsRepository.paginate(
+                nextPage = nextPage,
+                languageCode = state.selectedLanguage.code,
+                category = state.selectedCategory.code
+            ).collect { result ->
                 state = when (result) {
                     is NewsResult.Error -> {
                         state.copy(
@@ -117,6 +126,21 @@ class NewsViewModel(
         }
     }
 
+    private fun onCategorySelect(category: NewsCategory) {
+        if (state.selectedCategory == category) return
+        state = state.copy(
+            selectedCategory = category,
+            articleList = emptyList(),
+            searchArticleList = emptyList()
+        )
+
+        if (state.isSearchActive) {
+            executeSearch(state.searchQuery)
+        } else {
+            loadNews()
+        }
+    }
+
     private fun onSearchQueryChange(query: String) {
         state = state.copy(searchQuery = query)
         searchJob?.cancel()
@@ -139,7 +163,11 @@ class NewsViewModel(
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
             state = state.copy(isSearchingLoading = true)
-            newsRepository.searchNews(query, state.selectedLanguage.code).collect { result ->
+            newsRepository.searchNews(
+                query = query,
+                languageCode = state.selectedLanguage.code,
+                category = state.selectedCategory.code
+            ).collect { result ->
                 state = when (result) {
                     is NewsResult.Error -> {
                         state.copy(

@@ -5,8 +5,7 @@ import com.farasatnovruzov.newsappoffline.core.data.NewsRepositoryImpl
 import com.farasatnovruzov.newsappoffline.core.data.local.room.ArticleDatabase
 import com.farasatnovruzov.newsappoffline.core.domain.NewsRepository
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.engine.cio.endpoint
+import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -21,8 +20,7 @@ import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
-
-val coreModule = module{
+val coreModule = module {
 
     single {
         Room.databaseBuilder(
@@ -37,17 +35,15 @@ val coreModule = module{
     }
 
     single {
-        HttpClient(CIO){
+        HttpClient(OkHttp) {
             expectSuccess = true
             install(HttpTimeout) { requestTimeoutMillis = 15_000 }
             engine {
-                endpoint{
-                    keepAliveTime = 5000
-                    connectTimeout = 5000
-                    connectAttempts = 3
+                config {
+                    retryOnConnectionFailure(true)
                 }
             }
-            install(ContentNegotiation){
+            install(ContentNegotiation) {
                 json(
                     Json {
                         prettyPrint = true
@@ -59,12 +55,11 @@ val coreModule = module{
             install(DefaultRequest) {
                 header(HttpHeaders.ContentType, ContentType.Application.Json)
             }
-            install(Logging){
-                logger = object: Logger {
+            install(Logging) {
+                logger = object : Logger {
                     override fun log(message: String) {
                         println(message)
                     }
-
                 }
                 level = LogLevel.ALL
             }

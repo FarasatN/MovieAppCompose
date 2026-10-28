@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.farasatnovruzov.newsappoffline.core.domain.Article
+import com.farasatnovruzov.newsappoffline.core.domain.NewsCategory
 import com.farasatnovruzov.newsappoffline.core.domain.NewsLanguage
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
@@ -137,7 +138,7 @@ private fun NewsScreen(
                 LazyRow(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 4.dp),
+                        .padding(vertical = 2.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -156,6 +157,34 @@ private fun NewsScreen(
                             colors = FilterChipDefaults.filterChipColors(
                                 selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
                                 selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        )
+                    }
+                }
+
+                // Kateqoriya Seçimi Çipləri (Category Selection Filter Chips)
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 2.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(NewsCategory.entries.toTypedArray()) { category ->
+                        val isSelected = state.selectedCategory == category
+                        FilterChip(
+                            selected = isSelected,
+                            onClick = { onAction(NewsAction.OnCategorySelect(category)) },
+                            label = {
+                                Text(
+                                    text = "${category.emoji} ${category.displayName}",
+                                    fontSize = 13.sp,
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                )
+                            },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                selectedLabelColor = MaterialTheme.colorScheme.onSecondaryContainer
                             )
                         )
                     }
