@@ -1,6 +1,7 @@
 package com.farasatnovruzov.newsappoffline.core.data
 
 import com.farasatnovruzov.newsappoffline.core.data.local.room.ArticlesDao
+import com.farasatnovruzov.newsappoffline.core.data.remote.NewsApiConfig
 import com.farasatnovruzov.newsappoffline.core.data.remote.NewsListDto
 import com.farasatnovruzov.newsappoffline.core.domain.Article
 import com.farasatnovruzov.newsappoffline.core.domain.NewsList
@@ -8,10 +9,12 @@ import com.farasatnovruzov.newsappoffline.core.domain.NewsRepository
 import com.farasatnovruzov.newsappoffline.core.domain.NewsResult
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.cancellation.CancellationException
 
 class NewsRepositoryImpl(
@@ -19,8 +22,49 @@ class NewsRepositoryImpl(
     private val dao: ArticlesDao
 ) : NewsRepository {
 
-    private val baseUrl = "https://newsdata.io/api/1/latest"
-    private val apiKey = "pub_afa06c3d3e9f4d75a0fde98a6fe00010"
+    private val currentKeyIndex = AtomicInteger(0)
+
+    private fun getCurrentApiKey(): String {
+        val keys = NewsApiConfig.API_KEYS
+        if (keys.isEmpty()) return ""
+        val index = currentKeyIndex.get() % keys.size
+        return keys[index.coerceAtLeast(0)]
+    }
+
+    private fun rotateApiKey() {
+        val keys = NewsApiConfig.API_KEYS
+        if (keys.size > 1) {
+            currentKeyIndex.incrementAndGet()
+        }
+    }
+
+    private suspend fun <T> executeWithKeyRotation(block: suspend (apiKey: String) -> T): T {
+        val keys = NewsApiConfig.API_KEYS
+        val maxAttempts = if (keys.isNotEmpty()) keys.size else 1
+        var attempts = 0
+        var lastError: Throwable? = null
+
+        while (attempts < maxAttempts) {
+            val key = getCurrentApiKey()
+            try {
+                return block(key)
+            } catch (e: ClientRequestException) {
+                lastError = e
+                if (e.response.status.value in listOf(400, 422, 429)) {
+                    rotateApiKey()
+                    attempts++
+                } else {
+                    throw e
+                }
+            } catch (e: Throwable) {
+                if (e is CancellationException) throw e
+                lastError = e
+                rotateApiKey()
+                attempts++
+            }
+        }
+        throw lastError ?: IllegalStateException("Bütün API key-lərin limiti dolub.")
+    }
 
     private suspend fun getLocalNews(nextPage: String?): NewsList {
         val localNews = dao.getArticleList()
@@ -33,12 +77,19 @@ class NewsRepositoryImpl(
     }
 
     private suspend fun getRemoteNews(nextPage: String?, languageCode: String, category: String?): NewsList {
-        val newsListDto: NewsListDto = httpClient.get(baseUrl) {
-            parameter("apikey", apiKey)
-            parameter("language", languageCode)
-            if (!category.isNullOrBlank()) parameter("category", category)
-            if (nextPage != null) parameter("page", nextPage)
-        }.body()
+        val newsListDto: NewsListDto = executeWithKeyRotation { apiKey ->
+            val response: NewsListDto = httpClient.get(NewsApiConfig.BASE_URL) {
+                parameter("apikey", apiKey)
+                parameter("language", languageCode)
+                if (!category.isNullOrBlank()) parameter("category", category)
+                if (nextPage != null) parameter("page", nextPage)
+            }.body()
+
+            if (response.status == "error") {
+                throw Exception("API Quota/Error: ${response.status}")
+            }
+            response
+        }
         return newsListDto.toNewsList()
     }
 
@@ -97,12 +148,19 @@ class NewsRepositoryImpl(
             }
 
             try {
-                val remoteNewsListDto: NewsListDto = httpClient.get(baseUrl) {
-                    parameter("apikey", apiKey)
-                    parameter("q", query)
-                    parameter("language", languageCode)
-                    if (!category.isNullOrBlank()) parameter("category", category)
-                }.body()
+                val remoteNewsListDto: NewsListDto = executeWithKeyRotation { apiKey ->
+                    val response: NewsListDto = httpClient.get(NewsApiConfig.BASE_URL) {
+                        parameter("apikey", apiKey)
+                        parameter("q", query)
+                        parameter("language", languageCode)
+                        if (!category.isNullOrBlank()) parameter("category", category)
+                    }.body()
+
+                    if (response.status == "error") {
+                        throw Exception("API Quota/Error: ${response.status}")
+                    }
+                    response
+                }
 
                 val remoteArticles = remoteNewsListDto.results?.mapNotNull { it?.toArticle() } ?: emptyList()
                 if (remoteArticles.isNotEmpty()) {
@@ -129,10 +187,17 @@ class NewsRepositoryImpl(
             }
 
             try {
-                val remoteArticle: NewsListDto = httpClient.get(baseUrl) {
-                    parameter("apikey", apiKey)
-                    parameter("article_id", articleId)
-                }.body()
+                val remoteArticle: NewsListDto = executeWithKeyRotation { apiKey ->
+                    val response: NewsListDto = httpClient.get(NewsApiConfig.BASE_URL) {
+                        parameter("apikey", apiKey)
+                        parameter("article_id", articleId)
+                    }.body()
+
+                    if (response.status == "error") {
+                        throw Exception("API Quota/Error: ${response.status}")
+                    }
+                    response
+                }
 
                 val firstArticle = remoteArticle.results?.firstOrNull()?.toArticle()
                 if (firstArticle != null) {

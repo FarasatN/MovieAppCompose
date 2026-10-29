@@ -154,7 +154,7 @@ class NewsViewModel(
         }
 
         searchJob = viewModelScope.launch {
-            delay(300.milliseconds) // Debounce typing
+            delay(500.milliseconds) // Debounce typing (500ms)
             executeSearch(query)
         }
     }
