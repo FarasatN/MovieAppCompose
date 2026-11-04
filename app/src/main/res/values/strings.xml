@@ -19,4 +19,54 @@
     <string name="invalid_password">Please enter a valid password that is at least 6 characters.</string>
     <string name="app_logo">Book Society</string>
 
+    <!-- News App Strings -->
+    <string name="news_app_title">The News</string>
+
+    <!-- Search Bar -->
+    <string name="search_placeholder">Search articles or news&#8230;</string>
+    <string name="search_content_description">Search</string>
+    <string name="clear_content_description">Clear</string>
+
+    <!-- Error & Info Messages -->
+    <string name="error_failed_to_load_news">Failed to load news</string>
+    <string name="error_failed_to_load_article">Failed to load article</string>
+    <string name="error_failed_to_load_data">Failed to load data</string>
+    <string name="error_pagination">Pagination error</string>
+    <string name="error_invalid_article_id">Invalid article ID</string>
+    <string name="error_article_not_found">Article not found</string>
+    <string name="error_no_data_available">No data available</string>
+    <string name="error_no_news_matching_search">No news found matching your search</string>
+
+    <!-- Buttons -->
+    <string name="retry">Retry</string>
+
+    <!-- Categories -->
+    <string name="category_all">All</string>
+    <string name="category_business">Business</string>
+    <string name="category_crime">Crime</string>
+    <string name="category_domestic">Domestic</string>
+    <string name="category_education">Education</string>
+    <string name="category_entertainment">Entertainment</string>
+    <string name="category_environment">Environment</string>
+    <string name="category_food">Food</string>
+    <string name="category_health">Health</string>
+    <string name="category_lifestyle">Lifestyle</string>
+    <string name="category_politics">Politics</string>
+    <string name="category_science">Science</string>
+    <string name="category_sports">Sports</string>
+    <string name="category_technology">Technology</string>
+    <string name="category_top">Top</string>
+    <string name="category_tourism">Tourism</string>
+    <string name="category_world">World</string>
+    <string name="category_other">Other</string>
+
+    <!-- Other Strings -->
+    <string name="invalid_article_id">Invalid article ID</string>
+    <string name="article_not_found">Article not found</string>
+    <string name="failed_to_load_data">Failed to load data</string>
+    <string name="pagination_error">Pagination error</string>
+    <string name="failed_to_load_article">Failed to load article</string>
+    <string name="search_failed">Search failed</string>
+    <string name="no_data_available">No data available</string>
+    <string name="all_api_keys_exhausted">All API key limits have been reached.</string>
 </resources>

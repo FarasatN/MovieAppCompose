@@ -8,13 +8,12 @@ import com.farasatnovruzov.newsappoffline.core.domain.NewsList
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonPrimitive
+import java.util.UUID
 
-fun JsonElement?.toFlexibleString(): String? {
-    return when (this) {
-        null, JsonNull -> null
-        is JsonPrimitive -> if (isString) content else toString()
-        else -> toString()
-    }
+fun JsonElement?.toFlexibleString(): String? = when (this) {
+    null, JsonNull -> null
+    is JsonPrimitive -> content
+    else -> toString()
 }
 
 fun NewsListDto.toNewsList(): NewsList {
@@ -27,12 +26,16 @@ fun NewsListDto.toNewsList(): NewsList {
 }
 
 fun ArticleDto.toArticle(): Article {
+    // BURADA DA EYNİ QORUNmanı EDİRİK:
+    // Əgər ID null-dursa, link-dən və ya təsadüfi UUID-dən istifadə edirik ki, UI-da çöküş olmasın.
+    val safeArticleId = articleId ?: link ?: UUID.randomUUID().toString()
+
     return Article(
         aiOrg = aiOrg.toFlexibleString(),
         aiRegion = aiRegion.toFlexibleString(),
         aiSummary = aiSummary.toFlexibleString(),
         aiTag = aiTag.toFlexibleString(),
-        articleId = articleId,
+        articleId = safeArticleId, // <-- Təhlükəsiz ID ötürülür
         category = category,
         content = content,
         country = country,
@@ -98,8 +101,7 @@ fun Article.toArticleEntity(): ArticleEntity {
         aiRegion = aiRegion,
         aiSummary = aiSummary,
         aiTag = aiTag,
-//        articleId = articleId ?: "",
-        articleId = articleId ?: link ?: java.util.UUID.randomUUID().toString(),
+        articleId = articleId, // Artıq Article sinfində bu həmişə etibarlı dəyərdir
         category = category,
         content = content,
         country = country,

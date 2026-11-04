@@ -9,5 +9,10 @@ enum class NewsLanguage(
     ENGLISH("en", "English", "🇬🇧"),
     RUSSIAN("ru", "Русский", "🇷🇺"),
     TURKISH("tr", "Türkçe", "🇹🇷"),
-    SPANISH("es", "Español", "🇪🇸")
+    SPANISH("es", "Español", "🇪🇸"),
+    FRENCH("fr", "Français", "🇫🇷"),
+    GERMAN("de", "Deutsch", "🇩🇪"),
+    ARABIC("ar", "العربية", "🇸🇦"),
+    CHINESE("zh", "中文", "🇨🇳"),
+    JAPANESE("ja", "日本語", "🇯🇵"),
 }

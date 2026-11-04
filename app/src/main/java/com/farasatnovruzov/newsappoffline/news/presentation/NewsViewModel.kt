@@ -5,17 +5,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.farasatnovruzov.movieappcompose.R
 import com.farasatnovruzov.newsappoffline.core.domain.NewsCategory
 import com.farasatnovruzov.newsappoffline.core.domain.NewsLanguage
 import com.farasatnovruzov.newsappoffline.core.domain.NewsRepository
 import com.farasatnovruzov.newsappoffline.core.domain.NewsResult
+import com.farasatnovruzov.newsappoffline.core.util.ResourceProvider
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
 class NewsViewModel(
-    private val newsRepository: NewsRepository
+    private val newsRepository: NewsRepository,
+    private val resourceProvider: ResourceProvider
 ) : ViewModel() {
 
     var state by mutableStateOf(NewsState())
@@ -54,7 +57,7 @@ class NewsViewModel(
                     is NewsResult.Error -> {
                         state.copy(
                             isError = true,
-                            errorMessage = result.error ?: "Məlumat yüklənmədi"
+                            errorMessage = result.error ?: resourceProvider.getString(R.string.failed_to_load_data)
                         )
                     }
 
@@ -90,7 +93,7 @@ class NewsViewModel(
                     is NewsResult.Error -> {
                         state.copy(
                             isError = true,
-                            errorMessage = result.error ?: "Səhifələmə xətası"
+                            errorMessage = result.error ?: resourceProvider.getString(R.string.pagination_error)
                         )
                     }
 

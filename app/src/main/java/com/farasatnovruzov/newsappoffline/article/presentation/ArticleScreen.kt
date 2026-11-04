@@ -22,6 +22,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -29,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.farasatnovruzov.movieappcompose.R
 import com.farasatnovruzov.newsappoffline.core.domain.Article
 import com.farasatnovruzov.newsappoffline.core.presentation.ui.theme.NewsAppOfflineComposeTheme
 import org.koin.androidx.compose.koinViewModel
@@ -72,7 +74,7 @@ private fun ArticleScreen(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = state.errorMessage ?: "Məqaləni yükləmək mümkün olmadı",
+                        text = state.errorMessage ?: stringResource(id = R.string.error_failed_to_load_article),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.error,
@@ -80,7 +82,7 @@ private fun ArticleScreen(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(onClick = { onAction(ArticleAction.LoadArticle(articleId)) }) {
-                        Text(text = "Yenidən cəhd et")
+                        Text(text = stringResource(id = R.string.retry))
                     }
                 }
             }

@@ -5,12 +5,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.farasatnovruzov.movieappcompose.R
 import com.farasatnovruzov.newsappoffline.core.domain.NewsRepository
 import com.farasatnovruzov.newsappoffline.core.domain.NewsResult
+import com.farasatnovruzov.newsappoffline.core.util.ResourceProvider
 import kotlinx.coroutines.launch
 
 class ArticleViewModel(
     private val repository: NewsRepository,
+    private val resourceProvider: ResourceProvider
 ) : ViewModel() {
 
     var state by mutableStateOf(ArticleState())
@@ -28,7 +31,7 @@ class ArticleViewModel(
         if (articleId.isBlank()) {
             state = state.copy(
                 isError = true,
-                errorMessage = "Keçərsiz məqalə ID"
+                errorMessage = resourceProvider.getString(R.string.invalid_article_id)
             )
             return
         }
@@ -43,7 +46,7 @@ class ArticleViewModel(
                     is NewsResult.Error -> {
                         state.copy(
                             isError = true,
-                            errorMessage = articleResult.error ?: "Məqalə tapılmadı"
+                            errorMessage = articleResult.error ?: resourceProvider.getString(R.string.article_not_found)
                         )
                     }
 

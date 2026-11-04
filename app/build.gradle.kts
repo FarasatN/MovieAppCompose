@@ -1,3 +1,13 @@
+import java.util.Properties
+import java.io.FileInputStream
+
+// local.properties faylını oxumaq üçün kod
+val propertiesFile = rootProject.file("local.properties")
+val localProperties = Properties()
+if (propertiesFile.exists()) {
+    localProperties.load(FileInputStream(propertiesFile))
+}
+
 plugins {
     alias(libs.plugins.android.application)
 
@@ -11,6 +21,7 @@ plugins {
 //    id("com.android.application")
     id("com.google.gms.google-services")
 }
+
 
 android {
     namespace = "com.farasatnovruzov.movieappcompose"
@@ -27,6 +38,16 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        // BuildConfig.NEWS_API_KEY kimi kodda istifadə edə biləcəyik
+        val rawNewsApiKey = localProperties.getProperty("NEWS_API_KEY", "")
+            .replace("\"", "")
+            .trim()
+            .trimEnd(',')
+        buildConfigField(
+            "String",
+            "NEWS_API_KEY",
+            "\"$rawNewsApiKey\""
+        )
     }
 
     buildTypes {
@@ -43,8 +64,8 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
     }
 
-    //for spendingtracker
     buildFeatures {
+        buildConfig = true
         compose = true
     }
 
@@ -78,7 +99,7 @@ kotlin {
         // For example:
         // freeCompilerArgs.add("-Xcontext-receivers")
 
-        freeCompilerArgs.add("-Xannotation-default-target=param-property")
+        //freeCompilerArgs.add("-Xannotation-default-target=param-property")
 
     }
 }

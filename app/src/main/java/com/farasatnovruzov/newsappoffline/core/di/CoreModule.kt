@@ -18,16 +18,18 @@ import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidApplication
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val coreModule = module {
 
     single {
         Room.databaseBuilder(
-            androidApplication(),
-            ArticleDatabase::class.java,
-            "article_db.db"
-        ).build()
+                androidApplication(),
+                ArticleDatabase::class.java,
+                "article_db.db"
+            ).fallbackToDestructiveMigration(false)
+            .build()
     }
 
     single {
@@ -69,7 +71,9 @@ val coreModule = module {
     single<NewsRepository> {
         NewsRepositoryImpl(
             httpClient = get(),
-            dao = get()
+            dao = get(),
+            apiKeys = get(named("ApiKeys")), // <-- "ApiKeys" (çünki appModule-da bu adla qeydiyyatdan keçirmişdik)
+            resourceProvider = get()
         )
     }
 }

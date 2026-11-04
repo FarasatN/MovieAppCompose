@@ -5,7 +5,7 @@ data class Article(
     val aiRegion: String?,
     val aiSummary: String?,
     val aiTag: String?,
-    val articleId: String?,
+    val articleId: String,
     val category: List<String?>?,
     val content: String?,
     val country: List<String?>?,

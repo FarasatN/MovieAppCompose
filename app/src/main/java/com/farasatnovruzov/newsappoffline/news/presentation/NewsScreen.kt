@@ -44,15 +44,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.farasatnovruzov.movieappcompose.R
 import com.farasatnovruzov.newsappoffline.core.domain.Article
 import com.farasatnovruzov.newsappoffline.core.domain.NewsCategory
 import com.farasatnovruzov.newsappoffline.core.domain.NewsLanguage
+import com.farasatnovruzov.newsappoffline.news.presentation.util.emoji
+import com.farasatnovruzov.newsappoffline.news.presentation.util.titleRes
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import org.koin.androidx.compose.koinViewModel
@@ -94,7 +98,7 @@ private fun NewsScreen(
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
-                            text = "The News",
+                            text = stringResource(id = R.string.news_app_title),
                             fontSize = 30.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(start = 4.dp)
@@ -102,18 +106,18 @@ private fun NewsScreen(
                     }
                 )
 
-                // Axtarış Sətri
+                // Search Bar
                 OutlinedTextField(
                     value = state.searchQuery,
                     onValueChange = { onAction(NewsAction.OnSearchQueryChange(it)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 4.dp),
-                    placeholder = { Text("Məqalə və ya xəbər axtar...") },
+                    placeholder = { Text(stringResource(id = R.string.search_placeholder)) },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Search,
-                            contentDescription = "Axtar"
+                            contentDescription = stringResource(id = R.string.search_content_description)
                         )
                     },
                     trailingIcon = {
@@ -121,7 +125,7 @@ private fun NewsScreen(
                             IconButton(onClick = { onAction(NewsAction.ClearSearch) }) {
                                 Icon(
                                     imageVector = Icons.Default.Close,
-                                    contentDescription = "Təmizlə"
+                                    contentDescription = stringResource(id = R.string.clear_content_description)
                                 )
                             }
                         }
@@ -134,7 +138,7 @@ private fun NewsScreen(
                     )
                 )
 
-                // Dil Seçimi Çipləri (Language Selection Filter Chips)
+                // Language Selection Filter Chips
                 LazyRow(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -162,7 +166,7 @@ private fun NewsScreen(
                     }
                 }
 
-                // Kateqoriya Seçimi Çipləri (Category Selection Filter Chips)
+                // Category Selection Filter Chips
                 LazyRow(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -177,7 +181,7 @@ private fun NewsScreen(
                             onClick = { onAction(NewsAction.OnCategorySelect(category)) },
                             label = {
                                 Text(
-                                    text = "${category.emoji} ${category.displayName}",
+                                    text = "${category.emoji} ${stringResource(id = category.titleRes)}",
                                     fontSize = 13.sp,
                                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                                 )
@@ -210,7 +214,7 @@ private fun NewsScreen(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = state.errorMessage ?: "Xəbərləri yükləmək mümkün olmadı",
+                        text = state.errorMessage ?: stringResource(id = R.string.error_failed_to_load_news),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.error,
@@ -218,12 +222,12 @@ private fun NewsScreen(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(onClick = { onAction(NewsAction.Refresh) }) {
-                        Text(text = "Yenidən cəhd et")
+                        Text(text = stringResource(id = R.string.retry))
                     }
                 }
             } else if (state.isSearchActive && articles.isEmpty()) {
                 Text(
-                    text = "Axtarışa uyğun xəbər tapılmadı",
+                    text = stringResource(id = R.string.error_no_news_matching_search),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -254,7 +258,7 @@ private fun NewsScreen(
                 ) {
                     itemsIndexed(
                         items = articles,
-                        key = { index, article -> "${article.articleId ?: article.title ?: ""}_$index" }
+                        key = { index, article -> "${article.articleId ?: ""}_$index" }
                     ) { _, article ->
                         ArticleItem(
                             article = article,
