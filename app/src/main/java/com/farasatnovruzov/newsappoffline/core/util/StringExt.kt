@@ -1,7 +1,10 @@
 package com.farasatnovruzov.newsappoffline.core.util
 
-fun String.escapeSqlLike(): String {
-    return this.replace("\\", "\\\\") // Əvvəlcə \ işarəsini qoruyuruq
-        .replace("%", "\\%")  // % işarəsini escape edirik
-        .replace("_", "\\_")  // _ işarəsini escape edirik
-}
+/**
+ * SQL `LIKE` üçün xüsusi simvolları (\, %, _) escape edir ki, istifadəçi daxil etdiyi
+ * mətn adi simvol kimi axtarılsın. Sıra vacibdir: əvvəlcə `\` ikiləşdirilir.
+ */
+fun String.escapeSqlLike(): String =
+    replace("\\", "\\\\")
+        .replace("%", "\\%")
+        .replace("_", "\\_")

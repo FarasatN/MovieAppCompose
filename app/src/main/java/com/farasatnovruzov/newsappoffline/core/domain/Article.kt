@@ -29,4 +29,4 @@ data class Article(
     val sourceUrl: String?,
     val title: String?,
     val videoUrl: String?
-)
+)

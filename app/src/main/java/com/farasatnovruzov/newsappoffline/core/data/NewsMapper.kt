@@ -19,9 +19,7 @@ fun JsonElement?.toFlexibleString(): String? = when (this) {
 fun NewsListDto.toNewsList(): NewsList {
     return NewsList(
         nextPage = nextPage,
-        articles = results?.map { it?.toArticle() } ?: emptyList(),
-        status = status,
-        totalResults = totalResults
+        articles = results?.mapNotNull { it?.toArticle() } ?: emptyList()
     )
 }
 

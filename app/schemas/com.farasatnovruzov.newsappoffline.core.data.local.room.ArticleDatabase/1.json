@@ -1,0 +1,166 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "a67c0d6bd3486f1be3d1fff097d630e0",
+    "entities": [
+      {
+        "tableName": "article_entity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`aiOrg` TEXT, `aiRegion` TEXT, `aiSummary` TEXT, `aiTag` TEXT, `articleId` TEXT NOT NULL, `category` TEXT, `content` TEXT, `country` TEXT, `creator` TEXT, `datatype` TEXT, `description` TEXT, `duplicate` INTEGER, `fetchedAt` TEXT, `imageUrl` TEXT, `keywords` TEXT, `language` TEXT, `link` TEXT, `pubDate` TEXT, `pubDateTZ` TEXT, `sentiment` TEXT, `sentimentStats` TEXT, `sourceIcon` TEXT, `sourceId` TEXT, `sourceName` TEXT, `sourcePriority` INTEGER, `sourceUrl` TEXT, `title` TEXT, `videoUrl` TEXT, PRIMARY KEY(`articleId`))",
+        "fields": [
+          {
+            "fieldPath": "aiOrg",
+            "columnName": "aiOrg",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "aiRegion",
+            "columnName": "aiRegion",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "aiSummary",
+            "columnName": "aiSummary",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "aiTag",
+            "columnName": "aiTag",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "articleId",
+            "columnName": "articleId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "content",
+            "columnName": "content",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "country",
+            "columnName": "country",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "creator",
+            "columnName": "creator",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "datatype",
+            "columnName": "datatype",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "duplicate",
+            "columnName": "duplicate",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "fetchedAt",
+            "columnName": "fetchedAt",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "imageUrl",
+            "columnName": "imageUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "keywords",
+            "columnName": "keywords",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "language",
+            "columnName": "language",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "link",
+            "columnName": "link",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "pubDate",
+            "columnName": "pubDate",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "pubDateTZ",
+            "columnName": "pubDateTZ",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sentiment",
+            "columnName": "sentiment",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sentimentStats",
+            "columnName": "sentimentStats",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sourceIcon",
+            "columnName": "sourceIcon",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sourceId",
+            "columnName": "sourceId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sourceName",
+            "columnName": "sourceName",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sourcePriority",
+            "columnName": "sourcePriority",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "sourceUrl",
+            "columnName": "sourceUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "videoUrl",
+            "columnName": "videoUrl",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "articleId"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a67c0d6bd3486f1be3d1fff097d630e0')"
+    ]
+  }
+}

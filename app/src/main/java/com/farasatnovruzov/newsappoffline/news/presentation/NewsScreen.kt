@@ -1,30 +1,21 @@
 package com.farasatnovruzov.newsappoffline.news.presentation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -34,37 +25,36 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.AsyncImage
 import com.farasatnovruzov.movieappcompose.R
 import com.farasatnovruzov.newsappoffline.core.domain.Article
 import com.farasatnovruzov.newsappoffline.core.domain.NewsCategory
 import com.farasatnovruzov.newsappoffline.core.domain.NewsLanguage
+import com.farasatnovruzov.newsappoffline.core.presentation.components.ErrorContent
+import com.farasatnovruzov.newsappoffline.core.presentation.util.asString
+import com.farasatnovruzov.newsappoffline.news.presentation.components.ArticleItem
+import com.farasatnovruzov.newsappoffline.news.presentation.components.FilterChipRow
+import com.farasatnovruzov.newsappoffline.news.presentation.components.PaginationEffect
+import com.farasatnovruzov.newsappoffline.news.presentation.util.displayName
 import com.farasatnovruzov.newsappoffline.news.presentation.util.emoji
+import com.farasatnovruzov.newsappoffline.news.presentation.util.flagEmoji
 import com.farasatnovruzov.newsappoffline.news.presentation.util.titleRes
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun NewsScreenCore(
-    viewModel: NewsViewModel = koinViewModel(),
-    onArticleClick: (String) -> Unit
+    onArticleClick: (String) -> Unit,
+    viewModel: NewsViewModel = koinViewModel()
 ) {
     NewsScreen(
         state = viewModel.state,
@@ -89,143 +79,139 @@ private fun NewsScreen(
             .nestedScroll(scrollBehavior.nestedScrollConnection)
             .fillMaxSize(),
         topBar = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surface)
-            ) {
-                TopAppBar(
-                    scrollBehavior = scrollBehavior,
-                    title = {
-                        Text(
-                            text = stringResource(id = R.string.news_app_title),
-                            fontSize = 30.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(start = 4.dp)
-                        )
-                    }
-                )
-
-                // Search Bar
-                OutlinedTextField(
-                    value = state.searchQuery,
-                    onValueChange = { onAction(NewsAction.OnSearchQueryChange(it)) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 4.dp),
-                    placeholder = { Text(stringResource(id = R.string.search_placeholder)) },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = stringResource(id = R.string.search_content_description)
-                        )
-                    },
-                    trailingIcon = {
-                        if (state.searchQuery.isNotEmpty()) {
-                            IconButton(onClick = { onAction(NewsAction.ClearSearch) }) {
-                                Icon(
-                                    imageVector = Icons.Default.Close,
-                                    contentDescription = stringResource(id = R.string.clear_content_description)
-                                )
-                            }
-                        }
-                    },
-                    singleLine = true,
-                    shape = RoundedCornerShape(12.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.outline
-                    )
-                )
-
-                // Language Selection Filter Chips
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 2.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(NewsLanguage.entries.toTypedArray()) { language ->
-                        val isSelected = state.selectedLanguage == language
-                        FilterChip(
-                            selected = isSelected,
-                            onClick = { onAction(NewsAction.OnLanguageSelect(language)) },
-                            label = {
-                                Text(
-                                    text = "${language.flagEmoji} ${language.displayName}",
-                                    fontSize = 13.sp,
-                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                                )
-                            },
-                            colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                                selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                        )
-                    }
-                }
-
-                // Category Selection Filter Chips
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 2.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(NewsCategory.entries.toTypedArray()) { category ->
-                        val isSelected = state.selectedCategory == category
-                        FilterChip(
-                            selected = isSelected,
-                            onClick = { onAction(NewsAction.OnCategorySelect(category)) },
-                            label = {
-                                Text(
-                                    text = "${category.emoji} ${stringResource(id = category.titleRes)}",
-                                    fontSize = 13.sp,
-                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                                )
-                            },
-                            colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                selectedLabelColor = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-                        )
-                    }
-                }
-            }
+            NewsTopBar(
+                state = state,
+                onAction = onAction,
+                scrollBehavior = scrollBehavior
+            )
         }
     ) { innerPadding ->
-        Box(
+        NewsContent(
+            state = state,
+            onAction = onAction,
+            onArticleClick = onArticleClick,
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding)
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            val articles = state.displayedArticles
+        )
+    }
+}
 
-            if ((state.isLoading && articles.isEmpty()) || state.isSearchingLoading) {
-                CircularProgressIndicator()
-            } else if (state.isError && articles.isEmpty()) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Text(
-                        text = state.errorMessage ?: stringResource(id = R.string.error_failed_to_load_news),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.error,
-                        textAlign = TextAlign.Center
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun NewsTopBar(
+    state: NewsState,
+    onAction: (NewsAction) -> Unit,
+    scrollBehavior: TopAppBarScrollBehavior
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface)
+    ) {
+        TopAppBar(
+            scrollBehavior = scrollBehavior,
+            title = {
+                Text(
+                    text = stringResource(id = R.string.news_app_title),
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(start = 4.dp)
+                )
+            }
+        )
+
+        SearchField(
+            query = state.searchQuery,
+            onQueryChange = { onAction(NewsAction.OnSearchQueryChange(it)) },
+            onClear = { onAction(NewsAction.ClearSearch) }
+        )
+
+        FilterChipRow(
+            options = NewsLanguage.entries,
+            selectedOption = state.selectedLanguage,
+            optionLabel = { language -> "${language.flagEmoji} ${language.displayName}" },
+            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+            selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            onOptionSelected = { onAction(NewsAction.OnLanguageSelect(it)) }
+        )
+
+        FilterChipRow(
+            options = NewsCategory.entries,
+            selectedOption = state.selectedCategory,
+            optionLabel = { category -> "${category.emoji} ${stringResource(id = category.titleRes)}" },
+            selectedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            selectedLabelColor = MaterialTheme.colorScheme.onSecondaryContainer,
+            onOptionSelected = { onAction(NewsAction.OnCategorySelect(it)) }
+        )
+    }
+}
+
+@Composable
+private fun SearchField(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    onClear: () -> Unit
+) {
+    OutlinedTextField(
+        value = query,
+        onValueChange = onQueryChange,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 4.dp),
+        placeholder = { Text(stringResource(id = R.string.search_placeholder)) },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = stringResource(id = R.string.search_content_description)
+            )
+        },
+        trailingIcon = {
+            if (query.isNotEmpty()) {
+                IconButton(onClick = onClear) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = stringResource(id = R.string.clear_content_description)
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Button(onClick = { onAction(NewsAction.Refresh) }) {
-                        Text(text = stringResource(id = R.string.retry))
-                    }
                 }
-            } else if (state.isSearchActive && articles.isEmpty()) {
+            }
+        },
+        singleLine = true,
+        shape = RoundedCornerShape(12.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outline
+        )
+    )
+}
+
+@Composable
+private fun NewsContent(
+    state: NewsState,
+    onAction: (NewsAction) -> Unit,
+    onArticleClick: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val articles = state.displayedArticles
+
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        when {
+            (state.isLoading && articles.isEmpty()) || state.isSearchingLoading -> {
+                CircularProgressIndicator()
+            }
+
+            state.isError && articles.isEmpty() -> {
+                ErrorContent(
+                    message = state.error?.asString()
+                        ?: stringResource(id = R.string.error_failed_to_load_news),
+                    onRetry = { onAction(NewsAction.Refresh) }
+                )
+            }
+
+            state.isSearchActive && articles.isEmpty() -> {
                 Text(
                     text = stringResource(id = R.string.error_no_news_matching_search),
                     fontSize = 18.sp,
@@ -233,132 +219,59 @@ private fun NewsScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
-            } else if (articles.isNotEmpty()) {
-                val listState = rememberLazyListState()
+            }
 
-                val shouldPaginate = remember {
-                    derivedStateOf {
-                        val totalItems = listState.layoutInfo.totalItemsCount
-                        val lastVisibleIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-                        lastVisibleIndex == totalItems - 1 && !state.isLoading && !state.isSearchActive
-                    }
-                }
-
-                LaunchedEffect(key1 = listState) {
-                    snapshotFlow { shouldPaginate.value }
-                        .distinctUntilChanged()
-                        .filter { it }
-                        .collect { onAction(NewsAction.Paginate) }
-                }
-
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(bottom = 16.dp),
-                    state = listState
-                ) {
-                    itemsIndexed(
-                        items = articles,
-                        key = { index, article -> "${article.articleId ?: ""}_$index" }
-                    ) { _, article ->
-                        ArticleItem(
-                            article = article,
-                            onArticleClick = onArticleClick
-                        )
-                    }
-
-                    if (state.isLoading && !state.isSearchActive) {
-                        item {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator()
-                            }
-                        }
-                    }
-                }
+            articles.isNotEmpty() -> {
+                ArticleList(
+                    articles = articles,
+                    showLoadingFooter = state.isLoading && !state.isSearchActive,
+                    onLoadMore = { onAction(NewsAction.Paginate) },
+                    onArticleClick = onArticleClick
+                )
             }
         }
     }
 }
 
 @Composable
-fun ArticleItem(
-    modifier: Modifier = Modifier,
-    article: Article,
+private fun ArticleList(
+    articles: List<Article>,
+    showLoadingFooter: Boolean,
+    onLoadMore: () -> Unit,
     onArticleClick: (String) -> Unit
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable { onArticleClick(article.articleId ?: "") }
-            .padding(vertical = 16.dp)
+    val listState = rememberLazyListState()
+
+    PaginationEffect(
+        listState = listState,
+        itemCount = articles.size,
+        onLoadMore = onLoadMore
+    )
+
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(bottom = 16.dp),
+        state = listState
     ) {
-        if (!article.sourceName.isNullOrBlank()) {
-            Text(
-                text = article.sourceName,
-                fontSize = 20.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(horizontal = 16.dp)
+        // articleId unikaldır (ViewModel-də distinctBy, bazada PrimaryKey) – key kimi təhlükəsizdir
+        items(items = articles, key = { it.articleId }) { article ->
+            ArticleItem(
+                article = article,
+                onArticleClick = onArticleClick
             )
-            Spacer(modifier = Modifier.height(4.dp))
         }
 
-        Text(
-            text = article.title ?: "",
-            fontSize = 18.sp,
-            maxLines = 3,
-            overflow = TextOverflow.Ellipsis,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        if (!article.imageUrl.isNullOrEmpty()) {
-            AsyncImage(
-                model = article.imageUrl,
-                contentDescription = article.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(220.dp)
-                    .background(MaterialTheme.colorScheme.primary.copy(0.1f))
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-        }
-
-        if (!article.description.isNullOrEmpty()) {
-            Text(
-                text = article.description,
-                fontSize = 15.sp,
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-
-        if (!article.pubDate.isNullOrEmpty()) {
-            Text(
-                text = article.pubDate,
-                fontSize = 13.sp,
-                color = MaterialTheme.colorScheme.outline,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
+        if (showLoadingFooter) {
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
         }
     }
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(8.dp)
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(0.4f))
-    )
 }

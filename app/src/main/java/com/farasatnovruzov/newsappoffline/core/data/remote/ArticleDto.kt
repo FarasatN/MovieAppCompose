@@ -75,4 +75,4 @@ data class ArticleDto(
 
     @SerialName("video_url")
     val videoUrl: String? = null
-)
+)

@@ -2,6 +2,7 @@ package com.farasatnovruzov.newsappoffline
 
 import com.farasatnovruzov.newsappoffline.article.di.articleModule
 import com.farasatnovruzov.newsappoffline.core.di.coreModule
+import com.farasatnovruzov.newsappoffline.di.appModule
 import com.farasatnovruzov.newsappoffline.news.di.newsModule
 import io.ktor.client.HttpClient
 import org.junit.Test

@@ -1,9 +1,6 @@
 package com.farasatnovruzov.newsappoffline.core.domain
 
-sealed class NewsResult<T>(
-    val data: T? = null,
-    val error: String?
-) {
-    class Success<T>(data: T?) : NewsResult<T>(data, null)
-    class Error<T>(error: String?) : NewsResult<T>(null, error)
+sealed interface NewsResult<out T> {
+    data class Success<out T>(val data: T) : NewsResult<T>
+    data class Error(val error: NewsError) : NewsResult<Nothing>
 }

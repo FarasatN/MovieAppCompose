@@ -5,25 +5,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.farasatnovruzov.movieappcompose.R
 import com.farasatnovruzov.newsappoffline.core.domain.NewsCategory
 import com.farasatnovruzov.newsappoffline.core.domain.NewsLanguage
 import com.farasatnovruzov.newsappoffline.core.domain.NewsRepository
 import com.farasatnovruzov.newsappoffline.core.domain.NewsResult
-import com.farasatnovruzov.newsappoffline.core.util.ResourceProvider
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.milliseconds
 
 class NewsViewModel(
-    private val newsRepository: NewsRepository,
-    private val resourceProvider: ResourceProvider
+    private val newsRepository: NewsRepository
 ) : ViewModel() {
 
     var state by mutableStateOf(NewsState())
         private set
 
+    /** Əsas yükləmə və səhifələmə işi. Yeni iş başlayanda köhnəsi ləğv edilir (yarış problemi olmasın). */
+    private var newsJob: Job? = null
     private var searchJob: Job? = null
 
     init {
@@ -42,34 +40,21 @@ class NewsViewModel(
     }
 
     private fun loadNews() {
-        viewModelScope.launch {
-            state = state.copy(
-                isLoading = true,
-                isError = false,
-                errorMessage = null
-            )
+        newsJob?.cancel()
+        newsJob = viewModelScope.launch {
+            state = state.copy(isLoading = true, error = null)
 
             newsRepository.getNews(
                 languageCode = state.selectedLanguage.code,
                 category = state.selectedCategory.code
             ).collect { result ->
                 state = when (result) {
-                    is NewsResult.Error -> {
-                        state.copy(
-                            isError = true,
-                            errorMessage = result.error ?: resourceProvider.getString(R.string.failed_to_load_data)
-                        )
-                    }
-
-                    is NewsResult.Success -> {
-                        val articles = result.data?.articles?.filterNotNull() ?: emptyList()
-                        state.copy(
-                            isError = false,
-                            errorMessage = null,
-                            articleList = articles.distinctBy { it.articleId ?: it.title },
-                            nextPage = result.data?.nextPage
-                        )
-                    }
+                    is NewsResult.Error -> state.copy(error = result.error)
+                    is NewsResult.Success -> state.copy(
+                        error = null,
+                        articleList = result.data.articles.distinctBy { it.articleId },
+                        nextPage = result.data.nextPage
+                    )
                 }
             }
 
@@ -81,7 +66,8 @@ class NewsViewModel(
         if (state.isLoading || state.isSearchActive) return
         val nextPage = state.nextPage ?: return
 
-        viewModelScope.launch {
+        newsJob?.cancel()
+        newsJob = viewModelScope.launch {
             state = state.copy(isLoading = true)
 
             newsRepository.paginate(
@@ -90,23 +76,12 @@ class NewsViewModel(
                 category = state.selectedCategory.code
             ).collect { result ->
                 state = when (result) {
-                    is NewsResult.Error -> {
-                        state.copy(
-                            isError = true,
-                            errorMessage = result.error ?: resourceProvider.getString(R.string.pagination_error)
-                        )
-                    }
-
-                    is NewsResult.Success -> {
-                        val newArticles = result.data?.articles?.filterNotNull() ?: emptyList()
-                        val combined = (state.articleList + newArticles).distinctBy { it.articleId ?: it.title }
-                        state.copy(
-                            isError = false,
-                            errorMessage = null,
-                            articleList = combined,
-                            nextPage = result.data?.nextPage
-                        )
-                    }
+                    is NewsResult.Error -> state.copy(error = result.error)
+                    is NewsResult.Success -> state.copy(
+                        error = null,
+                        articleList = (state.articleList + result.data.articles).distinctBy { it.articleId },
+                        nextPage = result.data.nextPage
+                    )
                 }
             }
 
@@ -116,25 +91,23 @@ class NewsViewModel(
 
     private fun onLanguageSelect(language: NewsLanguage) {
         if (state.selectedLanguage == language) return
-        state = state.copy(
-            selectedLanguage = language,
-            articleList = emptyList(),
-            searchArticleList = emptyList()
-        )
-
-        if (state.isSearchActive) {
-            executeSearch(state.searchQuery)
-        } else {
-            loadNews()
-        }
+        onFilterChanged { copy(selectedLanguage = language) }
     }
 
     private fun onCategorySelect(category: NewsCategory) {
         if (state.selectedCategory == category) return
-        state = state.copy(
-            selectedCategory = category,
+        onFilterChanged { copy(selectedCategory = category) }
+    }
+
+    /** Dil və kateqoriya dəyişikliyi üçün ortaq məntiq (DRY). */
+    private fun onFilterChanged(transform: NewsState.() -> NewsState) {
+        // Köhnə filtrlə gedən sorğunun nəticəsi yeni siyahını pozmasın
+        newsJob?.cancel()
+        state = state.transform().copy(
             articleList = emptyList(),
-            searchArticleList = emptyList()
+            searchArticleList = emptyList(),
+            nextPage = null,
+            isLoading = false
         )
 
         if (state.isSearchActive) {
@@ -149,53 +122,61 @@ class NewsViewModel(
         searchJob?.cancel()
 
         if (query.isBlank()) {
-            state = state.copy(
-                searchArticleList = emptyList(),
-                isSearchingLoading = false
-            )
+            resetSearchResults()
             return
         }
 
         searchJob = viewModelScope.launch {
-            delay(500.milliseconds) // Debounce typing (500ms)
-            executeSearch(query)
+            delay(SEARCH_DEBOUNCE_MS) // Debounce: hər hərfdə sorğu göndərmirik
+            performSearch(query)
         }
     }
 
     private fun executeSearch(query: String) {
         searchJob?.cancel()
-        searchJob = viewModelScope.launch {
-            state = state.copy(isSearchingLoading = true)
-            newsRepository.searchNews(
-                query = query,
-                languageCode = state.selectedLanguage.code,
-                category = state.selectedCategory.code
-            ).collect { result ->
-                state = when (result) {
-                    is NewsResult.Error -> {
-                        state.copy(
-                            searchArticleList = emptyList(),
-                            isSearchingLoading = false
-                        )
-                    }
+        searchJob = viewModelScope.launch { performSearch(query) }
+    }
 
-                    is NewsResult.Success -> {
-                        state.copy(
-                            searchArticleList = result.data ?: emptyList(),
-                            isSearchingLoading = false
-                        )
-                    }
-                }
+    private suspend fun performSearch(query: String) {
+        state = state.copy(isSearchingLoading = true)
+
+        newsRepository.searchNews(
+            query = query,
+            languageCode = state.selectedLanguage.code,
+            category = state.selectedCategory.code
+        ).collect { result ->
+            state = when (result) {
+                is NewsResult.Error -> state.copy(
+                    searchArticleList = emptyList(),
+                    isSearchingLoading = false
+                )
+
+                is NewsResult.Success -> state.copy(
+                    searchArticleList = result.data,
+                    isSearchingLoading = false
+                )
             }
         }
     }
 
     private fun clearSearch() {
         searchJob?.cancel()
-        state = state.copy(
-            searchQuery = "",
-            searchArticleList = emptyList(),
-            isSearchingLoading = false
-        )
+        state = state.copy(searchQuery = "")
+        resetSearchResults()
+    }
+
+    /**
+     * Axtarış nəticələrini təmizləyir. Axtarış zamanı filtr dəyişdirilibsə əsas siyahı boş qalıb:
+     * bu halda axtarışdan çıxanda siyahını yenidən yükləyirik (əks halda ekran boş qalırdı).
+     */
+    private fun resetSearchResults() {
+        state = state.copy(searchArticleList = emptyList(), isSearchingLoading = false)
+        if (state.articleList.isEmpty() && !state.isLoading) {
+            loadNews()
+        }
+    }
+
+    private companion object {
+        const val SEARCH_DEBOUNCE_MS = 500L
     }
 }

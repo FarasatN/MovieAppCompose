@@ -34,4 +34,4 @@ data class ArticleEntity(
     val sourceUrl: String? = null,
     val title: String? = null,
     val videoUrl: String? = null
-)
+)

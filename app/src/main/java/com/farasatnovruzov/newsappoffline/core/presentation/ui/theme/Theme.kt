@@ -55,4 +55,4 @@ fun NewsAppOfflineComposeTheme(
         typography = Typography,
         content = content
     )
-}
+}

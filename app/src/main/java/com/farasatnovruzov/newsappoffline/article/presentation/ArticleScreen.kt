@@ -1,7 +1,6 @@
 package com.farasatnovruzov.newsappoffline.article.presentation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -24,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,29 +29,30 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.farasatnovruzov.movieappcompose.R
 import com.farasatnovruzov.newsappoffline.core.domain.Article
+import com.farasatnovruzov.newsappoffline.core.presentation.components.ErrorContent
 import com.farasatnovruzov.newsappoffline.core.presentation.ui.theme.NewsAppOfflineComposeTheme
+import com.farasatnovruzov.newsappoffline.core.presentation.util.asString
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ArticleScreenCore(
-    viewModel: ArticleViewModel = koinViewModel(),
     articleId: String,
+    viewModel: ArticleViewModel = koinViewModel()
 ) {
     LaunchedEffect(key1 = articleId) {
         viewModel.onAction(ArticleAction.LoadArticle(articleId))
     }
+
     ArticleScreen(
         state = viewModel.state,
-        onAction = viewModel::onAction,
-        articleId = articleId
+        onRetry = { viewModel.onAction(ArticleAction.LoadArticle(articleId)) }
     )
 }
 
 @Composable
 private fun ArticleScreen(
     state: ArticleState,
-    onAction: (ArticleAction) -> Unit,
-    articleId: String = ""
+    onRetry: () -> Unit
 ) {
     Scaffold { paddingValues ->
         Box(
@@ -62,29 +60,17 @@ private fun ArticleScreen(
                 .padding(paddingValues)
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             if (state.isLoading && state.article == null) {
                 CircularProgressIndicator()
             }
             if (state.isError && state.article == null) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Text(
-                        text = state.errorMessage ?: stringResource(id = R.string.error_failed_to_load_article),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.error,
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Button(onClick = { onAction(ArticleAction.LoadArticle(articleId)) }) {
-                        Text(text = stringResource(id = R.string.retry))
-                    }
-                }
+                ErrorContent(
+                    message = state.error?.asString()
+                        ?: stringResource(id = R.string.error_failed_to_load_article),
+                    onRetry = onRetry
+                )
             }
             state.article?.let { article ->
                 ArticleDetails(article = article)
@@ -95,8 +81,8 @@ private fun ArticleScreen(
 
 @Composable
 fun ArticleDetails(
-    modifier: Modifier = Modifier,
-    article: Article
+    article: Article,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
@@ -183,7 +169,7 @@ private fun ArticleScreenPreview() {
     NewsAppOfflineComposeTheme {
         ArticleScreen(
             state = ArticleState(),
-            onAction = {},
+            onRetry = {}
         )
     }
 }

@@ -3,77 +3,47 @@ package com.farasatnovruzov.newsappoffline.core.di
 import androidx.room.Room
 import com.farasatnovruzov.newsappoffline.core.data.NewsRepositoryImpl
 import com.farasatnovruzov.newsappoffline.core.data.local.room.ArticleDatabase
+import com.farasatnovruzov.newsappoffline.core.data.remote.ApiKeyRotator
+import com.farasatnovruzov.newsappoffline.core.data.remote.HttpClientFactory
+import com.farasatnovruzov.newsappoffline.core.data.remote.KtorNewsRemoteDataSource
+import com.farasatnovruzov.newsappoffline.core.data.remote.NewsRemoteDataSource
 import com.farasatnovruzov.newsappoffline.core.domain.NewsRepository
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.okhttp.OkHttp
-import io.ktor.client.plugins.DefaultRequest
-import io.ktor.client.plugins.HttpTimeout
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logger
-import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.request.header
-import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
-import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidApplication
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-val coreModule = module {
+private const val DATABASE_NAME = "article_db.db"
 
+val databaseModule = module {
     single {
         Room.databaseBuilder(
-                androidApplication(),
-                ArticleDatabase::class.java,
-                "article_db.db"
-            ).fallbackToDestructiveMigration(false)
+            androidApplication(),
+            ArticleDatabase::class.java,
+            DATABASE_NAME
+        )
+            .fallbackToDestructiveMigration(false)
             .build()
     }
+    single { get<ArticleDatabase>().dao }
+}
 
-    single {
-        get<ArticleDatabase>().dao
-    }
-
-    single {
-        HttpClient(OkHttp) {
-            expectSuccess = true
-            install(HttpTimeout) { requestTimeoutMillis = 15_000 }
-            engine {
-                config {
-                    retryOnConnectionFailure(true)
-                }
-            }
-            install(ContentNegotiation) {
-                json(
-                    Json {
-                        prettyPrint = true
-                        isLenient = true
-                        ignoreUnknownKeys = true
-                    }
-                )
-            }
-            install(DefaultRequest) {
-                header(HttpHeaders.ContentType, ContentType.Application.Json)
-            }
-            install(Logging) {
-                logger = object : Logger {
-                    override fun log(message: String) {
-                        println(message)
-                    }
-                }
-                level = LogLevel.ALL
-            }
-        }
-    }
-
-    single<NewsRepository> {
-        NewsRepositoryImpl(
+val networkModule = module {
+    single { HttpClientFactory.create() }
+    single { ApiKeyRotator(apiKeys = get(ApiKeysQualifier)) }
+    single<NewsRemoteDataSource> {
+        KtorNewsRemoteDataSource(
             httpClient = get(),
-            dao = get(),
-            apiKeys = get(named("ApiKeys")), // <-- "ApiKeys" (çünki appModule-da bu adla qeydiyyatdan keçirmişdik)
-            resourceProvider = get()
+            apiKeyRotator = get()
         )
     }
 }
+
+val repositoryModule = module {
+    single<NewsRepository> {
+        NewsRepositoryImpl(
+            remoteDataSource = get(),
+            dao = get()
+        )
+    }
+}
+
+val coreModules = listOf(databaseModule, networkModule, repositoryModule)

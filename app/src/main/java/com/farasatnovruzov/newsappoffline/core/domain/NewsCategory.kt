@@ -1,4 +1,6 @@
 package com.farasatnovruzov.newsappoffline.core.domain
+
+/** [code] – API-yə göndərilən dəyərdir; null "bütün kateqoriyalar" deməkdir. */
 enum class NewsCategory(val code: String?) {
     ALL(null),
     BUSINESS("business"),
